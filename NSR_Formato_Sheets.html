@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NSR — Formato de Visita</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: #0D1F2D;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+    padding: 0 0 40px 0;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: linear-gradient(135deg, #0D1F2D, #1B3A52);
+    border-bottom: 3px solid #E67E22;
+    padding: 20px 20px 16px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: center; }
+  .brand {
+    font-size: 13px; font-weight: 700; letter-spacing: 3px;
+    color: #E67E22; text-transform: uppercase;
+  }
+  .visita-num {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .visita-num label { font-size: 12px; color: #7FB3D3; }
+  .visita-num input {
+    width: 52px; padding: 4px 8px; border-radius: 6px;
+    border: 1px solid #E67E22; background: rgba(230,126,34,0.1);
+    color: #E67E22; font-size: 16px; font-weight: 700;
+    text-align: center;
+  }
+  .header-title {
+    font-size: 20px; font-weight: 700; color: #fff;
+    margin-top: 8px; letter-spacing: -0.5px;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .container { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .card-icon { font-size: 18px; }
+  .card-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #7FB3D3;
+  }
+  .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ─── FORM FIELDS ─── */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: #7FB3D3;
+  }
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field input[type="date"],
+  .field select,
+  .field textarea {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #fff;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: #E67E22;
+    background: rgba(230,126,34,0.08);
+  }
+  .field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+  .field select option { background: #1B3A52; color: #fff; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ─── CHECKBOX GRID ─── */
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .check-item:active { transform: scale(0.97); }
+  .check-item.checked {
+    background: rgba(230,126,34,0.15);
+    border-color: #E67E22;
+  }
+  .check-item input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 20px; height: 20px; border-radius: 5px;
+    border: 2px solid rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.2s;
+    font-size: 12px; color: transparent;
+  }
+  .check-item.checked .check-box {
+    background: #E67E22; border-color: #E67E22; color: #fff;
+  }
+  .check-label { font-size: 13px; color: #ccc; line-height: 1.3; }
+  .check-item.checked .check-label { color: #fff; }
+
+  /* ─── RADIO BUTTONS (Nivel de interés) ─── */
+  .radio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .radio-item {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 12px 8px;
+    border-radius: 10px; border: 2px solid rgba(255,255,255,0.15);
+    cursor: pointer; transition: all 0.2s;
+    user-select: none; text-align: center;
+  }
+  .radio-item input[type="radio"] { display: none; }
+  .radio-item span { font-size: 14px; font-weight: 600; color: #888; }
+  .radio-frio.selected   { background: rgba(100,149,237,0.2); border-color: #6495ED; }
+  .radio-tibio.selected  { background: rgba(255,165,0,0.2);   border-color: #FFA500; }
+  .radio-caliente.selected { background: rgba(220,50,50,0.2); border-color: #E74C3C; }
+  .radio-agendo.selected { background: rgba(30,132,73,0.2);   border-color: #1E8449; }
+  .radio-frio.selected span   { color: #6495ED; }
+  .radio-tibio.selected span  { color: #FFA500; }
+  .radio-caliente.selected span { color: #E74C3C; }
+  .radio-agendo.selected span { color: #1E8449; }
+
+  /* ─── SIGUIENTE PASO ─── */
+  .paso-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  /* ─── GIRO SELECTOR ─── */
+  .giro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .giro-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding: 10px 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .giro-item.selected {
+    background: rgba(36,113,163,0.25);
+    border-color: #2471A3;
+  }
+  .giro-item input { display: none; }
+  .giro-icon { font-size: 22px; }
+  .giro-text { font-size: 11px; color: #aaa; text-align: center; line-height: 1.2; }
+  .giro-item.selected .giro-text { color: #A8C8E8; }
+
+  /* ─── TAMAÑO ─── */
+  .tamano-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .tamano-item {
+    text-align: center; padding: 10px 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; cursor: pointer;
+    font-size: 13px; color: #aaa;
+    transition: all 0.2s; user-select: none;
+  }
+  .tamano-item input { display: none; }
+  .tamano-item.selected {
+    background: rgba(230,126,34,0.15);
+    border-color: #E67E22; color: #fff; font-weight: 700;
+  }
+
+  /* ─── GENERATE BUTTON ─── */
+  .btn-generate {
+    background: linear-gradient(135deg, #E67E22, #F39C12);
+    color: #fff; border: none; border-radius: 12px;
+    padding: 18px; font-size: 17px; font-weight: 700;
+    width: 100%; cursor: pointer; letter-spacing: 1px;
+    box-shadow: 0 6px 20px rgba(230,126,34,0.4);
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-generate:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* ─── RESULTADO ─── */
+  .resultado {
+    display: none;
+    background: #0a1520;
+    border: 1px solid rgba(230,126,34,0.4);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .resultado.visible { display: block; }
+  .resultado-header {
+    background: rgba(230,126,34,0.15);
+    padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(230,126,34,0.3);
+  }
+  .resultado-title { font-size: 13px; font-weight: 700; color: #E67E22; letter-spacing: 1px; }
+  .btn-copy {
+    background: #E67E22; color: #fff; border: none;
+    border-radius: 8px; padding: 8px 14px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: inherit;
+  }
+  .resultado-body {
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #A8C8E8;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ─── COPY TOAST ─── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: #1E8449; color: #fff;
+    padding: 12px 24px; border-radius: 30px;
+    font-size: 14px; font-weight: 700;
+    transition: transform 0.3s; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(230,126,34,0.3), transparent);
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="brand">Negocio Sin Rodeos</div>
+    <div class="visita-num">
+      <label>Visita #</label>
+      <input type="text" id="num_visita" placeholder="01" maxlength="3">
+    </div>
+  </div>
+  <div class="header-title">📋 Formato de Captura</div>
+</div>
+
+<div class="container">
+
+  <!-- FECHA -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div class="card-title">Fecha y hora</div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label>Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+    </div>
+  </div>
+
+  <!-- DATOS DEL NEGOCIO -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🏪</div>
+      <div class="card-title">Datos del negocio</div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label>Nombre del negocio</label>
+        <input type="text" id="nombre_negocio" placeholder="Ej: Fonda La Abuela">
+      </div>
+
+      <div class="field">
+        <label>Giro / Sector</label>
+        <div class="giro-grid">
+          <div class="giro-item" onclick="selGiro(this,'Café / Cafetería')">
+            <input type="radio" name="giro"><div class="giro-icon">☕</div><div class="giro-text">Café</div>
+          </div>
+          <div class="giro-item" onclick="selGiro(this,'Fonda / Restaurante')">
+            <input type="radio" name="giro"><div class="giro-icon">🍽️</div><div class="giro-text">Fonda / Rest.</div>
+          </div>
+          <div class="giro-item" onclick="selGiro(this,'Tienda / Abarrotes')">
+            <input type="radio" name="giro"><div class="giro-icon">🏪</div><div class="giro-text">Tienda</div>
+          </div>
+          <div class="giro-item" onclick="selGiro(this,'Consultorio / Servicio profesional')">
+            <input type="radio" name="giro"><div class="giro-icon">🏥</div><div class="giro-text">Consultorio</div>
+          </div>
+          <div class="giro-item" onclick="selGiro(this,'Taller / Refaccionaria')">
+            <input type="radio" name="giro"><div class="giro-icon">🔧</div><div class="giro-text">Taller</div>
+          </div>
+          <div class="giro-item" onclick="selGiro(this,'Otro')">
+            <input type="radio" name="giro"><div class="giro-icon">📦</div><div class="giro-text">Otro</div>
+          </div>
+        </div>
+        <input type="text" id="giro_otro" placeholder="Especifica si elegiste Otro..." style="margin-top:8px; display:none;">
+      </div>
+
+      <div class="field">
+        <label>Dirección / Referencia</label>
+        <input type="text" id="direccion" placeholder="Ej: Av. Juárez 340, frente al Banco">
+      </div>
+
+      <div class="field">
+        <label>Colonia / Zona</label>
+        <select id="colonia">
+          <option value="">— Selecciona —</option>
+          <option>Centro</option>
+          <option>Av. Juárez / 2do cuadro</option>
+          <option>Col. Navarro</option>
+          <option>Blvd. Independencia</option>
+          <option>Parque Industrial</option>
+          <option>Periférico</option>
+          <option>Plaza Mayor / Galerías</option>
+          <option>Otra</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Tamaño estimado</label>
+        <div class="tamano-grid">
+          <div class="tamano-item" onclick="selTamano(this,'Micro (1-2 personas)')">
+            <input type="radio" name="tamano">🟡 Micro
+          </div>
+          <div class="tamano-item" onclick="selTamano(this,'Pequeño (3-10 personas)')">
+            <input type="radio" name="tamano">🟠 Pequeño
+          </div>
+          <div class="tamano-item" onclick="selTamano(this,'Mediano (10+ personas)')">
+            <input type="radio" name="tamano">🔴 Mediano
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">👤</div>
+      <div class="card-title">Contacto</div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <label>Nombre del dueño / encargado</label>
+        <input type="text" id="dueno" placeholder="Ej: Don Carlos / Lic. García">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Teléfono / WhatsApp</label>
+          <input type="tel" id="telefono" placeholder="871 000 0000">
+        </div>
+        <div class="field">
+          <label>¿Dueño presente?</label>
+          <select id="dueno_presente">
+            <option value="">—</option>
+            <option>✅ Sí</option>
+            <option>❌ No</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Empleados visibles (aprox)</label>
+        <select id="empleados">
+          <option value="">—</option>
+          <option>1 (solo el dueño)</option>
+          <option>2-3</option>
+          <option>4-6</option>
+          <option>7+</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROBLEMA OBSERVADO -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🔍</div>
+      <div class="card-title">Problema principal observado</div>
+    </div>
+    <div class="card-body">
+      <div class="check-grid" id="problemas">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Sin sistema de ventas</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Inventario manual</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Sin control de gastos</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Todo en la cabeza del dueño</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Equipo sin mantenimiento</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Sin presencia digital</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Otro problema observado</label>
+        <input type="text" id="problema_otro" placeholder="Describe...">
+      </div>
+    </div>
+  </div>
+
+  <!-- NIVEL DE INTERÉS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🌡️</div>
+      <div class="card-title">Nivel de interés</div>
+    </div>
+    <div class="card-body">
+      <div class="radio-grid">
+        <div class="radio-item radio-frio" onclick="selInteres(this,'❄️ Frío')">
+          <input type="radio" name="interes"><span>❄️ Frío</span>
+        </div>
+        <div class="radio-item radio-tibio" onclick="selInteres(this,'🟡 Tibio')">
+          <input type="radio" name="interes"><span>🟡 Tibio</span>
+        </div>
+        <div class="radio-item radio-caliente" onclick="selInteres(this,'🔥 Caliente')">
+          <input type="radio" name="interes"><span>🔥 Caliente</span>
+        </div>
+        <div class="radio-item radio-agendo" onclick="selInteres(this,'✅ Ya agendó')">
+          <input type="radio" name="interes"><span>✅ Ya agendó</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRÓXIMO PASO -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Próximo paso acordado</div>
+    </div>
+    <div class="card-body">
+      <div class="check-grid" id="pasos">
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Dejé tarjeta</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Me dio número</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Diagnóstico agendado</div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+          <input type="checkbox"><div class="check-box">✓</div>
+          <div class="check-label">Seguimiento WhatsApp</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Fecha de regreso / seguimiento</label>
+        <input type="date" id="fecha_regreso">
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📝</div>
+      <div class="card-title">Notas adicionales</div>
+    </div>
+    <div class="card-body">
+      <div class="field">
+        <textarea id="notas" placeholder="Cualquier detalle que quieras recordar: actitud del dueño, objeción que puso, algo que viste, lo que sea..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTADO / PIPELINE -->
+  <div class="card">
+    <div class="card-header"><div class="card-icon">⚡</div><div class="card-title">Estado en pipeline</div></div>
+    <div class="card-body">
+      <div class="field">
+        <label>Estado</label>
+        <select id="estado">
+          <option value="Por contactar">Por contactar</option>
+          <option value="1er Contacto" selected>1er Contacto</option>
+          <option value="Diagnóstico Agendado">Diagnóstico Agendado</option>
+          <option value="Propuesta Enviada">Propuesta Enviada</option>
+          <option value="Negociación">Negociación</option>
+          <option value="Cliente">Cliente</option>
+          <option value="Perdido">Perdido</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Prioridad</label>
+        <select id="prioridad">
+          <option value="">—</option>
+          <option value="🔥 Baja">🔥 Baja</option>
+          <option value="🔥🔥 Media">🔥🔥 Media</option>
+          <option value="🔥🔥🔥 Alta">🔥🔥🔥 Alta</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Próximo paso</label>
+        <input type="text" id="proximo_paso" placeholder="Ej: Llamar el martes, mandar propuesta...">
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN ENVIAR -->
+  <button class="btn-generate" id="btn-send" onclick="enviarANotion()">
+    🚀 Guardar en Sheets
+  </button>
+
+  <!-- STATUS -->
+  <div id="status-box" style="display:none; border-radius:12px; padding:20px; text-align:center; font-size:15px; font-weight:600; line-height:1.5;"></div>
+
+  <!-- NUEVA VISITA -->
+  <button id="btn-reset" onclick="resetForm()" style="display:none; background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:14px; font-size:15px; font-weight:600; width:100%; cursor:pointer; font-family:inherit;">
+    ➕ Nueva visita
+  </button>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Guardado en Sheets</div>
+
+<script>
+  // Set today's date by default
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('fecha').value = hoy;
+
+  let giroSeleccionado = '';
+  let tamanoSeleccionado = '';
+  let interesSeleccionado = '';
+
+  function selGiro(el, valor) {
+    document.querySelectorAll('.giro-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    giroSeleccionado = valor;
+    document.getElementById('giro_otro').style.display = valor === 'Otro' ? 'block' : 'none';
+  }
+
+  function selTamano(el, valor) {
+    document.querySelectorAll('.tamano-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    tamanoSeleccionado = valor;
+  }
+
+  function selInteres(el, valor) {
+    document.querySelectorAll('.radio-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    interesSeleccionado = valor;
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+  }
+
+  function getChecked(containerId) {
+    const items = document.querySelectorAll(`#${containerId} .check-item.checked .check-label`);
+    return Array.from(items).map(i => i.textContent).join(', ') || '—';
+  }
+
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() || '—' : '—';
+  }
+
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwyPF7hk-oD3ncoPq2qLJlhPjuVRBSJX9KbQeDhKFr6O_8apygXdRhX8D6iH3bnTAaX/exec';
+
+  function setStatus(type, msg) {
+    const box = document.getElementById('status-box');
+    box.style.display = 'block';
+    const styles = {
+      loading: 'background:rgba(230,126,34,0.1);border:1px solid #E67E22;color:#E67E22;',
+      success: 'background:rgba(30,132,73,0.2);border:1px solid #1E8449;color:#2ECC71;',
+      error:   'background:rgba(192,57,43,0.2);border:1px solid #C0392B;color:#E74C3C;'
+    };
+    box.style.cssText = `display:block;border-radius:12px;padding:20px;text-align:center;font-size:15px;font-weight:600;line-height:1.6;white-space:pre-wrap;${styles[type]}`;
+    box.textContent = msg;
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function enviarANotion() {
+    const nombre = val('nombre_negocio');
+    if (!nombre || nombre === '—') {
+      setStatus('error', '⚠️ El nombre del negocio es obligatorio');
+      return;
+    }
+
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true;
+    btn.textContent = '⏳ Guardando...';
+    setStatus('loading', '⏳ Guardando en Sheets...');
+
+    const giro = giroSeleccionado === 'Otro'
+      ? (val('giro_otro') !== '—' ? val('giro_otro') : 'Otro')
+      : giroSeleccionado;
+
+    const problemasArr = document.querySelectorAll('#problemas .check-item.checked .check-label');
+    const problemasTexto = Array.from(problemasArr).map(i => i.textContent);
+    const otroProb = val('problema_otro');
+    if (otroProb && otroProb !== '—') problemasTexto.push(otroProb);
+
+    const pasosArr = document.querySelectorAll('#pasos .check-item.checked .check-label');
+    const pasosTexto = Array.from(pasosArr).map(i => i.textContent).join(', ');
+
+    // Construir notas completas
+    const notasCompletas = [
+      `👤 Contacto: ${val('dueno')}`,
+      `📞 Tel: ${val('telefono')}`,
+      `✅ Dueño presente: ${val('dueno_presente')}`,
+      `👥 Empleados: ${val('empleados')}`,
+      `🔍 Problemas: ${problemasTexto.join(', ') || '—'}`,
+      `🌡️ Interés: ${interesSeleccionado || '—'}`,
+      `⚡ Pasos: ${pasosTexto || '—'}`,
+      `📅 Seguimiento: ${val('fecha_regreso')}`,
+      `📝 Notas: ${val('notas')}`,
+      `📋 Visita #${val('num_visita')}`
+    ].filter(l => !l.endsWith('—')).join('\n');
+
+    // Construir objeto de datos para Google Sheets
+    const datos = {
+      visita: val('num_visita'),
+      fecha: val('fecha'),
+      nombre_negocio: nombre,
+      giro: giro || '—',
+      direccion: val('direccion'),
+      colonia: val('colonia'),
+      tamano: tamanoSeleccionado || '—',
+      dueno: val('dueno'),
+      telefono: val('telefono'),
+      dueno_presente: val('dueno_presente'),
+      empleados: val('empleados'),
+      problemas: problemasTexto.join(', ') || '—',
+      interes: interesSeleccionado || '—',
+      pasos: pasosTexto || '—',
+      fecha_seguimiento: val('fecha_regreso'),
+      estado: val('estado'),
+      prioridad: val('prioridad'),
+      proximo_paso: val('proximo_paso'),
+      notas: val('notas')
+    };
+
+    try {
+      const res = await fetch(SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(datos)
+      });
+
+      const texto = await res.text();
+
+      if (texto.includes('OK') || texto.includes('ok') || texto.includes('éxito')) {
+        setStatus('success', '✅ ¡Guardado! El prospecto ya está en tu Google Sheet.');
+        btn.textContent = '✅ Guardado';
+        document.getElementById('btn-reset').style.display = 'block';
+        mostrarToast();
+      } else {
+        throw new Error(texto);
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = '🚀 Guardar en Sheets';
+      setStatus('error', `⚠️ No se pudo guardar.\n\nError: ${e.message}\n\nVerifica tu conexión a internet.`);
+    }
+  }
+
+  function mostrarToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function resetForm() {
+    document.querySelectorAll('input[type="text"], input[type="tel"], textarea').forEach(el => el.value = '');
+    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    document.querySelectorAll('.check-item').forEach(el => el.classList.remove('checked'));
+    document.querySelectorAll('.giro-item, .tamano-item, .radio-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById('giro_otro').style.display = 'none';
+    document.getElementById('fecha').value = new Date().toISOString().split('T')[0];
+    document.getElementById('estado').value = '1er Contacto';
+    giroSeleccionado = ''; tamanoSeleccionado = ''; interesSeleccionado = '';
+    const btn = document.getElementById('btn-send');
+    btn.disabled = false;
+    btn.textContent = '🚀 Guardar en Sheets';
+    document.getElementById('status-box').style.display = 'none';
+    document.getElementById('btn-reset').style.display = 'none';
+    const numEl = document.getElementById('num_visita');
+    numEl.value = String((parseInt(numEl.value) || 0) + 1).padStart(2, '0');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
