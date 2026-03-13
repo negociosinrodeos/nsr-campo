@@ -2,1029 +2,311 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Negocio Sin Rodeos — Apoyo real para cafeterías</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Negocio Sin Rodeos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 :root {
-  --navy: #0f2744;
-  --navy-mid: #1a3a5c;
-  --navy-light: #1e4570;
-  --orange: #e8821a;
-  --orange-light: #f0952e;
-  --gold: #c9a227;
-  --gold-light: #e0b740;
-  --white: #ffffff;
-  --light-blue: #7ab8d4;
-  --text-muted: #8faac0;
-  --text-body: rgba(255,255,255,0.85);
+  --navy: #0d2240; --navy2: #162f54; --navy3: #1e3d68;
+  --orange: #e8821a; --orange2: #f0952e;
+  --gold: #c9a227; --gold2: #e0b740;
+  --white: #ffffff; --muted: #7a9ab8;
+  --body: rgba(255,255,255,0.82);
+  --card: rgba(255,255,255,0.05); --border: rgba(255,255,255,0.09);
 }
+html, body { height: 100%; background: var(--navy); color: var(--white); font-family: 'Barlow', sans-serif; overflow: hidden; }
+.app { display: flex; flex-direction: column; height: 100dvh; max-width: 480px; margin: 0 auto; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px 12px; background: var(--navy); border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; }
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-logo { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--gold); display: flex; align-items: center; justify-content: center; background: var(--navy2); font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px; color: var(--white); flex-shrink: 0; }
+.header-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 0.5px; line-height: 1.1; }
+.header-sub { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.header-cta { background: var(--orange); color: white; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; padding: 8px 14px; border-radius: 20px; text-decoration: none; white-space: nowrap; }
+.content { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.tabs { display: flex; background: var(--navy); border-top: 1px solid var(--border); flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 4px 8px; cursor: pointer; border: none; background: none; color: var(--muted); gap: 3px; position: relative; transition: color 0.15s; }
+.tab.active { color: var(--orange); }
+.tab.active::before { content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 2px; background: var(--orange); border-radius: 0 0 3px 3px; }
+.tab-icon { font-size: 20px; line-height: 1; }
+.tab-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+.panel { display: none; animation: fadeIn 0.2s ease; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-html { scroll-behavior: smooth; }
+/* INICIO */
+.hero { position: relative; padding: 28px 20px 24px; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 90% 10%, rgba(232,130,26,0.15) 0%, transparent 55%), radial-gradient(ellipse at 0% 90%, rgba(201,162,39,0.08) 0%, transparent 45%); }
+.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 32px 32px; }
+.hero-tag { position: relative; display: inline-flex; align-items: center; gap: 6px; background: rgba(232,130,26,0.15); border: 1px solid rgba(232,130,26,0.3); border-radius: 30px; padding: 4px 12px; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange2); margin-bottom: 16px; }
+.hero-tag::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--orange); }
+.hero-title { position: relative; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; line-height: 1.1; margin-bottom: 12px; }
+.hero-title em { font-style: italic; color: var(--orange); }
+.hero-desc { position: relative; font-size: 14px; color: var(--body); line-height: 1.6; margin-bottom: 20px; }
+.hero-pills { position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--body); font-weight: 500; }
+.pill.gold { background: rgba(201,162,39,0.12); border-color: rgba(201,162,39,0.25); color: var(--gold2); }
+.hero-stat-row { position: relative; display: flex; gap: 12px; }
+.stat-card { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px 12px; text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; color: var(--orange); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 11px; color: var(--muted); line-height: 1.3; }
+.pain-section { padding: 0 20px 28px; }
+.pain-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 12px; margin-top: 20px; }
+.pain-list { display: flex; flex-direction: column; gap: 8px; }
+.pain-item { display: flex; align-items: flex-start; gap: 10px; background: var(--card); border: 1px solid var(--border); border-left: 3px solid rgba(232,130,26,0.5); border-radius: 8px; padding: 12px; }
+.pain-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.pain-text { font-size: 13px; color: var(--body); line-height: 1.4; }
+.pain-text strong { color: var(--white); font-weight: 600; }
 
-body {
-  background: var(--navy);
-  color: var(--white);
-  font-family: 'Barlow', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* ===== HERO ===== */
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 40px;
-  overflow: hidden;
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 80% 20%, rgba(232,130,26,0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 80%, rgba(201,162,39,0.08) 0%, transparent 40%),
-    linear-gradient(160deg, #0a1628 0%, #0f2744 40%, #0d2240 100%);
-}
-
-.hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 50px 50px;
-}
-
-.hero-accent-line {
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--orange) 0%, transparent 100%);
-}
-
-.hero-content {
-  position: relative;
-  max-width: 700px;
-}
-
-.hero-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(232,130,26,0.15);
-  border: 1px solid rgba(232,130,26,0.3);
-  border-radius: 40px;
-  padding: 6px 16px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--orange-light);
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s ease both;
-}
-
-.hero-tag::before {
-  content: '';
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--orange);
-}
-
-.hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(38px, 7vw, 72px);
-  font-weight: 900;
-  line-height: 1.05;
-  margin-bottom: 8px;
-  animation: fadeUp 0.6s 0.1s ease both;
-}
-
-.hero-title em {
-  font-style: italic;
-  color: var(--orange);
-}
-
-.hero-subtitle {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: clamp(18px, 3vw, 26px);
-  font-weight: 600;
-  color: var(--gold);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 28px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-
-.hero-desc {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--text-body);
-  max-width: 540px;
-  margin-bottom: 40px;
-  animation: fadeUp 0.6s 0.3s ease both;
-}
-
-.hero-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(90deg, var(--orange), var(--orange-light));
-  color: white;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 16px 32px;
-  border-radius: 6px;
-  text-decoration: none;
-  animation: fadeUp 0.6s 0.4s ease both;
-  box-shadow: 0 8px 30px rgba(232,130,26,0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.hero-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(232,130,26,0.4);
-}
-
-.hero-logo {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  animation: fadeUp 0.6s 0.2s ease both;
-}
-
-.logo-ring {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px solid var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--navy-mid);
-  box-shadow: 0 0 40px rgba(201,162,39,0.2), inset 0 0 30px rgba(15,39,68,0.5);
-  position: relative;
-}
-
-.logo-ring::before {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  border: 1px solid rgba(201,162,39,0.3);
-}
-
-.logo-letter {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800;
-  font-size: 56px;
-  color: var(--white);
-  line-height: 1;
-}
-
-.logo-nsr {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  color: var(--gold);
-  letter-spacing: 5px;
-}
-
-.logo-brand {
-  font-size: 10px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-align: center;
-  line-height: 1.5;
-}
-
-/* ===== DIVIDER ===== */
-.divider-section {
-  background: linear-gradient(90deg, var(--orange), var(--gold), var(--orange));
-  height: 3px;
-}
-
-/* ===== PROBLEMA SECTION ===== */
-.section {
-  padding: 80px 40px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.section-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--orange);
-  margin-bottom: 16px;
-}
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(26px, 4vw, 42px);
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 24px;
-}
-
+/* SERVICIOS */
+.services-panel { padding: 20px; }
+.section-head { margin-bottom: 16px; }
+.section-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; line-height: 1.2; }
 .section-title span { color: var(--orange); }
-
-/* Problemas grid */
-.problems-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 16px;
-  margin-top: 40px;
-}
-
-.problem-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-left: 3px solid var(--orange);
-  border-radius: 8px;
-  padding: 20px;
-  transition: background 0.2s;
-}
-
-.problem-card:hover { background: rgba(255,255,255,0.07); }
-
-.problem-icon {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.problem-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--white);
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-}
-
-.problem-desc {
-  font-size: 13px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* ===== IMPACTO ===== */
-.impact-section {
-  background: rgba(232,130,26,0.06);
-  border-top: 1px solid rgba(232,130,26,0.2);
-  border-bottom: 1px solid rgba(232,130,26,0.2);
-  padding: 60px 40px;
-}
-
-.impact-inner {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.impact-number {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(48px, 10vw, 90px);
-  font-weight: 900;
-  color: var(--orange);
-  line-height: 1;
-  margin-bottom: 12px;
-}
-
-.impact-desc {
-  font-size: 18px;
-  color: var(--text-body);
-  max-width: 500px;
-  margin: 0 auto 8px;
-  line-height: 1.6;
-}
-
-.impact-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-/* ===== PAQUETES ===== */
-.packages-section {
-  padding: 80px 40px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.packages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  margin-top: 48px;
-}
-
-.package-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px;
-  padding: 32px 28px;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.package-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-
-.package-card.featured {
-  border-color: var(--orange);
-  background: rgba(232,130,26,0.08);
-  box-shadow: 0 0 40px rgba(232,130,26,0.1);
-}
-
-.package-badge {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, var(--orange), var(--orange-light));
-  color: white;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 4px 16px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-
-.package-name {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-
-.package-price {
-  font-family: 'Playfair Display', serif;
-  font-size: 42px;
-  font-weight: 900;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.package-price sup {
-  font-size: 18px;
-  vertical-align: super;
-  color: var(--text-muted);
-}
-
-.package-price span {
-  font-size: 14px;
-  color: var(--text-muted);
-  font-family: 'Barlow', sans-serif;
-  font-weight: 400;
-}
-
-.package-roi {
-  font-size: 12px;
-  color: var(--gold);
-  font-weight: 600;
-  margin-bottom: 24px;
-  letter-spacing: 0.5px;
-}
-
-.package-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin-bottom: 20px;
-}
-
-.package-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--text-body);
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-
-.feature-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--orange);
-  flex-shrink: 0;
-  margin-top: 5px;
-}
-
-.package-result {
-  margin-top: 20px;
-  padding: 12px;
-  background: rgba(201,162,39,0.1);
-  border: 1px solid rgba(201,162,39,0.2);
-  border-radius: 6px;
-  font-size: 12px;
-  color: var(--gold-light);
-  font-weight: 500;
-  line-height: 1.4;
-}
-
-/* ===== PROCESO ===== */
-.process-section {
-  background: rgba(26,58,92,0.3);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 80px 40px;
-}
-
-.process-inner {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0;
-  margin-top: 48px;
-  position: relative;
-}
-
-.steps::before {
-  content: '';
-  position: absolute;
-  top: 28px;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--orange), transparent);
-}
-
-.step {
-  text-align: center;
-  padding: 0 20px;
-  position: relative;
-}
-
-.step-number {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--navy);
-  border: 2px solid var(--orange);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Playfair Display', serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--orange);
-  margin: 0 auto 16px;
-  position: relative;
-  z-index: 1;
-}
-
-.step-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--white);
-  margin-bottom: 8px;
-}
-
-.step-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* ===== CTA FINAL ===== */
-.cta-section {
-  padding: 80px 40px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.cta-bg {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, rgba(232,130,26,0.12) 0%, transparent 70%);
-}
-
-.cta-inner {
-  position: relative;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.cta-title {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 900;
-  line-height: 1.2;
-  margin-bottom: 16px;
-}
-
-.cta-title span { color: var(--orange); }
-
-.cta-sub {
-  font-size: 16px;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-  line-height: 1.6;
-}
-
-.cta-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: linear-gradient(90deg, var(--orange), var(--orange-light));
-  color: white;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 18px 40px;
-  border-radius: 6px;
-  text-decoration: none;
-  box-shadow: 0 8px 30px rgba(232,130,26,0.35);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(232,130,26,0.5);
-}
-
-.contact-info {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
-  margin-top: 8px;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.contact-item strong {
-  color: var(--white);
-  font-weight: 500;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-  background: rgba(0,0,0,0.3);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding: 24px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.footer-brand {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
-
-.footer-brand span { color: var(--orange); }
-
-.footer-tag {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===== DIGITAL SECTION ===== */
-.digital-section {
-  padding: 80px 40px;
-  position: relative;
-  overflow: hidden;
-  background: rgba(10,22,40,0.5);
-  border-top: 1px solid rgba(201,162,39,0.15);
-}
-
-.digital-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(201,162,39,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(232,130,26,0.06) 0%, transparent 50%);
-}
-
-.digital-inner { max-width: 960px; margin: 0 auto; position: relative; }
-
-.digital-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 18px;
-  margin-top: 48px;
-}
-
-.digital-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(201,162,39,0.2);
-  border-radius: 12px;
-  padding: 26px 22px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-}
-
-.digital-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--orange));
-}
-
-.digital-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-  border-color: rgba(201,162,39,0.4);
-}
-
-.digital-icon { font-size: 30px; margin-bottom: 12px; display: block; }
-
-.digital-title {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--white);
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-}
-
-.digital-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
-
-.digital-tag {
-  display: inline-block;
-  background: rgba(201,162,39,0.12);
-  border: 1px solid rgba(201,162,39,0.25);
-  color: var(--gold-light);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-.digital-highlight {
-  margin-top: 40px;
-  background: linear-gradient(135deg, rgba(201,162,39,0.08), rgba(232,130,26,0.06));
-  border: 1px solid rgba(201,162,39,0.2);
-  border-radius: 12px;
-  padding: 28px;
-  display: flex;
-  gap: 28px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.digital-highlight-icon { font-size: 44px; flex-shrink: 0; }
-.digital-highlight-content { flex: 1; min-width: 200px; }
-
-.digital-highlight-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--gold-light);
-  margin-bottom: 8px;
-}
-
-.digital-highlight-desc { font-size: 14px; color: var(--text-body); line-height: 1.6; }
-
-.digital-highlight-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-
-.dtag {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 11px;
-  border-radius: 20px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 640px) {
-  .hero { padding: 40px 24px 100px; }
-  .hero-logo { 
-    position: static; 
-    transform: none; 
-    margin-top: 40px;
-    flex-direction: row;
-    gap: 16px;
-  }
-  .logo-ring { width: 80px; height: 80px; }
-  .logo-letter { font-size: 36px; }
-  .section, .packages-section { padding: 60px 24px; }
-  .impact-section { padding: 50px 24px; }
-  .process-section { padding: 60px 24px; }
-  .cta-section { padding: 60px 24px; }
-  .footer { padding: 20px 24px; flex-direction: column; text-align: center; }
-  .steps::before { display: none; }
-  .steps { gap: 32px; }
-  .contact-info { flex-direction: column; gap: 12px; }
-}
+.services-group { margin-bottom: 22px; }
+.group-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.group-label::after { content: ''; flex: 1; height: 1px; background: rgba(201,162,39,0.2); }
+.service-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; }
+.service-card.digital { border-color: rgba(201,162,39,0.18); position: relative; overflow: hidden; }
+.service-card.digital::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), var(--orange)); }
+.svc-icon { font-size: 22px; flex-shrink: 0; }
+.svc-body { flex: 1; }
+.svc-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+.svc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.svc-tag { display: inline-block; background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.2); color: var(--gold2); font-size: 9px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; margin-top: 6px; }
+.highlight-box { background: linear-gradient(135deg, rgba(201,162,39,0.08), rgba(232,130,26,0.05)); border: 1px solid rgba(201,162,39,0.2); border-radius: 10px; padding: 16px; margin-top: 4px; }
+.highlight-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 13px; color: var(--gold2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.highlight-desc { font-size: 12px; color: var(--body); line-height: 1.6; }
+.tech-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tech-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); font-size: 10px; padding: 3px 9px; border-radius: 20px; }
+
+/* PAQUETES */
+.packages-panel { padding: 20px; }
+.pkg-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.pkg-card.featured { border-color: var(--orange); background: rgba(232,130,26,0.07); }
+.pkg-badge { position: absolute; top: 12px; right: 12px; background: linear-gradient(90deg, var(--orange), var(--orange2)); color: white; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; }
+.pkg-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.pkg-price { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 2px; }
+.pkg-price sup { font-size: 16px; color: var(--muted); vertical-align: super; }
+.pkg-price span { font-size: 13px; color: var(--muted); font-family: 'Barlow', sans-serif; font-weight: 400; }
+.pkg-roi { font-size: 11px; color: var(--gold); font-weight: 600; margin-bottom: 14px; }
+.pkg-divider { height: 1px; background: var(--border); margin-bottom: 12px; }
+.pkg-features { margin-bottom: 12px; }
+.pkg-feature { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--body); margin-bottom: 7px; line-height: 1.35; }
+.feat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 5px; }
+.pkg-result { background: rgba(201,162,39,0.1); border: 1px solid rgba(201,162,39,0.2); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: var(--gold2); font-weight: 500; line-height: 1.4; }
+
+/* CONTACTO */
+.contact-panel { padding: 24px 20px; }
+.contact-hero { text-align: center; padding: 10px 0 24px; }
+.contact-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; line-height: 1.2; margin-bottom: 10px; }
+.contact-title span { color: var(--orange); }
+.contact-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 320px; margin: 0 auto 24px; }
+.wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: white; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; padding: 18px 32px; border-radius: 10px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(37,211,102,0.25); }
+.contact-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.contact-card { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-decoration: none; color: inherit; }
+.contact-card-icon { font-size: 20px; flex-shrink: 0; }
+.contact-card-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; font-weight: 500; }
+.contact-card-value { font-size: 14px; color: var(--white); font-weight: 600; }
+.process-mini { margin-top: 4px; }
+.process-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 16px; text-align: center; }
+.steps-mini { display: flex; flex-direction: column; }
+.step-mini { display: flex; align-items: flex-start; gap: 14px; position: relative; }
+.step-mini:not(:last-child)::after { content: ''; position: absolute; left: 14px; top: 34px; bottom: -2px; width: 1px; background: rgba(232,130,26,0.3); }
+.step-num { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--orange); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: var(--orange); flex-shrink: 0; background: var(--navy); position: relative; z-index: 1; }
+.step-content { padding: 4px 0 20px; }
+.step-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: var(--white); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; }
+.step-desc-mini { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.content::-webkit-scrollbar { width: 3px; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-accent-line"></div>
-
-  <div class="hero-content">
-    <div class="hero-tag">Herramientas reales para cafeterías · Torreón</div>
-    <h1 class="hero-title">Tu café genera<br><em>más de lo que crees.</em><br>El problema es que no lo ves.</h1>
-    <p class="hero-subtitle">Negocio Sin Rodeos</p>
-    <p class="hero-desc">No somos una firma cara ni un software de $500 al mes. Somos el apoyo práctico que tu negocio necesita — herramientas sencillas, digitales y económicas que cualquier empleado puede usar desde el primer día.</p>
-    <a href="https://wa.me/528713474088" class="hero-cta">📋 Revisión Gratuita — Escríbeme Hoy</a>
-  </div>
-
-  <div class="hero-logo">
-    <div class="logo-ring">
-      <span class="logo-letter">N</span>
-    </div>
-    <span class="logo-nsr">N S R</span>
-    <span class="logo-brand">Negocio<br>Sin Rodeos</span>
-  </div>
-</section>
-
-<div class="divider-section"></div>
-
-<!-- PROBLEMAS -->
-<section style="padding: 80px 40px; max-width: 960px; margin: 0 auto;">
-  <p class="section-label">¿Te suena conocido?</p>
-  <h2 class="section-title">Los 5 problemas que <span>cuestan miles</span><br>y que se pueden resolver sin gastar en software</h2>
-
-  <div class="problems-grid">
-    <div class="problem-card">
-      <div class="problem-icon">💸</div>
-      <div class="problem-title">No sabes cuánto ganas realmente</div>
-      <div class="problem-desc">Las ventas entran, los gastos salen, pero al final del mes no queda claro si el negocio está ganando o perdiendo.</div>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">📦</div>
-      <div class="problem-title">Inventario que se evapora</div>
-      <div class="problem-desc">Compras insumos, pero siempre falta algo o sobra de lo que no se vende. La merma se come el margen sin que lo notes.</div>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">📋</div>
-      <div class="problem-title">Todo en la cabeza del dueño</div>
-      <div class="problem-desc">Las recetas, los procesos, los precios — si no estás tú, el negocio se paraliza o cada empleado hace las cosas a su manera.</div>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">📊</div>
-      <div class="problem-title">Decisiones a ciegas</div>
-      <div class="problem-desc">¿Cuál bebida te deja más? ¿Cuál hora del día vende más? Sin datos, las decisiones son apuestas.</div>
-    </div>
-    <div class="problem-card">
-      <div class="problem-icon">🔧</div>
-      <div class="problem-title">Equipo sin mantenimiento</div>
-      <div class="problem-desc">La máquina de espresso, el A/C, la instalación eléctrica — el mantenimiento correctivo siempre cuesta 3 veces más que el preventivo.</div>
-    </div>
-  </div>
-</section>
-
-<!-- IMPACTO -->
-<div class="impact-section">
-  <div class="impact-inner">
-    <p class="section-label" style="text-align:center;">Lo que encontramos en promedio</p>
-    <div class="impact-number">$4,700</div>
-    <p class="impact-desc">pesos al mes en pérdidas controlables que la mayoría de cafeterías en Torreón tiene sin saberlo.</p>
-    <p class="impact-sub">$56,000+ anuales que pueden recuperarse con sistemas básicos de control.</p>
-  </div>
-</div>
-
-<!-- PAQUETES -->
-<section class="packages-section">
-  <p class="section-label">Cómo te apoyo</p>
-  <h2 class="section-title">Tres formas de arrancar. <span>Tú decides</span> por dónde.</h2>
-
-  <div class="packages-grid">
-    <!-- Paquete A -->
-    <div class="package-card">
-      <p class="package-name">Paquete A</p>
-      <div class="package-price"><sup>$</sup>2,500 <span>MXN</span></div>
-      <p class="package-roi">Implementación en 1 semana</p>
-      <div class="package-divider"></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Sistema Excel automatizado: ventas, corte de caja e inventario</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Recetario digital estandarizado (15 bebidas principales)</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Checklist de apertura y cierre</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>1 capacitación de 2 horas (dueño + equipo)</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Video tutorial para uso autónomo</span></div>
-      <div class="package-result">✅ Control financiero básico + procesos estandarizados</div>
-    </div>
-
-    <!-- Paquete B - FEATURED -->
-    <div class="package-card featured">
-      <div class="package-badge">⭐ Recomendado</div>
-      <p class="package-name">Paquete B</p>
-      <div class="package-price"><sup>$</sup>3,800 <span>MXN</span></div>
-      <p class="package-roi">ROI en 3.2 meses · Implementación en 2 semanas</p>
-      <div class="package-divider"></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Todo lo del Paquete A</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Dashboard ejecutivo: ventas diarias, semanales y mensuales</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Análisis de productos más rentables y horarios pico</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Calculadora de punto de equilibrio</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Sistema de lealtad para clientes frecuentes</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>2 capacitaciones + soporte WhatsApp 30 días</span></div>
-      <div class="package-result">✅ Negocio profesionalizado con datos para decidir mejor cada día</div>
-    </div>
-
-    <!-- Paquete C -->
-    <div class="package-card">
-      <p class="package-name">Paquete C</p>
-      <div class="package-price"><sup>$</sup>800 <span>MXN/mes</span></div>
-      <p class="package-roi">Membresía mensual · Sin contrato forzoso</p>
-      <div class="package-divider"></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Mantenimiento y actualización de sistemas</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Reporte mensual de métricas clave</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Soporte ilimitado por WhatsApp</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>1 revisión presencial trimestral</span></div>
-      <div class="package-feature"><div class="feature-dot"></div><span>Acceso a nuevas plantillas y herramientas</span></div>
-      <div class="package-result">✅ Apoyo continuo de alguien que conoce tu negocio, al precio de unas horas de empleado</div>
-    </div>
-  </div>
-</section>
-
-<!-- DIGITAL / PWA -->
-<section class="digital-section">
-  <div class="digital-inner">
-    <p class="section-label">Tu negocio también puede ser digital</p>
-    <h2 class="section-title">Herramientas que parecen de <span>empresa grande</span><br>al precio de nada</h2>
-
-    <div class="digital-grid">
-
-      <div class="digital-card">
-        <span class="digital-icon">📱</span>
-        <div class="digital-title">Menú Digital Interactivo</div>
-        <div class="digital-desc">Tu menú en el celular del cliente — con fotos, precios y descripción de cada bebida. Se actualiza en segundos desde tu teléfono. Sin app, sin descargas.</div>
-        <span class="digital-tag">PWA · Sin app store</span>
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-logo">N</div>
+      <div>
+        <div class="header-name">Negocio Sin Rodeos</div>
+        <div class="header-sub">@negociosinrodeos · Torreón</div>
       </div>
-
-      <div class="digital-card">
-        <span class="digital-icon">🛒</span>
-        <div class="digital-title">Sistema de Pedidos en Mesa</div>
-        <div class="digital-desc">El cliente escanea un QR en la mesa, ve el menú y hace su pedido. Llega directo a cocina. Menos errores, menos tiempo de espera, más mesas atendidas.</div>
-        <span class="digital-tag">QR · Tiempo real</span>
-      </div>
-
-      <div class="digital-card">
-        <span class="digital-icon">⭐</span>
-        <div class="digital-title">Programa de Lealtad Digital</div>
-        <div class="digital-desc">Reemplaza las tarjetitas de cartón que siempre se pierden. Tus clientes acumulan puntos desde el cel y tú ves quiénes son tus mejores clientes.</div>
-        <span class="digital-tag">Sin app · Google Sheets</span>
-      </div>
-
-      <div class="digital-card">
-        <span class="digital-icon">📋</span>
-        <div class="digital-title">Formularios de Pedido para Eventos</div>
-        <div class="digital-desc">¿Venden catering o pedidos especiales? Un formulario digital recibe el pedido, lo organiza y te avisa por WhatsApp. Cero papeles perdidos.</div>
-        <span class="digital-tag">Google Forms · Tally</span>
-      </div>
-
-      <div class="digital-card">
-        <span class="digital-icon">📊</span>
-        <div class="digital-title">Dashboard de Ventas en Tiempo Real</div>
-        <div class="digital-desc">Ve cuánto llevas vendido hoy desde tu cel, en cualquier momento. Sin abrir Excel, sin preguntarle al empleado. Solo entras y ves el número.</div>
-        <span class="digital-tag">Google Sheets · Live</span>
-      </div>
-
-      <div class="digital-card">
-        <span class="digital-icon">🔔</span>
-        <div class="digital-title">Alertas Automáticas de Inventario</div>
-        <div class="digital-desc">Cuando el café, la leche o cualquier insumo está por agotarse, te llega una alerta a WhatsApp antes de que se acabe y pierdas ventas.</div>
-        <span class="digital-tag">Automatizado · WhatsApp</span>
-      </div>
-
     </div>
+    <a href="https://wa.me/528713474088?text=Hola%20Jos%C3%A9%2C%20me%20interesa%20la%20revisi%C3%B3n%20gratuita." class="header-cta">📲 Escríbeme</a>
+  </header>
 
-    <div class="digital-highlight">
-      <div class="digital-highlight-icon">🚀</div>
-      <div class="digital-highlight-content">
-        <div class="digital-highlight-title">Sin apps de pago, sin contratos, sin depender de nadie más</div>
-        <div class="digital-highlight-desc">Todo lo que armamos usa tecnología que ya existe y es gratis — Google Sheets, páginas web y códigos QR. Tu cliente abre el menú con su cel sin descargar nada. Tú controlas todo desde donde estés. Si mañana decides que ya no necesitas mi apoyo, el sistema sigue funcionando igual. Es tuyo.</div>
-        <div class="digital-highlight-tags">
-          <span class="dtag">GitHub Pages</span>
-          <span class="dtag">Google Sheets</span>
-          <span class="dtag">Sin mensualidades</span>
-          <span class="dtag">100% tuyo</span>
-          <span class="dtag">Funciona en cualquier cel</span>
+  <div class="content" id="content">
+
+    <!-- INICIO -->
+    <div class="panel active" id="panel-inicio">
+      <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-tag">Apoyo real para tu negocio</div>
+        <h1 class="hero-title">Tu negocio genera<br><em>más de lo que crees.</em><br>El problema es que no lo ves.</h1>
+        <p class="hero-desc">No somos una firma cara ni un software de $500 al mes. Somos el apoyo práctico que tu negocio necesita — herramientas sencillas y digitales que cualquier empleado puede usar desde el primer día.</p>
+        <div class="hero-pills">
+          <span class="pill">📊 Sin software caro</span>
+          <span class="pill">📱 Funciona en el cel</span>
+          <span class="pill gold">✅ 100% tuyo</span>
+        </div>
+        <div class="hero-stat-row">
+          <div class="stat-card">
+            <div class="stat-num">$4,700</div>
+            <div class="stat-label">pesos/mes en pérdidas controlables en promedio</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">3.2</div>
+            <div class="stat-label">meses para recuperar la inversión del sistema</div>
+          </div>
+        </div>
+      </div>
+      <div class="pain-section">
+        <div class="pain-title">¿Te suena conocido?</div>
+        <div class="pain-list">
+          <div class="pain-item"><div class="pain-icon">💸</div><div class="pain-text"><strong>No sabes cuánto ganas realmente</strong> — las ventas entran, los gastos salen, pero al final del mes no queda claro.</div></div>
+          <div class="pain-item"><div class="pain-icon">📦</div><div class="pain-text"><strong>Inventario que se evapora</strong> — la merma se come el margen sin que lo notes.</div></div>
+          <div class="pain-item"><div class="pain-icon">📋</div><div class="pain-text"><strong>Todo en tu cabeza</strong> — si no estás tú, el negocio se paraliza o cada quien hace las cosas a su manera.</div></div>
+          <div class="pain-item"><div class="pain-icon">📊</div><div class="pain-text"><strong>Decisiones a ciegas</strong> — sin datos, ¿cómo sabes qué bebida te deja más o cuál hora vende más?</div></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- PROCESO -->
-<section class="process-section">
-  <div class="process-inner">
-    <p class="section-label">Así funciona</p>
-    <h2 class="section-title">De la primera plática al <span>sistema funcionando</span></h2>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-title">Revisión Gratis</div>
-        <div class="step-desc">1 hora en tu negocio. Revisamos 6 áreas clave y te digo en pesos concretos qué está pasando y qué se puede mejorar.</div>
-      </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-title">Te platico qué encontré</div>
-        <div class="step-desc">Te entrego un reporte claro con lo que vi y tres opciones de solución con precios exactos. Sin letra chica.</div>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-title">Armamos tu sistema</div>
-        <div class="step-desc">Construyo las herramientas a la medida de tu negocio. Excel, formularios digitales, menú QR — lo que necesites, sin software caro.</div>
-      </div>
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-title">Te enseño a usarlo</div>
-        <div class="step-desc">Capacito a ti y a tu equipo para que todo funcione solos. No te quedo debiendo — te dejo un video tutorial y el sistema es 100% tuyo.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA FINAL -->
-<section class="cta-section">
-  <div class="cta-bg"></div>
-  <div class="cta-inner">
-    <p class="section-label">El primer paso no cuesta nada</p>
-    <h2 class="cta-title">Una hora. <span>Gratis.</span><br>Te digo qué está pasando en tu negocio.</h2>
-    <p class="cta-sub">Sin venderme, sin rollos. Solo te digo lo que vi y si crees que te puedo ayudar, platicamos. Si no, no pasa nada.</p>
-
-    <div class="cta-buttons">
-      <a href="https://wa.me/528713474088?text=Hola%20Jos%C3%A9%2C%20me%20interesa%20la%20revisi%C3%B3n%20gratuita%20para%20mi%20caf%C3%A9." class="btn-primary">📲 Escríbeme por WhatsApp</a>
-      <div class="contact-info">
-        <div class="contact-item">📱 <strong>871 347 4088</strong></div>
-        <div class="contact-item">✉️ <strong>negociosinrodeos&#64;gmail.com</strong></div>
-        <div class="contact-item">📍 <strong>Torreón, Coahuila</strong></div>
+    <!-- SERVICIOS -->
+    <div class="panel" id="panel-servicios">
+      <div class="services-panel">
+        <div class="section-head">
+          <div class="section-label">Cómo te apoyo</div>
+          <h2 class="section-title">Herramientas que parecen de <span>empresa grande</span>, al precio de nada</h2>
+        </div>
+        <div class="services-group">
+          <div class="group-label">Control &amp; Operación</div>
+          <div class="service-card"><div class="svc-icon">📊</div><div class="svc-body"><div class="svc-name">Control de Ventas e Ingresos</div><div class="svc-desc">Corte de caja diario, resumen semanal y mensual. Ves el número del día desde el cel en cualquier momento.</div><span class="svc-tag">Excel · Google Sheets</span></div></div>
+          <div class="service-card"><div class="svc-icon">📦</div><div class="svc-body"><div class="svc-name">Control de Inventario</div><div class="svc-desc">Entradas, salidas y alertas automáticas por WhatsApp cuando un insumo está por agotarse.</div><span class="svc-tag">Excel · Automatizado</span></div></div>
+          <div class="service-card"><div class="svc-icon">🧾</div><div class="svc-body"><div class="svc-name">Costeo de Recetas</div><div class="svc-desc">Calcula el costo real de cada bebida y te dice cuánto necesitas vender para ganar lo que quieres.</div><span class="svc-tag">Excel</span></div></div>
+          <div class="service-card"><div class="svc-icon">📋</div><div class="svc-body"><div class="svc-name">Procesos y Recetario Digital</div><div class="svc-desc">Checklist de apertura/cierre y recetario estandarizado. Cualquier empleado hace las cosas bien, sin preguntarte a ti.</div><span class="svc-tag">Google Forms · PDF</span></div></div>
+        </div>
+        <div class="services-group">
+          <div class="group-label">Digital &amp; Tecnología</div>
+          <div class="service-card digital"><div class="svc-icon">📱</div><div class="svc-body"><div class="svc-name">Menú Digital con QR</div><div class="svc-desc">Tu menú en el cel del cliente — fotos, precios y descripción. Sin app, sin descargas. Se actualiza desde tu teléfono en segundos.</div><span class="svc-tag">PWA · Sin app store</span></div></div>
+          <div class="service-card digital"><div class="svc-icon">🛒</div><div class="svc-body"><div class="svc-name">Sistema de Pedidos en Mesa</div><div class="svc-desc">El cliente escanea el QR, hace su pedido y llega directo a cocina. Menos errores, más mesas atendidas.</div><span class="svc-tag">QR · Tiempo real</span></div></div>
+          <div class="service-card digital"><div class="svc-icon">⭐</div><div class="svc-body"><div class="svc-name">Programa de Lealtad Digital</div><div class="svc-desc">Reemplaza las tarjetitas de cartón que siempre se pierden. Tus clientes acumulan puntos desde el cel.</div><span class="svc-tag">Sin app · Google Sheets</span></div></div>
+          <div class="service-card digital"><div class="svc-icon">📋</div><div class="svc-body"><div class="svc-name">Pedidos para Eventos y Catering</div><div class="svc-desc">Un formulario digital recibe el pedido, lo organiza y te avisa por WhatsApp. Cero papeles perdidos.</div><span class="svc-tag">Google Forms · Tally</span></div></div>
+        </div>
+        <div class="highlight-box">
+          <div class="highlight-title">🚀 Sin mensualidades ni contratos</div>
+          <div class="highlight-desc">Todo funciona con herramientas gratuitas — Google Sheets, páginas web y códigos QR. Si mañana decides que ya no necesitas mi apoyo, el sistema sigue funcionando igual. Es 100% tuyo.</div>
+          <div class="tech-pills">
+            <span class="tech-pill">GitHub Pages</span>
+            <span class="tech-pill">Google Sheets</span>
+            <span class="tech-pill">Sin mensualidades</span>
+            <span class="tech-pill">Funciona en cualquier cel</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- PAQUETES -->
+    <div class="panel" id="panel-paquetes">
+      <div class="packages-panel">
+        <div class="section-head">
+          <div class="section-label">¿Cómo empezamos?</div>
+          <h2 class="section-title">Sin paquetes de catálogo.<br><span>Todo a tu medida.</span></h2>
+        </div>
+
+        <div class="pkg-card featured" style="margin-bottom:16px;">
+          <div style="font-size:32px; margin-bottom:12px;">🤝</div>
+          <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; line-height:1.3; margin-bottom:10px; color:var(--white);">Cada negocio es diferente — y el apoyo también lo es.</div>
+          <div style="font-size:13px; color:var(--body); line-height:1.7;">Una barbería no necesita lo mismo que una cafetería. Un desayunador tiene sus propios retos. Una taquería trabaja diferente a una papelería.<br><br>Por eso no manejo paquetes fijos. <strong style="color:var(--white);">Platicamos, veo qué necesitas, y te propongo algo que tenga sentido para tu negocio y tu bolsillo.</strong></div>
+        </div>
+
+        <div class="section-label" style="margin-bottom:10px;">Ejemplos de lo que podemos armar</div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px;">
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">📊</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Control de ventas</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Corte de caja, resumen diario y mensual desde el cel.</div>
+          </div>
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">📦</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Inventario</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Entradas, salidas y alertas antes de que se acabe algo.</div>
+          </div>
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">📱</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Menú digital QR</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Sin app, sin descargas. El cliente lo abre con el cel.</div>
+          </div>
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">⭐</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Programa de lealtad</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Puntos digitales que sí funcionan, sin tarjetitas de cartón.</div>
+          </div>
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">📋</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Procesos y checklist</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Tu operación documentada para que no dependa solo de ti.</div>
+          </div>
+          <div class="pkg-card" style="padding:14px; margin-bottom:0;">
+            <div style="font-size:20px; margin-bottom:6px;">🛒</div>
+            <div style="font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; color:var(--white); margin-bottom:4px;">Pedidos digitales</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.4;">Para eventos, catering o pedidos anticipados sin papeles.</div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <div class="highlight-title">💬 ¿No ves lo que necesitas?</div>
+          <div class="highlight-desc">No importa el giro. Si hay un problema que se repite en tu negocio, casi seguro hay una herramienta sencilla para resolverlo. Cuéntame qué está pasando y lo vemos juntos — la revisión siempre es gratis.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTACTO -->
+    <div class="panel" id="panel-contacto">
+      <div class="contact-panel">
+        <div class="contact-hero">
+          <h2 class="contact-title">Una hora. <span>Gratis.</span><br>Te digo qué está pasando en tu negocio.</h2>
+          <p class="contact-sub">Sin venderme, sin rollos. Solo te digo lo que vi y si crees que te puedo ayudar, platicamos. Si no, no pasa nada.</p>
+          <a href="https://wa.me/528713474088?text=Hola%20Jos%C3%A9%2C%20me%20interesa%20la%20revisi%C3%B3n%20gratuita%20para%20mi%20caf%C3%A9." class="wa-btn">💬 Escríbeme por WhatsApp</a>
+        </div>
+        <div class="contact-cards">
+          <a href="tel:+528713474088" class="contact-card"><div class="contact-card-icon">📞</div><div><div class="contact-card-label">Teléfono</div><div class="contact-card-value">871 347 4088</div></div></a>
+          <div class="contact-card"><div class="contact-card-icon">✉️</div><div><div class="contact-card-label">Correo</div><div class="contact-card-value">negociosinrodeos&#64;gmail.com</div></div></div>
+          <div class="contact-card"><div class="contact-card-icon">📍</div><div><div class="contact-card-label">Ubicación</div><div class="contact-card-value">Torreón, Coahuila</div></div></div>
+        </div>
+        <div class="process-mini">
+          <div class="process-title">Así funciona</div>
+          <div class="steps-mini">
+            <div class="step-mini"><div class="step-num">1</div><div class="step-content"><div class="step-name">Revisión Gratis</div><div class="step-desc-mini">1 hora en tu negocio. Te digo en pesos concretos qué está pasando.</div></div></div>
+            <div class="step-mini"><div class="step-num">2</div><div class="step-content"><div class="step-name">Te platico qué encontré</div><div class="step-desc-mini">Reporte claro con opciones y precios exactos. Sin letra chica.</div></div></div>
+            <div class="step-mini"><div class="step-num">3</div><div class="step-content"><div class="step-name">Armamos tu sistema</div><div class="step-desc-mini">Excel, formularios digitales, menú QR — lo que necesites, a tu medida.</div></div></div>
+            <div class="step-mini"><div class="step-num">4</div><div class="step-content"><div class="step-name">Te enseño a usarlo</div><div class="step-desc-mini">Capacito a ti y tu equipo. El sistema es 100% tuyo desde el primer día.</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-</section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-brand"><span>Negocio Sin Rodeos</span> · @negociosinrodeos</div>
-  <div class="footer-tag">No somos la firma cara. Somos el apoyo que sí se nota en tu bolsillo.</div>
-</footer>
+  <nav class="tabs">
+    <button class="tab active" onclick="switchTab('inicio',this)"><span class="tab-icon">🏠</span><span class="tab-label">Inicio</span></button>
+    <button class="tab" onclick="switchTab('servicios',this)"><span class="tab-icon">🔧</span><span class="tab-label">Servicios</span></button>
+    <button class="tab" onclick="switchTab('paquetes',this)"><span class="tab-icon">🎯</span><span class="tab-label">¿Empezamos?</span></button>
+    <button class="tab" onclick="switchTab('contacto',this)"><span class="tab-icon">📲</span><span class="tab-label">Contacto</span></button>
+  </nav>
 
+</div>
+<script>
+function switchTab(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('content').scrollTop=0;
+}
+</script>
 </body>
 </html>
