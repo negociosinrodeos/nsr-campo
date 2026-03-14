@@ -499,10 +499,13 @@
     <div class="topbar-mascot">🧠🩷</div>
     <div>
       <div class="topbar-name">psico<span>pocc</span></div>
-      <div class="topbar-sub">Dra. Angélica Posada</div>
+      <div class="topbar-sub">Psic. Angélica Posada</div>
     </div>
   </div>
-  <div class="topbar-date" id="topbarDate"></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div id="conexionBadge" style="font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.3);color:var(--text2);">⏳ Cargando...</div>
+    <div class="topbar-date" id="topbarDate"></div>
+  </div>
 </header>
 <div id="loadingBar" style="display:none;height:3px;background:linear-gradient(90deg,var(--pink-d),var(--blue-dd),var(--green-d));animation:loadSlide 1.2s ease-in-out infinite;"></div>
 <style>@keyframes loadSlide{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
@@ -915,7 +918,11 @@ async function load() {
 // ── Llamada GET al backend ──
 async function apiGet(action, params = {}) {
   const qs = new URLSearchParams({ action, ...params }).toString();
-  const res = await fetch(`${API_URL}?${qs}`);
+  const res = await fetch(`${API_URL}?${qs}`, {
+    method: 'GET',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' }
+  });
   return res.json();
 }
 
@@ -923,6 +930,8 @@ async function apiGet(action, params = {}) {
 async function apiPost(action, data = {}) {
   const res = await fetch(API_URL, {
     method: 'POST',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ action, data })
   });
   return res.json();
@@ -944,8 +953,9 @@ async function sincronizarDesdeSheets() {
     mostrarCargando(false);
     showToast('✅ Datos sincronizados con Google Sheets');
   } catch(e) {
+    console.error('❌ Error Sheets:', e);
     mostrarCargando(false);
-    showToast('⚠️ Sin conexión — usando datos locales');
+    showToast('⚠️ Sin conexión con Sheets — usando datos locales');
     modoConectado = false;
     const raw = localStorage.getItem('psicopocc_v2');
     if (raw) db = JSON.parse(raw);
@@ -1240,6 +1250,24 @@ function formatFecha(str) {
 }
 
 // ════ DASHBOARD ════
+function actualizarBadgeConexion() {
+  const badge = document.getElementById('conexionBadge');
+  if (!badge) return;
+  if (modoConectado) {
+    badge.style.background = 'rgba(125,201,154,0.4)';
+    badge.style.color = '#1A5C30';
+    badge.textContent = '✅ Sincronizado';
+  } else if (API_URL) {
+    badge.style.background = 'rgba(245,200,66,0.4)';
+    badge.style.color = '#7A5A10';
+    badge.textContent = '⚠️ Sin sync';
+  } else {
+    badge.style.background = 'rgba(255,255,255,0.3)';
+    badge.style.color = 'var(--text2)';
+    badge.textContent = '📱 Demo';
+  }
+}
+
 function renderDashboard() {
   const hoy = new Date();
   const mesActual = hoy.toISOString().slice(0,7);
@@ -1302,6 +1330,7 @@ document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('cli
 
 (async () => {
   await load();
+  actualizarBadgeConexion();
   renderDashboard();
 })();
 
