@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D1B3E">
+<meta name="description" content="NSR Diagnóstico Pro - Negocio Sin Rodeos">
+<title>NSR · Diagnóstico Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:     #0D1B3E;
+    --navy-m:   #1A2E5A;
+    --navy-l:   #243d73;
+    --gold:     #C9A84C;
+    --gold-l:   #E8C96A;
+    --gold-ll:  #FFF0C0;
+    --orange:   #E07A2F;
+    --orange-l: #F59640;
+    --white:    #FFFFFF;
+    --offwhite: #F5F3EE;
+    --text:     #0D1B3E;
+    --text2:    #4A5580;
+    --text3:    #9AA3BE;
+    --border:   #DDD8CC;
+    --green:    #2D9E6B;
+    --green-l:  #E8F7F0;
+    --yellow:   #F0B429;
+    --yellow-l: #FFF8E1;
+    --red:      #D93025;
+    --red-l:    #FDECEA;
+    --shadow:   0 4px 20px rgba(13,27,62,0.10);
+    --shadow-lg:0 10px 40px rgba(13,27,62,0.16);
+    --radius:   16px;
+    --radius-sm:10px;
+    --radius-xs:6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--offwhite);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    background: var(--navy);
+    padding: 0 20px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--gold);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 26px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+  .topbar-subtitle {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-icon {
+    background: var(--navy-m);
+    border: 1px solid var(--navy-l);
+    color: var(--gold);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-icon:hover { background: var(--navy-l); }
+
+  /* ─── NAV BOTTOM ─── */
+  .nav-bottom {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--navy);
+    display: flex;
+    border-top: 2px solid var(--gold);
+    z-index: 100;
+  }
+  .nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 4px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    gap: 4px;
+    border: none;
+    background: transparent;
+  }
+  .nav-tab .icon { font-size: 20px; line-height: 1; }
+  .nav-tab.active { color: var(--gold); background: var(--navy-m); }
+  .nav-tab:hover { background: var(--navy-m); }
+
+  /* ─── MAIN ─── */
+  .main { flex: 1; padding: 16px 16px 90px; max-width: 600px; margin: 0 auto; width: 100%; }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-header {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    color: var(--navy);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-sub {
+    font-size: 12px;
+    color: var(--text3);
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+
+  /* ─── FORMS ─── */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--offwhite);
+    transition: border 0.15s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--gold);
+    background: white;
+  }
+  .field textarea { resize: vertical; min-height: 70px; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 11px 18px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700; font-size: 14px;
+    cursor: pointer; border: none;
+    transition: all 0.15s; text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .btn-primary:hover { background: var(--gold-l); }
+  .btn-secondary {
+    background: var(--offwhite);
+    color: var(--navy);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-navy {
+    background: var(--navy);
+    color: var(--gold);
+  }
+  .btn-navy:hover { background: var(--navy-m); }
+  .btn-danger {
+    background: var(--red-l);
+    color: var(--red);
+    border: 1.5px solid #f5c6c6;
+  }
+  .btn-sm { padding: 7px 12px; font-size: 12px; }
+  .btn-full { width: 100%; }
+
+  /* ─── BADGES ─── */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.3px; text-transform: uppercase;
+  }
+  .badge-green { background: var(--green-l); color: var(--green); }
+  .badge-yellow { background: var(--yellow-l); color: #8B6800; }
+  .badge-red { background: var(--red-l); color: var(--red); }
+  .badge-navy { background: #E8ECF8; color: var(--navy); }
+  .badge-gold { background: var(--gold-ll); color: #6B4D00; }
+  .badge-orange { background: #FEF0E6; color: var(--orange); }
+
+  /* ─── SEMÁFORO ITEMS ─── */
+  .semaforo-item {
+    background: var(--offwhite);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 1.5px solid var(--border);
+    transition: border 0.15s;
+  }
+  .semaforo-item.selected-green { border-color: var(--green); background: var(--green-l); }
+  .semaforo-item.selected-yellow { border-color: var(--yellow); background: var(--yellow-l); }
+  .semaforo-item.selected-red { border-color: var(--red); background: var(--red-l); }
+
+  .semaforo-pregunta {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .semaforo-opciones {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .semaforo-btn {
+    flex: 1; min-width: 80px;
+    padding: 7px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; border: 1.5px solid transparent;
+    transition: all 0.15s; text-align: center;
+  }
+  .semaforo-btn.verde {
+    background: var(--green-l); color: var(--green);
+    border-color: #a8dfc5;
+  }
+  .semaforo-btn.verde.active { background: var(--green); color: white; }
+  .semaforo-btn.amarillo {
+    background: var(--yellow-l); color: #8B6800;
+    border-color: #f5d77a;
+  }
+  .semaforo-btn.amarillo.active { background: var(--yellow); color: white; }
+  .semaforo-btn.rojo {
+    background: var(--red-l); color: var(--red);
+    border-color: #f5c6c6;
+  }
+  .semaforo-btn.rojo.active { background: var(--red); color: white; }
+
+  /* expand toggle */
+  .expand-toggle {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    cursor: pointer; margin-top: 6px;
+    background: none; border: none; padding: 0;
+  }
+  .expand-icon { transition: transform 0.2s; font-size: 10px; }
+  .expand-icon.open { transform: rotate(90deg); }
+  .expand-content { display: none; margin-top: 8px; }
+  .expand-content.open { display: block; }
+
+  /* ─── ÁREA HEADER ─── */
+  .area-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all 0.15s;
+  }
+  .area-header:hover { border-color: var(--gold); }
+  .area-header.open { border-color: var(--gold); border-radius: var(--radius-sm) var(--radius-sm) 0 0; margin-bottom: 0; }
+  .area-header-left { display: flex; align-items: center; gap: 10px; }
+  .area-icon { font-size: 22px; }
+  .area-title-text {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .area-subtitle { font-size: 11px; color: var(--text3); font-weight: 500; }
+  .area-chevron { font-size: 14px; color: var(--text3); transition: transform 0.2s; }
+  .area-chevron.open { transform: rotate(180deg); }
+  .area-score-badge { display: flex; align-items: center; gap: 6px; }
+
+  .area-body {
+    display: none;
+    background: var(--white);
+    border: 1.5px solid var(--gold);
+    border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 8px;
+  }
+  .area-body.open { display: block; }
+
+  /* ─── SCORE CIRCLE ─── */
+  .score-circle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px;
+    border: 3px solid;
+    flex-shrink: 0;
+  }
+  .score-circle.verde { border-color: var(--green); color: var(--green); background: var(--green-l); }
+  .score-circle.amarillo { border-color: var(--yellow); color: #8B6800; background: var(--yellow-l); }
+  .score-circle.rojo { border-color: var(--red); color: var(--red); background: var(--red-l); }
+  .score-circle.sin-data { border-color: var(--border); color: var(--text3); background: var(--offwhite); }
+
+  /* ─── PROSPECTO LIST ─── */
+  .prospect-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+  }
+  .prospect-item:hover { border-color: var(--gold); transform: translateY(-1px); }
+  .prospect-avatar {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 18px; color: var(--gold);
+    flex-shrink: 0;
+  }
+  .prospect-info { flex: 1; min-width: 0; }
+  .prospect-name {
+    font-weight: 700; font-size: 15px; color: var(--navy);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .prospect-meta { font-size: 12px; color: var(--text3); font-weight: 500; margin-top: 2px; }
+  .prospect-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  /* ─── STATS HEADER ─── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--navy);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 30px; color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px; color: var(--text3);
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.4px; margin-top: 3px;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed;
+    inset: 0; background: rgba(13,27,62,0.7);
+    z-index: 200; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--white);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 24px 20px 32px;
+    width: 100%; max-width: 600px;
+    max-height: 92vh; overflow-y: auto;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+  .modal-handle {
+    width: 40px; height: 4px; background: var(--border);
+    border-radius: 2px; margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 22px; color: var(--navy);
+    letter-spacing: 1px; margin-bottom: 16px;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--navy); color: var(--gold);
+    padding: 10px 20px; border-radius: 30px;
+    font-size: 13px; font-weight: 700;
+    border: 1.5px solid var(--gold);
+    opacity: 0; transition: all 0.3s;
+    z-index: 300; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ─── RESUMEN / REPORTE ─── */
+  .reporte-area {
+    display: flex; align-items: center;
+    gap: 12px; padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    border: 1.5px solid var(--border);
+  }
+  .reporte-area.verde { background: var(--green-l); border-color: #a8dfc5; }
+  .reporte-area.amarillo { background: var(--yellow-l); border-color: #f5d77a; }
+  .reporte-area.rojo { background: var(--red-l); border-color: #f5c6c6; }
+  .reporte-area.sin-data { background: var(--offwhite); }
+  .reporte-area-nombre {
+    flex: 1;
+    font-weight: 700; font-size: 14px;
+  }
+  .reporte-area-det { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-wrap {
+    background: var(--border); border-radius: 4px; height: 6px;
+    margin: 10px 0 4px;
+  }
+  .progress-bar {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    transition: width 0.4s ease;
+  }
+
+  /* ─── NOTAS AREA ─── */
+  .nota-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--gold-ll); color: #6B4D00;
+    border-radius: 6px; padding: 4px 10px;
+    font-size: 12px; font-weight: 600; margin: 3px 3px 3px 0;
+    cursor: pointer; border: 1.5px solid #e8c96a;
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center; padding: 40px 20px;
+    color: var(--text3);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state .empty-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 20px; color: var(--text2);
+    letter-spacing: 1px;
+  }
+  .empty-state .empty-sub { font-size: 13px; margin-top: 6px; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px; background: var(--border);
+    margin: 14px 0;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 22px; letter-spacing: 1.5px;
+    color: var(--navy); margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 12px; color: var(--text3);
+    font-weight: 500; margin-bottom: 16px;
+  }
+
+  /* ─── COPY TEXT ─── */
+  .copy-block {
+    background: var(--navy);
+    color: #B0C0E0;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-size: 12px;
+    line-height: 1.7;
+    font-family: monospace;
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--navy-l);
+  }
+
+  /* ─── GIRO TAGS ─── */
+  .giro-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+  }
+  .giro-tag {
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: var(--offwhite); color: var(--text2);
+    transition: all 0.15s;
+  }
+  .giro-tag.active {
+    background: var(--navy); color: var(--gold);
+    border-color: var(--navy);
+  }
+
+  /* ─── SHEETS CONFIG ─── */
+  .sheets-config {
+    background: var(--gold-ll);
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .sheets-config-title {
+    font-weight: 700; font-size: 13px; color: #6B4D00;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+  }
+  .sheets-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+    margin-top: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: var(--green); }
+  .dot-red { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+
+  @media (max-width: 380px) {
+    .field-row { grid-template-columns: 1fr; }
+    .semaforo-opciones { flex-direction: column; }
+    .semaforo-btn { min-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div>
+      <div class="topbar-logo">NSR</div>
+      <div class="topbar-subtitle">Diagnóstico Pro</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-icon" onclick="showModal('modalConfig')" title="Configuración">⚙️</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ══════════════════════════════════ PROSPECTOS ══════════════════════════════════ -->
+  <div class="section active" id="sec-prospectos">
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Prospectos</div></div>
+      <div class="stat-card"><div class="stat-num" id="statDiag">0</div><div class="stat-label">Diagnósticos</div></div>
+      <div class="stat-card"><div class="stat-num" id="statCalientes">0</div><div class="stat-label">Calientes 🔥</div></div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div>
+        <div class="section-title">PROSPECTOS</div>
+        <div class="section-sub">Base de clientes potenciales</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="showModal('modalProspecto')">+ Nuevo</button>
+    </div>
+
+    <!-- Filtro estatus -->
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="filtroEstatus">
+      <button class="giro-tag active" onclick="filtrarEstatus('todos',this)">Todos</button>
+      <button class="giro-tag" onclick="filtrarEstatus('nuevo',this)">Nuevo</button>
+      <button class="giro-tag" onclick="filtrarEstatus('visitado',this)">Visitado</button>
+      <button class="giro-tag" onclick="filtrarEstatus('diagnosticado',this)">Diagnosticado</button>
+      <button class="giro-tag" onclick="filtrarEstatus('cliente',this)">Cliente ✅</button>
+      <button class="giro-tag" onclick="filtrarEstatus('frio',this)">Frío ❄️</button>
+    </div>
+
+    <div id="prospectosList">
+      <div class="empty-state">
+        <div class="empty-icon">🏪</div>
+        <div class="empty-title">Sin prospectos aún</div>
+        <div class="empty-sub">Agrega tu primer negocio tocando "+ Nuevo"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ DIAGNÓSTICO ══════════════════════════════════ -->
+  <div class="section" id="sec-diagnostico">
+    <div style="margin-bottom:14px;">
+      <div class="section-title">DIAGNÓSTICO</div>
+      <div class="section-sub" id="diagSubtitle">Selecciona un prospecto para diagnosticar</div>
+    </div>
+
+    <!-- Selector prospecto -->
+    <div class="card" id="diagSelectorCard">
+      <div class="card-header">🏪 Negocio a Diagnosticar</div>
+      <div class="field">
+        <label>Seleccionar prospecto</label>
+        <select id="diagProspectoSelect" onchange="seleccionarProspecto()">
+          <option value="">— Elige un negocio —</option>
+        </select>
+      </div>
+      <div id="diagProspectoInfo" style="display:none;" class="sheets-config">
+        <div class="sheets-config-title">📋 Datos del negocio</div>
+        <div id="diagInfoContent" style="font-size:13px;color:var(--text2);line-height:1.8;"></div>
+      </div>
+    </div>
+
+    <!-- Progress -->
+    <div class="card" id="diagProgressCard" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <span style="font-weight:700;font-size:13px;">Progreso del diagnóstico</span>
+        <span id="diagProgressPct" style="font-family:'Bebas Neue',cursive;font-size:18px;color:var(--gold);">0%</span>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="diagProgressBar" style="width:0%"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);font-weight:500;" id="diagProgressLabel">0 de 6 áreas completadas</div>
+    </div>
+
+    <!-- Áreas del checklist -->
+    <div id="areasContainer"></div>
+
+    <!-- Notas generales -->
+    <div class="card" id="diagNotasCard" style="display:none;">
+      <div class="card-header">📝 Notas Generales</div>
+      <div class="card-sub">Observaciones adicionales del diagnóstico</div>
+      <div class="field">
+        <label>Observaciones libres</label>
+        <textarea id="diagNotasGenerales" placeholder="Escribe lo que observaste en la visita, actitud del dueño, competencia cercana, etc." rows="4"></textarea>
+      </div>
+      <div class="field">
+        <label>Oportunidades detectadas (sugeridas)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">
+          <span class="nota-chip" onclick="addChip('Excel / Hojas de control')">📊 Excel</span>
+          <span class="nota-chip" onclick="addChip('Formularios digitales')">📋 Formularios</span>
+          <span class="nota-chip" onclick="addChip('Dashboard de ventas')">📈 Dashboard</span>
+          <span class="nota-chip" onclick="addChip('Control de inventario')">📦 Inventario</span>
+          <span class="nota-chip" onclick="addChip('Capacitación de equipo')">👥 Capacitación</span>
+          <span class="nota-chip" onclick="addChip('WhatsApp Business')">💬 WhatsApp</span>
+          <span class="nota-chip" onclick="addChip('Sistema de costos')">💰 Costos</span>
+          <span class="nota-chip" onclick="addChip('Punto de equilibrio')">⚖️ P. Equilibrio</span>
+        </div>
+        <textarea id="diagOportunidades" placeholder="¿Qué servicios de NSR aplicarían aquí?" rows="3"></textarea>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-full" onclick="guardarDiagnostico()">💾 Guardar Diagnóstico</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ REPORTE ══════════════════════════════════ -->
+  <div class="section" id="sec-reporte">
+    <div style="margin-bottom:14px;">
+      <div class="section-title">REPORTE</div>
+      <div class="section-sub">Resumen, outputs y envío</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">📋 Seleccionar diagnóstico</div>
+      <div class="field">
+        <select id="reporteSelect" onchange="cargarReporte()">
+          <option value="">— Elige un diagnóstico —</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="reporteContent" style="display:none;">
+      <!-- Score general -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div id="reporteScoreCircle" class="score-circle sin-data" style="width:70px;height:70px;font-size:26px;">—</div>
+          <div>
+            <div id="reporteNegocio" style="font-family:'Bebas Neue',cursive;font-size:22px;color:var(--navy);letter-spacing:1px;"></div>
+            <div id="reporteGiro" style="font-size:12px;color:var(--text3);font-weight:500;"></div>
+            <div id="reporteFecha" style="font-size:12px;color:var(--text3);font-weight:500;margin-top:2px;"></div>
+          </div>
+        </div>
+        <div id="reporteAreasResumen"></div>
+      </div>
+
+      <!-- Botones de output -->
+      <div class="card">
+        <div class="card-header">📤 Outputs</div>
+        <div class="card-sub">Elige qué generar para este diagnóstico</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-navy btn-full" onclick="generarParaClaude()">🤖 Generar resumen para Claude</button>
+          <button class="btn btn-secondary btn-full" onclick="generarPropuesta()">📄 Texto para propuesta al cliente</button>
+          <button class="btn btn-secondary btn-full" onclick="enviarSheets()">📊 Enviar a Google Sheets</button>
+          <button class="btn btn-secondary btn-full" onclick="generarPDF()">🖨️ Imprimir / PDF para dejar al cliente</button>
+        </div>
+      </div>
+
+      <!-- Output Claude -->
+      <div class="card" id="cardClaude" style="display:none;">
+        <div class="card-header">🤖 Resumen para Claude</div>
+        <div class="card-sub">Copia esto y pégalo en el chat con Claude para generar la propuesta completa</div>
+        <div class="copy-block" id="textoClaude"></div>
+        <button class="btn btn-primary btn-sm" onclick="copiar('textoClaude')">📋 Copiar texto</button>
+      </div>
+
+      <!-- Output Propuesta -->
+      <div class="card" id="cardPropuesta" style="display:none;">
+        <div class="card-header">📄 Texto para propuesta</div>
+        <div class="card-sub">Intro lista para presentar al dueño del negocio</div>
+        <div class="copy-block" id="textoPropuesta"></div>
+        <button class="btn btn-primary btn-sm" onclick="copiar('textoPropuesta')">📋 Copiar texto</button>
+      </div>
+
+      <!-- Sheets status -->
+      <div class="card" id="cardSheets" style="display:none;">
+        <div class="card-header">📊 Google Sheets</div>
+        <div id="sheetsStatus"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ CONFIG ══════════════════════════════════ -->
+  <div class="section" id="sec-config">
+    <div class="section-title">CONFIGURACIÓN</div>
+    <div class="section-sub">Google Sheets · NSR · Preferencias</div>
+
+    <div class="card">
+      <div class="card-header">📊 Google Sheets</div>
+      <div class="card-sub">Conecta la PWA con tu hoja de cálculo vía Apps Script</div>
+      <div class="field">
+        <label>URL del Web App (Apps Script)</label>
+        <input type="url" id="cfgWebAppUrl" placeholder="https://script.google.com/macros/s/..." />
+      </div>
+      <div class="field">
+        <label>Nombre del consultor</label>
+        <input type="text" id="cfgConsultor" placeholder="José Alfonso Rojas" value="José Alfonso Rojas" />
+      </div>
+      <div class="field">
+        <label>Teléfono NSR</label>
+        <input type="text" id="cfgTelefono" placeholder="614 356 2493" value="614 356 2493" />
+      </div>
+      <button class="btn btn-primary" onclick="guardarConfig()">💾 Guardar configuración</button>
+      <div id="configStatus" style="margin-top:10px;font-size:13px;font-weight:600;color:var(--green);display:none;">✅ Configuración guardada</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">📋 Script para Google Sheets</div>
+      <div class="card-sub">Copia este código en Apps Script de tu Google Sheets (Extensiones → Apps Script)</div>
+      <div class="copy-block" id="scriptCode">// ──────────────────────────────────────────────
+// NSR Diagnóstico Pro · Apps Script Receiver
+// Pega esto en: Extensiones → Apps Script
+// ──────────────────────────────────────────────
+
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    if (data.tipo === 'prospecto') {
+      var sh = ss.getSheetByName('Prospectos') || ss.insertSheet('Prospectos');
+      if (sh.getLastRow() === 0) {
+        sh.appendRow(['ID','Negocio','Giro','Dueño','Teléfono','Dirección','Zona','Estatus','Fecha Alta','Notas']);
+        sh.getRange(1,1,1,10).setBackground('#0D1B3E').setFontColor('#C9A84C').setFontWeight('bold');
+      }
+      sh.appendRow([data.id, data.negocio, data.giro, data.dueno, data.telefono, data.direccion, data.zona, data.estatus, data.fechaAlta, data.notas]);
+    }
+    
+    if (data.tipo === 'diagnostico') {
+      var sh2 = ss.getSheetByName('Diagnosticos') || ss.insertSheet('Diagnosticos');
+      if (sh2.getLastRow() === 0) {
+        sh2.appendRow(['ID','Negocio','Giro','Fecha','Consultor','Score General','Ventas','Inventario','Finanzas','Procesos','Personas','Tecnología','Oportunidades','Notas','Hallazgos']);
+        sh2.getRange(1,1,1,15).setBackground('#0D1B3E').setFontColor('#C9A84C').setFontWeight('bold');
+      }
+      sh2.appendRow([
+        data.id, data.negocio, data.giro, data.fecha, data.consultor,
+        data.scoreGeneral,
+        data.areas.ventas, data.areas.inventario, data.areas.finanzas,
+        data.areas.procesos, data.areas.personas, data.areas.tecnologia,
+        data.oportunidades, data.notas, data.hallazgos
+      ]);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ok: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({ok: false, error: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify({status: 'NSR Diagnóstico Pro · Online ✅'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</div>
+      <button class="btn btn-navy btn-sm" onclick="copiar('scriptCode')">📋 Copiar script</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header" style="color:var(--red);">⚠️ Datos</div>
+      <div class="card-sub">Acciones de datos locales (se almacenan en tu dispositivo)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" onclick="exportarJSON()">📥 Exportar backup JSON</button>
+        <button class="btn btn-danger btn-sm" onclick="limpiarTodo()">🗑 Limpiar todo</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<nav class="nav-bottom">
+  <button class="nav-tab active" onclick="showSection('prospectos')" id="tab-prospectos">
+    <span class="icon">🏪</span>Prospectos
+  </button>
+  <button class="nav-tab" onclick="showSection('diagnostico')" id="tab-diagnostico">
+    <span class="icon">🩺</span>Diagnóstico
+  </button>
+  <button class="nav-tab" onclick="showSection('reporte')" id="tab-reporte">
+    <span class="icon">📊</span>Reporte
+  </button>
+  <button class="nav-tab" onclick="showSection('config')" id="tab-config">
+    <span class="icon">⚙️</span>Config
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ MODAL NUEVO PROSPECTO ══════════ -->
+<div class="modal-overlay" id="modalProspecto">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🏪 NUEVO PROSPECTO</div>
+    <div class="field">
+      <label>Nombre del negocio *</label>
+      <input type="text" id="p_nombre" placeholder="Ej: Coffee Brothers, Taquería El Güero..." />
+    </div>
+    <div class="field">
+      <label>Giro / Tipo de negocio *</label>
+      <input type="text" id="p_giro" placeholder="Cafetería, Taquería, Ferretería, Consultorio..." />
+      <div class="giro-tags">
+        <span class="giro-tag" onclick="setGiro('Cafetería')">☕ Cafetería</span>
+        <span class="giro-tag" onclick="setGiro('Taquería / Fonda')">🌮 Taquería</span>
+        <span class="giro-tag" onclick="setGiro('Tienda / Abarrotes')">🛒 Tienda</span>
+        <span class="giro-tag" onclick="setGiro('Ferretería')">🔧 Ferretería</span>
+        <span class="giro-tag" onclick="setGiro('Consultorio')">🏥 Consultorio</span>
+        <span class="giro-tag" onclick="setGiro('Taller')">🔩 Taller</span>
+        <span class="giro-tag" onclick="setGiro('Salón / Estética')">💇 Salón</span>
+        <span class="giro-tag" onclick="setGiro('Farmacia')">💊 Farmacia</span>
+        <span class="giro-tag" onclick="setGiro('Papelería')">📚 Papelería</span>
+        <span class="giro-tag" onclick="setGiro('Otro')">➕ Otro</span>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Nombre del dueño</label>
+        <input type="text" id="p_dueno" placeholder="Nombre o apodo" />
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="tel" id="p_tel" placeholder="614 000 0000" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Dirección / Referencia</label>
+      <input type="text" id="p_dir" placeholder="Blvd. Independencia esq. con..." />
+    </div>
+    <div class="field">
+      <label>Zona de Torreón</label>
+      <input type="text" id="p_zona" placeholder="Centro, Col. Navarro, Blvd. Independencia..." />
+      <div class="giro-tags" style="margin-top:6px;">
+        <span class="giro-tag" onclick="setZona('Centro / Av. Juárez')">Centro</span>
+        <span class="giro-tag" onclick="setZona('Blvd. Independencia')">Blvd. Indep.</span>
+        <span class="giro-tag" onclick="setZona('Col. Navarro')">Navarro</span>
+        <span class="giro-tag" onclick="setZona('P. Industrial Lagunero')">P. Industrial</span>
+        <span class="giro-tag" onclick="setZona('Plaza Mayor / Galerías')">Plazas</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Estatus</label>
+      <select id="p_estatus">
+        <option value="nuevo">🆕 Nuevo</option>
+        <option value="visitado">👋 Visitado</option>
+        <option value="diagnosticado">🩺 Diagnosticado</option>
+        <option value="cliente">✅ Cliente</option>
+        <option value="frio">❄️ Frío</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Notas de prospección</label>
+      <textarea id="p_notas" placeholder="Actitud del dueño, horario ideal para visita, observaciones rápidas..." rows="3"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="cerrarModal('modalProspecto')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="guardarProspecto()">✅ Guardar prospecto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL CONFIG SHEETS ══════════ -->
+<div class="modal-overlay" id="modalConfig">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ CONFIGURACIÓN RÁPIDA</div>
+    <div class="sheets-config">
+      <div class="sheets-config-title">📊 Estado de Google Sheets</div>
+      <div class="sheets-status" id="configSheetsStatus">
+        <span class="dot dot-yellow"></span>
+        <span style="color:#8B6800;font-size:12px;">URL del Web App no configurada</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>URL del Web App (Apps Script)</label>
+      <input type="url" id="cfgWebAppUrl2" placeholder="https://script.google.com/macros/s/..." />
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="cerrarModal('modalConfig')">Cancelar</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="guardarConfigRapida()">💾 Guardar</button>
+    </div>
+    <div style="margin-top:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px;">Pasos para activar Google Sheets:</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+        1️⃣ Abre tu Google Sheets<br>
+        2️⃣ Extensiones → Apps Script<br>
+        3️⃣ Pega el código de la pestaña Config<br>
+        4️⃣ Implementar → Nueva implementación → Web App<br>
+        5️⃣ Ejecutar como: Yo · Acceso: Cualquier persona<br>
+        6️⃣ Copia la URL y pégala aquí 👆
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL DETALLE PROSPECTO ══════════ -->
+<div class="modal-overlay" id="modalDetalleProspecto">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="detProspectoTitle">DETALLE PROSPECTO</div>
+    <div id="detProspectoContent"></div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL IMPRIMIR ══════════ -->
+<div class="modal-overlay" id="modalImprimir">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🖨️ REPORTE PARA EL CLIENTE</div>
+    <div class="card-sub">Toca "Imprimir / Guardar PDF" para generar el PDF que dejarás al dueño del negocio.</div>
+    <div id="imprimirContent" style="font-size:13px;line-height:1.7;color:var(--text2);margin-bottom:16px;"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" style="flex:1;" onclick="cerrarModal('modalImprimir')">Cerrar</button>
+      <button class="btn btn-primary" style="flex:2;" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ══════════════════════════════════════════════════════════
+let db = { prospectos: [], diagnosticos: [] };
+let config = { webAppUrl: '', consultor: 'José Alfonso Rojas', telefono: '614 356 2493' };
+let diagActual = null; // prospecto seleccionado para diagnóstico
+let respuestas = {}; // { areaId: { pregId: 'verde'|'amarillo'|'rojo' } }
+
+// ══════════════════════════════════════════════════════════
+//  CHECKLIST GENÉRICO — 6 ÁREAS HÍBRIDAS
+// ══════════════════════════════════════════════════════════
+const AREAS = [
+  {
+    id: 'ventas',
+    icon: '💰',
+    titulo: 'Ventas e Ingresos',
+    subtitulo: 'Registro, ticket, productos top',
+    preguntas_rapidas: [
+      { id: 'v1', texto: '¿Registra sus ventas diarias de alguna forma?' },
+      { id: 'v2', texto: '¿Sabe cuál es su ticket promedio por cliente?' },
+      { id: 'v3', texto: '¿Identifica qué productos le generan más ingreso?' },
+    ],
+    preguntas_extra: [
+      { id: 'v4', texto: '¿Tiene definidos horarios pico de venta?' },
+      { id: 'v5', texto: '¿Tiene algún sistema de fidelización o clientes frecuentes?' },
+      { id: 'v6', texto: '¿Registra ventas por canal (mostrador, delivery, WhatsApp)?' },
+    ]
+  },
+  {
+    id: 'inventario',
+    icon: '📦',
+    titulo: 'Inventario y Compras',
+    subtitulo: 'Control, merma, proveedores',
+    preguntas_rapidas: [
+      { id: 'i1', texto: '¿Tiene algún control de entradas y salidas de inventario?' },
+      { id: 'i2', texto: '¿Sabe cuándo y cuánto pedir a sus proveedores?' },
+      { id: 'i3', texto: '¿Controla la merma o desperdicio de producto?' },
+    ],
+    preguntas_extra: [
+      { id: 'i4', texto: '¿Compara precios entre proveedores antes de comprar?' },
+      { id: 'i5', texto: '¿Tiene lista de compras estandarizada por semana/mes?' },
+      { id: 'i6', texto: '¿Conoce el costo real de cada producto o servicio que ofrece?' },
+    ]
+  },
+  {
+    id: 'finanzas',
+    icon: '💸',
+    titulo: 'Finanzas y Gastos',
+    subtitulo: 'Punto de equilibrio, márgenes, gastos',
+    preguntas_rapidas: [
+      { id: 'f1', texto: '¿Lleva registro de gastos fijos y variables del negocio?' },
+      { id: 'f2', texto: '¿Separa los gastos del negocio de los gastos personales?' },
+      { id: 'f3', texto: '¿Conoce su punto de equilibrio mensual?' },
+    ],
+    preguntas_extra: [
+      { id: 'f4', texto: '¿Sabe cuál es su margen de utilidad real por producto?' },
+      { id: 'f5', texto: '¿Tiene un fondo de emergencia o reserva para el negocio?' },
+      { id: 'f6', texto: '¿Factura electrónicamente o lleva control de impuestos?' },
+    ]
+  },
+  {
+    id: 'procesos',
+    icon: '⚙️',
+    titulo: 'Procesos y Operación',
+    subtitulo: 'Flujos, recetas, apertura/cierre',
+    preguntas_rapidas: [
+      { id: 'p1', texto: '¿Tiene procesos documentados o recetas estandarizadas?' },
+      { id: 'p2', texto: '¿El negocio puede operar sin la presencia del dueño?' },
+      { id: 'p3', texto: '¿Tiene una rutina de apertura y cierre definida?' },
+    ],
+    preguntas_extra: [
+      { id: 'p4', texto: '¿Realiza mantenimiento preventivo de equipos?' },
+      { id: 'p5', texto: '¿Tiene protocolos de atención al cliente establecidos?' },
+      { id: 'p6', texto: '¿Existen checklists de limpieza o control de calidad?' },
+    ]
+  },
+  {
+    id: 'personas',
+    icon: '👥',
+    titulo: 'Personas y Equipo',
+    subtitulo: 'Roles, capacitación, dependencia del dueño',
+    preguntas_rapidas: [
+      { id: 'rh1', texto: '¿Tiene roles y responsabilidades claramente definidos?' },
+      { id: 'rh2', texto: '¿Capacita a su equipo de forma regular?' },
+      { id: 'rh3', texto: '¿Cuenta con algún sistema de evaluación de desempeño?' },
+    ],
+    preguntas_extra: [
+      { id: 'rh4', texto: '¿Tiene contratados a sus empleados formalmente (IMSS)?' },
+      { id: 'rh5', texto: '¿Existe un plan de incentivos o reconocimiento para el equipo?' },
+      { id: 'rh6', texto: '¿El equipo conoce los objetivos de ventas del negocio?' },
+    ]
+  },
+  {
+    id: 'tecnologia',
+    icon: '📲',
+    titulo: 'Tecnología y Sistemas',
+    subtitulo: 'Herramientas digitales, redes, facturación',
+    preguntas_rapidas: [
+      { id: 't1', texto: '¿Utiliza WhatsApp Business con catálogo o respuestas automáticas?' },
+      { id: 't2', texto: '¿Tiene presencia activa en redes sociales (FB, IG, Google Maps)?' },
+      { id: 't3', texto: '¿Usa algún software o app para gestionar el negocio?' },
+    ],
+    preguntas_extra: [
+      { id: 't4', texto: '¿Tiene terminal de pago con tarjeta (POS o link de pago)?' },
+      { id: 't5', texto: '¿Utiliza Google Forms, Excel u hojas de cálculo para algún proceso?' },
+      { id: 't6', texto: '¿Tiene correo de empresa o dominio propio?' },
+    ]
+  }
+];
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  cargarStorage();
+  renderProspectos();
+  buildChecklist();
+  actualizarStats();
+  actualizarSelectores();
+  document.getElementById('cfgWebAppUrl').value = config.webAppUrl || '';
+  document.getElementById('cfgWebAppUrl2').value = config.webAppUrl || '';
+  document.getElementById('cfgConsultor').value = config.consultor;
+  document.getElementById('cfgTelefono').value = config.telefono;
+  actualizarConfigSheetsStatus();
+});
+
+// ══════════════════════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════════════════════
+function guardarStorage() {
+  localStorage.setItem('nsr_db', JSON.stringify(db));
+  localStorage.setItem('nsr_config', JSON.stringify(config));
+}
+function cargarStorage() {
+  const d = localStorage.getItem('nsr_db');
+  const c = localStorage.getItem('nsr_config');
+  if (d) db = JSON.parse(d);
+  if (c) config = Object.assign(config, JSON.parse(c));
+}
+
+// ══════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ══════════════════════════════════════════════════════════
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'diagnostico') actualizarSelectDiag();
+  if (name === 'reporte') actualizarSelectReporte();
+}
+function showModal(id) { document.getElementById(id).classList.add('open'); }
+function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════════
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════════════════════
+//  PROSPECTOS
+// ══════════════════════════════════════════════════════════
+let filtroActual = 'todos';
+
+function guardarProspecto() {
+  const nombre = document.getElementById('p_nombre').value.trim();
+  const giro = document.getElementById('p_giro').value.trim();
+  if (!nombre) { toast('⚠️ El nombre del negocio es obligatorio'); return; }
+  if (!giro)   { toast('⚠️ El giro del negocio es obligatorio'); return; }
+
+  const p = {
+    id: Date.now(),
+    nombre, giro,
+    dueno:   document.getElementById('p_dueno').value.trim(),
+    telefono:document.getElementById('p_tel').value.trim(),
+    direccion:document.getElementById('p_dir').value.trim(),
+    zona:    document.getElementById('p_zona').value.trim(),
+    estatus: document.getElementById('p_estatus').value,
+    notas:   document.getElementById('p_notas').value.trim(),
+    fechaAlta: new Date().toLocaleDateString('es-MX'),
+  };
+
+  db.prospectos.push(p);
+  guardarStorage();
+  cerrarModal('modalProspecto');
+  limpiarFormProspecto();
+  renderProspectos();
+  actualizarStats();
+  actualizarSelectores();
+  toast('✅ Prospecto guardado: ' + nombre);
+
+  // Auto-envío a Sheets si está configurado
+  if (config.webAppUrl) enviarSheetsProspecto(p);
+}
+
+function limpiarFormProspecto() {
+  ['p_nombre','p_giro','p_dueno','p_tel','p_dir','p_zona','p_notas'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('p_estatus').value = 'nuevo';
+  document.querySelectorAll('#modalProspecto .giro-tag').forEach(t => t.classList.remove('active'));
+}
+
+function setGiro(v) {
+  document.getElementById('p_giro').value = v;
+  document.querySelectorAll('#modalProspecto .giro-tag').forEach(t => {
+    t.classList.toggle('active', t.textContent.includes(v) || t.onclick.toString().includes(`'${v}'`));
+  });
+}
+function setZona(v) { document.getElementById('p_zona').value = v; }
+
+let filtroEstatusActual = 'todos';
+function filtrarEstatus(v, btn) {
+  filtroEstatusActual = v;
+  document.querySelectorAll('#filtroEstatus .giro-tag').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderProspectos();
+}
+
+function renderProspectos() {
+  const container = document.getElementById('prospectosList');
+  let lista = db.prospectos;
+  if (filtroEstatusActual !== 'todos') lista = lista.filter(p => p.estatus === filtroEstatusActual);
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">${filtroEstatusActual==='todos'?'Sin prospectos aún':'Sin prospectos en este filtro'}</div><div class="empty-sub">${filtroEstatusActual==='todos'?'Agrega tu primer negocio tocando "+ Nuevo"':'Prueba otro filtro o agrega más prospectos'}</div></div>`;
+    return;
+  }
+  const estatusBadge = { nuevo:'badge-navy', visitado:'badge-gold', diagnosticado:'badge-orange', cliente:'badge-green', frio:'badge-navy' };
+  const estatusEmoji = { nuevo:'🆕', visitado:'👋', diagnosticado:'🩺', cliente:'✅', frio:'❄️' };
+  container.innerHTML = lista.slice().reverse().map(p => {
+    const initials = p.nombre.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const diagCount = db.diagnosticos.filter(d => d.prospectoId === p.id).length;
+    return `<div class="prospect-item" onclick="verProspecto(${p.id})">
+      <div class="prospect-avatar">${initials}</div>
+      <div class="prospect-info">
+        <div class="prospect-name">${p.nombre}</div>
+        <div class="prospect-meta">${p.giro}${p.zona ? ' · ' + p.zona : ''}</div>
+        <div style="display:flex;gap:5px;margin-top:4px;align-items:center;">
+          <span class="badge ${estatusBadge[p.estatus]||'badge-navy'}">${estatusEmoji[p.estatus]||''} ${p.estatus}</span>
+          ${diagCount ? `<span class="badge badge-gold">🩺 ${diagCount} diag.</span>` : ''}
+        </div>
+      </div>
+      <div class="prospect-actions">
+        <button class="btn btn-navy btn-sm" onclick="event.stopPropagation();iniciarDiagnostico(${p.id})" title="Diagnosticar">🩺</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function verProspecto(id) {
+  const p = db.prospectos.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('detProspectoTitle').textContent = p.nombre.toUpperCase();
+  const diags = db.diagnosticos.filter(d => d.prospectoId === id);
+  document.getElementById('detProspectoContent').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+      <div style="font-size:13px;color:var(--text2);line-height:2;">
+        <b>Giro:</b> ${p.giro}<br>
+        ${p.dueno?`<b>Dueño:</b> ${p.dueno}<br>`:''}
+        ${p.telefono?`<b>Tel:</b> <a href="tel:${p.telefono}" style="color:var(--gold);">${p.telefono}</a><br>`:''}
+        ${p.direccion?`<b>Dir:</b> ${p.direccion}<br>`:''}
+        ${p.zona?`<b>Zona:</b> ${p.zona}<br>`:''}
+        <b>Alta:</b> ${p.fechaAlta}
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+        <button class="btn btn-primary btn-sm" onclick="cerrarModal('modalDetalleProspecto');iniciarDiagnostico(${p.id})">🩺 Diagnosticar</button>
+        <button class="btn btn-secondary btn-sm" onclick="cambiarEstatusProspecto(${p.id},'cliente')">✅ Marcar cliente</button>
+        <button class="btn btn-secondary btn-sm" onclick="cambiarEstatusProspecto(${p.id},'frio')">❄️ Marcar frío</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarProspecto(${p.id})">🗑 Eliminar</button>
+      </div>
+    </div>
+    ${p.notas ? `<div style="background:var(--gold-ll);border-radius:8px;padding:10px;font-size:13px;color:#6B4D00;"><b>📝 Notas:</b> ${p.notas}</div>` : ''}
+    ${diags.length ? `<div style="margin-top:12px;"><div style="font-weight:700;font-size:13px;color:var(--text2);margin-bottom:8px;">Diagnósticos realizados (${diags.length}):</div>${diags.map(d=>`<div class="prospect-item" onclick="cerrarModal('modalDetalleProspecto');cargarReporteById(${d.id})" style="cursor:pointer;"><div style="flex:1;"><div class="prospect-name">Diagnóstico ${d.fecha}</div><div class="prospect-meta">Score: ${d.scoreGeneral}</div></div></div>`).join('')}</div>` : ''}
+  `;
+  showModal('modalDetalleProspecto');
+}
+
+function iniciarDiagnostico(id) {
+  showSection('diagnostico');
+  document.getElementById('diagProspectoSelect').value = id;
+  seleccionarProspecto();
+}
+
+function cambiarEstatusProspecto(id, estatus) {
+  const p = db.prospectos.find(x=>x.id===id);
+  if (p) { p.estatus = estatus; guardarStorage(); renderProspectos(); actualizarStats(); cerrarModal('modalDetalleProspecto'); toast('✅ Estatus actualizado'); }
+}
+
+function eliminarProspecto(id) {
+  if (!confirm('¿Eliminar este prospecto y sus diagnósticos?')) return;
+  db.prospectos = db.prospectos.filter(x=>x.id!==id);
+  db.diagnosticos = db.diagnosticos.filter(x=>x.prospectoId!==id);
+  guardarStorage(); renderProspectos(); actualizarStats(); actualizarSelectores();
+  cerrarModal('modalDetalleProspecto'); toast('🗑 Prospecto eliminado');
+}
+
+function actualizarStats() {
+  document.getElementById('statTotal').textContent = db.prospectos.length;
+  document.getElementById('statDiag').textContent = db.diagnosticos.length;
+  document.getElementById('statCalientes').textContent = db.prospectos.filter(p=>p.estatus==='visitado'||p.estatus==='diagnosticado').length;
+}
+
+// ══════════════════════════════════════════════════════════
+//  DIAGNÓSTICO — CONSTRUCCIÓN DEL CHECKLIST
+// ══════════════════════════════════════════════════════════
+function buildChecklist() {
+  const container = document.getElementById('areasContainer');
+  container.innerHTML = AREAS.map(area => `
+    <div class="area-wrapper" id="area_wrap_${area.id}">
+      <div class="area-header" id="area_hdr_${area.id}" onclick="toggleArea('${area.id}')">
+        <div class="area-header-left">
+          <span class="area-icon">${area.icon}</span>
+          <div>
+            <div class="area-title-text">${area.titulo}</div>
+            <div class="area-subtitle">${area.subtitulo}</div>
+          </div>
+        </div>
+        <div class="area-score-badge">
+          <div class="score-circle sin-data" id="score_${area.id}">—</div>
+          <span class="area-chevron" id="chev_${area.id}">▼</span>
+        </div>
+      </div>
+      <div class="area-body" id="area_body_${area.id}">
+        ${area.preguntas_rapidas.map(p => buildPregunta(area.id, p)).join('')}
+        <button class="expand-toggle" onclick="toggleExpand('extra_${area.id}', this)">
+          <span class="expand-icon" id="ei_${area.id}">▶</span>
+          Ver preguntas adicionales (${area.preguntas_extra.length})
+        </button>
+        <div class="expand-content" id="extra_${area.id}">
+          ${area.preguntas_extra.map(p => buildPregunta(area.id, p)).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildPregunta(areaId, p) {
+  return `
+    <div class="semaforo-item" id="item_${p.id}">
+      <div class="semaforo-pregunta">${p.texto}</div>
+      <div class="semaforo-opciones">
+        <button class="semaforo-btn verde" onclick="setRespuesta('${areaId}','${p.id}','verde',this)">✅ Sí / Bien</button>
+        <button class="semaforo-btn amarillo" onclick="setRespuesta('${areaId}','${p.id}','amarillo',this)">⚠️ Parcial</button>
+        <button class="semaforo-btn rojo" onclick="setRespuesta('${areaId}','${p.id}','rojo',this)">❌ No / Mal</button>
+      </div>
+    </div>`;
+}
+
+function toggleArea(id) {
+  const body = document.getElementById('area_body_' + id);
+  const hdr  = document.getElementById('area_hdr_' + id);
+  const chev = document.getElementById('chev_' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  hdr.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function toggleExpand(id, btn) {
+  const el = document.getElementById(id);
+  const icon = btn.querySelector('.expand-icon');
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open', !isOpen);
+  icon.classList.toggle('open', !isOpen);
+}
+
+function setRespuesta(areaId, pregId, valor, btn) {
+  if (!respuestas[areaId]) respuestas[areaId] = {};
+  respuestas[areaId][pregId] = valor;
+
+  // Actualizar UI del item
+  const item = document.getElementById('item_' + pregId);
+  item.className = 'semaforo-item selected-' + valor;
+
+  // Desactivar otros botones del mismo ítem
+  item.querySelectorAll('.semaforo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Actualizar score del área
+  actualizarScoreArea(areaId);
+  actualizarProgreso();
+}
+
+function actualizarScoreArea(areaId) {
+  const area = AREAS.find(a => a.id === areaId);
+  const r = respuestas[areaId] || {};
+  const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
+  const respondidas = todas.filter(p => r[p.id]);
+  if (!respondidas.length) {
+    setScoreCircle(areaId, '—', 'sin-data');
+    return;
+  }
+  const pts = respondidas.reduce((acc, p) => acc + ({verde:2,amarillo:1,rojo:0}[r[p.id]]||0), 0);
+  const maxPts = respondidas.length * 2;
+  const pct = Math.round((pts / maxPts) * 100);
+  let cls = pct >= 70 ? 'verde' : pct >= 40 ? 'amarillo' : 'rojo';
+  setScoreCircle(areaId, pct + '%', cls);
+}
+
+function setScoreCircle(areaId, text, cls) {
+  const el = document.getElementById('score_' + areaId);
+  el.className = 'score-circle ' + cls;
+  el.textContent = text;
+}
+
+function actualizarProgreso() {
+  const totalAreas = AREAS.length;
+  const completadas = AREAS.filter(a => {
+    const r = respuestas[a.id] || {};
+    return a.preguntas_rapidas.some(p => r[p.id]);
+  }).length;
+  const pct = Math.round((completadas / totalAreas) * 100);
+  document.getElementById('diagProgressBar').style.width = pct + '%';
+  document.getElementById('diagProgressPct').textContent = pct + '%';
+  document.getElementById('diagProgressLabel').textContent = completadas + ' de ' + totalAreas + ' áreas respondidas';
+}
+
+function actualizarSelectDiag() {
+  const sel = document.getElementById('diagProspectoSelect');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">— Elige un negocio —</option>' +
+    db.prospectos.map(p => `<option value="${p.id}">${p.nombre} · ${p.giro}</option>`).join('');
+  if (val) sel.value = val;
+}
+
+function seleccionarProspecto() {
+  const id = parseInt(document.getElementById('diagProspectoSelect').value);
+  const p = db.prospectos.find(x => x.id === id);
+  diagActual = p || null;
+  respuestas = {};
+  buildChecklist();
+
+  const infoBox = document.getElementById('diagProspectoInfo');
+  const progressCard = document.getElementById('diagProgressCard');
+  const notasCard = document.getElementById('diagNotasCard');
+
+  if (p) {
+    document.getElementById('diagInfoContent').innerHTML =
+      `<b>${p.nombre}</b> · ${p.giro}${p.zona?' · '+p.zona:''}${p.dueno?'<br>Dueño: '+p.dueno:''}${p.telefono?'<br>Tel: '+p.telefono:''}`;
+    infoBox.style.display = 'block';
+    progressCard.style.display = 'block';
+    notasCard.style.display = 'block';
+    document.getElementById('diagSubtitle').textContent = 'Diagnosticando: ' + p.nombre;
+    // Abrir primera área automáticamente
+    toggleArea('ventas');
+  } else {
+    infoBox.style.display = 'none';
+    progressCard.style.display = 'none';
+    notasCard.style.display = 'none';
+    document.getElementById('diagSubtitle').textContent = 'Selecciona un prospecto para diagnosticar';
+  }
+}
+
+function addChip(texto) {
+  const field = document.getElementById('diagOportunidades');
+  const current = field.value.trim();
+  field.value = current ? current + ', ' + texto : texto;
+}
+
+function guardarDiagnostico() {
+  if (!diagActual) { toast('⚠️ Selecciona un prospecto primero'); return; }
+  const respondidas = AREAS.filter(a => Object.keys(respuestas[a.id]||{}).length > 0);
+  if (!respondidas.length) { toast('⚠️ Responde al menos un área antes de guardar'); return; }
+
+  // Calcular scores
+  const scores = {};
+  let totalPts = 0, totalMax = 0;
+  AREAS.forEach(area => {
+    const r = respuestas[area.id] || {};
+    const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
+    const respondidas = todas.filter(p => r[p.id]);
+    if (!respondidas.length) { scores[area.id] = null; return; }
+    const pts = respondidas.reduce((acc, p) => acc + ({verde:2,amarillo:1,rojo:0}[r[p.id]]||0), 0);
+    const maxPts = respondidas.length * 2;
+    const pct = Math.round((pts / maxPts) * 100);
+    scores[area.id] = pct;
+    totalPts += pts; totalMax += maxPts;
+  });
+  const scoreGeneral = totalMax > 0 ? Math.round((totalPts / totalMax) * 100) + '%' : 'N/D';
+
+  const diag = {
+    id: Date.now(),
+    prospectoId: diagActual.id,
+    negocio: diagActual.nombre,
+    giro: diagActual.giro,
+    consultor: config.consultor,
+    fecha: new Date().toLocaleDateString('es-MX'),
+    scoreGeneral,
+    areas: {
+      ventas:     scores.ventas !== null ? scores.ventas + '%' : 'N/D',
+      inventario: scores.inventario !== null ? scores.inventario + '%' : 'N/D',
+      finanzas:   scores.finanzas !== null ? scores.finanzas + '%' : 'N/D',
+      procesos:   scores.procesos !== null ? scores.procesos + '%' : 'N/D',
+      personas:   scores.personas !== null ? scores.personas + '%' : 'N/D',
+      tecnologia: scores.tecnologia !== null ? scores.tecnologia + '%' : 'N/D',
+    },
+    respuestas: JSON.parse(JSON.stringify(respuestas)),
+    oportunidades: document.getElementById('diagOportunidades').value.trim(),
+    notas: document.getElementById('diagNotasGenerales').value.trim(),
+    hallazgos: generarHallazgos(scores),
+  };
+
+  db.diagnosticos.push(diag);
+  // Actualizar estatus del prospecto
+  const pros = db.prospectos.find(p => p.id === diagActual.id);
+  if (pros && pros.estatus !== 'cliente') pros.estatus = 'diagnosticado';
+  guardarStorage();
+  actualizarStats();
+  actualizarSelectores();
+  toast('✅ Diagnóstico guardado: ' + diagActual.nombre);
+
+  // Mostrar reporte
+  setTimeout(() => {
+    showSection('reporte');
+    cargarReporteById(diag.id);
+  }, 500);
+}
+
+function generarHallazgos(scores) {
+  const labels = { ventas:'Ventas', inventario:'Inventario', finanzas:'Finanzas', procesos:'Procesos', personas:'Personas', tecnologia:'Tecnología' };
+  return AREAS.map(a => {
+    const s = scores[a.id];
+    if (s === null) return null;
+    const nivel = s >= 70 ? 'VERDE' : s >= 40 ? 'AMARILLO' : 'ROJO';
+    return `${labels[a.id]}: ${s}% (${nivel})`;
+  }).filter(Boolean).join(' | ');
+}
+
+// ══════════════════════════════════════════════════════════
+//  REPORTE
+// ══════════════════════════════════════════════════════════
+function actualizarSelectReporte() {
+  const sel = document.getElementById('reporteSelect');
+  sel.innerHTML = '<option value="">— Elige un diagnóstico —</option>' +
+    db.diagnosticos.slice().reverse().map(d =>
+      `<option value="${d.id}">${d.negocio} · ${d.fecha}</option>`
+    ).join('');
+}
+
+function cargarReporte() {
+  const id = parseInt(document.getElementById('reporteSelect').value);
+  if (!id) { document.getElementById('reporteContent').style.display = 'none'; return; }
+  cargarReporteById(id);
+}
+
+function cargarReporteById(id) {
+  showSection('reporte');
+  const diag = db.diagnosticos.find(d => d.id === id);
+  if (!diag) return;
+  document.getElementById('reporteSelect').value = id;
+  document.getElementById('reporteContent').style.display = 'block';
+  document.getElementById('cardClaude').style.display = 'none';
+  document.getElementById('cardPropuesta').style.display = 'none';
+  document.getElementById('cardSheets').style.display = 'none';
+
+  // Score general circle
+  const s = parseInt(diag.scoreGeneral);
+  const cls = isNaN(s) ? 'sin-data' : s >= 70 ? 'verde' : s >= 40 ? 'amarillo' : 'rojo';
+  const circle = document.getElementById('reporteScoreCircle');
+  circle.className = 'score-circle ' + cls;
+  circle.style.width = '70px'; circle.style.height = '70px'; circle.style.fontSize = '22px';
+  circle.textContent = diag.scoreGeneral;
+
+  document.getElementById('reporteNegocio').textContent = diag.negocio;
+  document.getElementById('reporteGiro').textContent = diag.giro;
+  document.getElementById('reporteFecha').textContent = '📅 ' + diag.fecha + ' · ' + diag.consultor;
+
+  // Áreas resumen
+  const areaIcons = { ventas:'💰', inventario:'📦', finanzas:'💸', procesos:'⚙️', personas:'👥', tecnologia:'📲' };
+  const areaNames = { ventas:'Ventas', inventario:'Inventario', finanzas:'Finanzas', procesos:'Procesos', personas:'Personas', tecnologia:'Tecnología' };
+  document.getElementById('reporteAreasResumen').innerHTML = Object.keys(diag.areas).map(k => {
+    const v = diag.areas[k];
+    const n = parseInt(v);
+    const cls2 = v === 'N/D' ? 'sin-data' : n >= 70 ? 'verde' : n >= 40 ? 'amarillo' : 'rojo';
+    return `<div class="reporte-area ${cls2}">
+      <div style="font-size:22px;">${areaIcons[k]}</div>
+      <div style="flex:1;">
+        <div class="reporte-area-nombre">${areaNames[k]}</div>
+        <div class="reporte-area-det">${v === 'N/D' ? 'No evaluada' : (n>=70?'✅ Bien':'⚠️ '+(n>=40?'Área de mejora':'Crítico'))}</div>
+      </div>
+      <div style="font-family:'Bebas Neue',cursive;font-size:22px;color:inherit;">${v}</div>
+    </div>`;
+  }).join('');
+
+  // Guardar referencia para outputs
+  window._diagActualReporte = diag;
+}
+
+function generarParaClaude() {
+  const d = window._diagActualReporte;
+  if (!d) return;
+  const texto = `=== DIAGNÓSTICO NSR — ${d.negocio.toUpperCase()} ===
+Giro: ${d.giro}
+Fecha: ${d.fecha}
+Consultor: ${d.consultor}
+Score General: ${d.scoreGeneral}
+
+SCORES POR ÁREA:
+• Ventas e Ingresos:      ${d.areas.ventas}
+• Inventario y Compras:   ${d.areas.inventario}
+• Finanzas y Gastos:      ${d.areas.finanzas}
+• Procesos y Operación:   ${d.areas.procesos}
+• Personas y Equipo:      ${d.areas.personas}
+• Tecnología y Sistemas:  ${d.areas.tecnologia}
+
+RESPUESTAS DETALLADAS:
+${AREAS.map(area => {
+  const r = d.respuestas[area.id] || {};
+  const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
+  const resp = todas.filter(p => r[p.id]).map(p => `  [${r[p.id].toUpperCase()}] ${p.texto}`).join('\n');
+  return resp ? `\n${area.icon} ${area.titulo.toUpperCase()}:\n${resp}` : '';
+}).filter(Boolean).join('\n')}
+
+OPORTUNIDADES DETECTADAS:
+${d.oportunidades || '(no especificadas)'}
+
+NOTAS DEL CONSULTOR:
+${d.notas || '(sin notas adicionales)'}
+
+---
+Por favor, con base en este diagnóstico:
+1. Identifica los 3-5 hallazgos críticos con mayor impacto económico
+2. Cuantifica el impacto estimado en pesos mensuales/anuales
+3. Genera una propuesta de solución con los servicios NSR más apropiados
+4. Sugiere el paquete de precio recomendado (A/$2,500 · B/$3,800 · C/$800 mensual)
+5. Calcula el ROI estimado de la inversión`;
+
+  document.getElementById('textoClaude').textContent = texto;
+  document.getElementById('cardClaude').style.display = 'block';
+  document.getElementById('cardClaude').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function generarPropuesta() {
+  const d = window._diagActualReporte;
+  if (!d) return;
+  const s = parseInt(d.scoreGeneral);
+  const nivel = isNaN(s) ? 'en proceso de evaluación' : s >= 70 ? 'aceptable pero con áreas de mejora' : s >= 40 ? 'con oportunidades claras de mejora' : 'con áreas críticas que atender';
+  const areasRojas = Object.entries(d.areas).filter(([k,v]) => parseInt(v) < 40 && v !== 'N/D').map(([k]) => ({ventas:'Ventas',inventario:'Inventario',finanzas:'Finanzas',procesos:'Procesos',personas:'Personas',tecnologia:'Tecnología'}[k]));
+  
+  const texto = `Hola, gracias por recibirme hoy en ${d.negocio}.
+
+Después de revisar las operaciones del negocio, encontré que están ${nivel} con un score general de ${d.scoreGeneral}.
+
+${areasRojas.length ? `Las áreas que más atención necesitan son: ${areasRojas.join(', ')}.` : 'El negocio tiene una base sólida con oportunidades de sistematizar y escalar.'}
+
+Lo bueno es que todo eso tiene solución, y no requiere sistemas caros ni complicados.
+
+Con Negocio Sin Rodeos puedo ayudarles a:
+${d.oportunidades ? d.oportunidades.split(',').map(o => '✓ ' + o.trim()).join('\n') : '✓ Sistematizar el control de ventas, gastos e inventario\n✓ Crear herramientas hechas a la medida de su negocio\n✓ Capacitar a su equipo para operar sin depender de una sola persona'}
+
+Tengo tres opciones de inversión según lo que necesiten.
+¿Cuándo podemos tener 20 minutos para platicar los detalles?
+
+— ${config.consultor}
+Negocio Sin Rodeos · ${config.telefono}`;
+
+  document.getElementById('textoPropuesta').textContent = texto;
+  document.getElementById('cardPropuesta').style.display = 'block';
+  document.getElementById('cardPropuesta').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function enviarSheets() {
+  const d = window._diagActualReporte;
+  if (!d) return;
+  if (!config.webAppUrl) {
+    toast('⚠️ Configura la URL de Google Sheets primero');
+    document.getElementById('cardSheets').style.display = 'block';
+    document.getElementById('sheetsStatus').innerHTML = `<div class="sheets-config"><div class="sheets-config-title">⚠️ Sin configurar</div><div style="font-size:12px;color:#6B4D00;margin-top:4px;">Ve a la pestaña Config y agrega la URL del Web App de Apps Script.</div></div>`;
+    return;
+  }
+  document.getElementById('cardSheets').style.display = 'block';
+  document.getElementById('sheetsStatus').innerHTML = `<div class="sheets-status"><span class="dot dot-yellow"></span><span style="color:#8B6800;font-size:13px;font-weight:600;">Enviando a Google Sheets...</span></div>`;
+  
+  try {
+    const payload = { tipo: 'diagnostico', ...d };
+    const resp = await fetch(config.webAppUrl, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    const result = await resp.json();
+    if (result.ok) {
+      document.getElementById('sheetsStatus').innerHTML = `<div class="sheets-status"><span class="dot dot-green"></span><span style="color:var(--green);font-size:13px;font-weight:600;">✅ Enviado correctamente a Google Sheets</span></div>`;
+      toast('✅ Datos enviados a Sheets');
+    } else throw new Error(result.error);
+  } catch(e) {
+    document.getElementById('sheetsStatus').innerHTML = `<div class="sheets-status"><span class="dot dot-red"></span><span style="color:var(--red);font-size:13px;font-weight:600;">❌ Error al enviar: ${e.message}</span></div>`;
+    toast('❌ Error al enviar a Sheets');
+  }
+}
+
+function generarPDF() {
+  const d = window._diagActualReporte;
+  if (!d) return;
+  const areaIcons = { ventas:'💰', inventario:'📦', finanzas:'💸', procesos:'⚙️', personas:'👥', tecnologia:'📲' };
+  const areaNames = { ventas:'Ventas', inventario:'Inventario', finanzas:'Finanzas', procesos:'Procesos', personas:'Personas', tecnologia:'Tecnología' };
+  const areasHTML = Object.keys(d.areas).map(k => {
+    const v = d.areas[k]; const n = parseInt(v);
+    const color = v==='N/D'?'#999':n>=70?'#2D9E6B':n>=40?'#F0B429':'#D93025';
+    const nivel = v==='N/D'?'No evaluada':n>=70?'✅ Bien':n>=40?'⚠️ Mejora':'❌ Crítico';
+    return `<tr><td>${areaIcons[k]} ${areaNames[k]}</td><td style="font-weight:700;color:${color};">${v}</td><td>${nivel}</td></tr>`;
+  }).join('');
+
+  document.getElementById('imprimirContent').innerHTML = `
+    <div style="font-family:'DM Sans',sans-serif;">
+      <div style="background:#0D1B3E;color:#C9A84C;padding:16px;border-radius:10px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;letter-spacing:2px;">NEGOCIO SIN RODEOS</div>
+        <div style="font-size:12px;color:#9AA3BE;margin-top:4px;">Diagnóstico Empresarial · ${d.fecha}</div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:18px;font-weight:800;color:#0D1B3E;">${d.negocio}</div>
+        <div style="font-size:13px;color:#666;">${d.giro} · Diagnóstico por ${d.consultor}</div>
+        <div style="font-size:22px;font-weight:900;color:#0D1B3E;margin-top:8px;">Score general: <span style="color:${parseInt(d.scoreGeneral)>=70?'#2D9E6B':parseInt(d.scoreGeneral)>=40?'#F0B429':'#D93025'}">${d.scoreGeneral}</span></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px;">
+        <thead><tr style="background:#F5F3EE;"><th style="padding:8px;text-align:left;">Área</th><th>Score</th><th>Estado</th></tr></thead>
+        <tbody>${areasHTML}</tbody>
+      </table>
+      ${d.oportunidades?`<div style="margin-bottom:10px;"><b>Oportunidades detectadas:</b><br><span style="color:#444;">${d.oportunidades}</span></div>`:''}
+      ${d.notas?`<div style="margin-bottom:10px;"><b>Notas:</b><br><span style="color:#444;">${d.notas}</span></div>`:''}
+      <div style="background:#F5F3EE;border-radius:8px;padding:12px;margin-top:12px;font-size:12px;text-align:center;color:#666;">
+        ${config.consultor} · Negocio Sin Rodeos · ${config.telefono}<br>
+        @negociosinrodeos · negociosinrodeos@gmail.com
+      </div>
+    </div>`;
+  showModal('modalImprimir');
+}
+
+// ══════════════════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════════════════
+function guardarConfig() {
+  config.webAppUrl = document.getElementById('cfgWebAppUrl').value.trim();
+  config.consultor = document.getElementById('cfgConsultor').value.trim() || 'José Alfonso Rojas';
+  config.telefono = document.getElementById('cfgTelefono').value.trim() || '614 356 2493';
+  guardarStorage();
+  document.getElementById('configStatus').style.display = 'block';
+  setTimeout(() => document.getElementById('configStatus').style.display = 'none', 2000);
+  actualizarConfigSheetsStatus();
+  toast('✅ Configuración guardada');
+}
+
+function guardarConfigRapida() {
+  config.webAppUrl = document.getElementById('cfgWebAppUrl2').value.trim();
+  guardarStorage();
+  cerrarModal('modalConfig');
+  actualizarConfigSheetsStatus();
+  toast('✅ URL de Sheets guardada');
+}
+
+function actualizarConfigSheetsStatus() {
+  const el = document.getElementById('configSheetsStatus');
+  if (!el) return;
+  if (config.webAppUrl) {
+    el.innerHTML = `<span class="dot dot-green"></span><span style="color:var(--green);font-size:12px;font-weight:600;">Conectado ✅</span>`;
+    document.getElementById('cfgWebAppUrl2').value = config.webAppUrl;
+  } else {
+    el.innerHTML = `<span class="dot dot-yellow"></span><span style="color:#8B6800;font-size:12px;font-weight:600;">URL del Web App no configurada</span>`;
+  }
+}
+
+function actualizarSelectores() {
+  actualizarSelectDiag();
+  actualizarSelectReporte();
+}
+
+// ══════════════════════════════════════════════════════════
+//  SHEETS — PROSPECTO
+// ══════════════════════════════════════════════════════════
+async function enviarSheetsProspecto(p) {
+  try {
+    await fetch(config.webAppUrl, {
+      method: 'POST',
+      body: JSON.stringify({ tipo: 'prospecto', ...p }),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  } catch(e) { /* silencioso */ }
+}
+
+// ══════════════════════════════════════════════════════════
+//  UTILIDADES
+// ══════════════════════════════════════════════════════════
+function copiar(elementId) {
+  const el = document.getElementById(elementId);
+  const text = el.textContent || el.innerText;
+  navigator.clipboard.writeText(text).then(() => toast('📋 Copiado al portapapeles')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    toast('📋 Copiado al portapapeles');
+  });
+}
+
+function exportarJSON() {
+  const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'nsr_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  toast('📥 Backup exportado');
+}
+
+function limpiarTodo() {
+  if (!confirm('¿Eliminar TODOS los datos? Esto no se puede deshacer.')) return;
+  db = { prospectos: [], diagnosticos: [] };
+  guardarStorage();
+  renderProspectos();
+  actualizarStats();
+  actualizarSelectores();
+  toast('🗑 Datos eliminados');
+}
+
+// ══════════════════════════════════════════════════════════
+//  PRELOAD DEMO (para pruebas)
+// ══════════════════════════════════════════════════════════
+// Descomenta para precargar datos de prueba:
+/*
+if (!db.prospectos.length) {
+  db.prospectos = [
+    { id: 1001, nombre: 'Coffee Brothers', giro: 'Cafetería', dueno: 'Roberto', telefono: '614 111 2233', direccion: 'Blvd. Independencia 400', zona: 'Blvd. Independencia', estatus: 'visitado', notas: 'Dueño muy interesado, visitar martes AM', fechaAlta: '14/03/2026' },
+    { id: 1002, nombre: 'Saturno Café', giro: 'Cafetería', dueno: 'Carlos', telefono: '614 333 4455', direccion: 'Col. Navarro', zona: 'Col. Navarro', estatus: 'diagnosticado', notas: '', fechaAlta: '12/03/2026' },
+    { id: 1003, nombre: 'Biela Café', giro: 'Cafetería', dueno: 'Familiar', telefono: '', direccion: '', zona: '', estatus: 'frio', notas: 'Contacto familiar, en pausa', fechaAlta: '01/03/2026' },
+  ];
+  guardarStorage();
+  renderProspectos();
+  actualizarStats();
+  actualizarSelectores();
+}
+*/
+</script>
+</body>
+</html>
