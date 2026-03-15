@@ -500,7 +500,7 @@
     <div class="topbar-mascot">🧠🩷</div>
     <div>
       <div class="topbar-name">psico<span>pocc</span></div>
-      <div class="topbar-sub">Dra. Angélica Posada</div>
+      <div class="topbar-sub">Psic. Angélica Posada</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;">
@@ -1241,6 +1241,17 @@ function eliminarPacienteActual() {
 
 function getSaldo(id) { return db.pagos.filter(p=>p.pacienteId===id).reduce((a,p)=>a+(p.monto-p.pagado),0); }
 function cobroLabel(t) { return {sesion:'Por sesión',paquete:'Paquete',mensualidad:'Mensualidad'}[t]||t; }
+function nombreSesion(s) {
+  // Si viene de Google Calendar (pacienteId=0 o desdeCalendar), mostrar el título del evento (guardado en notas)
+  if (!s.pacienteId || s.desdeCalendar || s.pacienteId === 0 || s.pacienteId === '0') {
+    // notas tiene el formato "Título del evento · descripción"
+    const titulo = (s.notas || '').split(' · ')[0].trim();
+    return titulo || '📅 Evento Calendar';
+  }
+  const pac = db.pacientes.find(x => x.id === Number(s.pacienteId));
+  return pac?.nombre || '—';
+}
+
 function terapiaLabel(t) { return {individual:'Terapia Individual',orientacion:'Orientación Vocacional',pareja:'Pareja',otro:'Otro'}[t]||t; }
 
 // ════ PAGOS ════
@@ -1346,7 +1357,7 @@ function renderAgenda() {
         </div>
         <div class="session-divider"></div>
         <div style="flex:1;min-width:0;">
-          <div class="session-name">${pac?.nombre||'—'}</div>
+          <div class="session-name">${nombreSesion(s)}</div>
           <div class="session-type">${terapiaLabel(s.tipo)}</div>
           ${s.notas?`<div style="font-size:11px;color:var(--text3);margin-top:3px;font-weight:600">📝 ${s.notas}</div>`:''}
         </div>
@@ -1431,7 +1442,7 @@ function renderDashboard() {
         return `<div class="session-item ${s.estado}" style="margin-bottom:8px;">
           <div style="text-align:center;min-width:54px;"><div class="session-time">${s.hora}</div><div class="session-time-label">${s.duracion} min</div></div>
           <div class="session-divider"></div>
-          <div style="flex:1;"><div class="session-name">${pac?.nombre||'—'}</div><div class="session-type">${terapiaLabel(s.tipo)}</div></div>
+          <div style="flex:1;"><div class="session-name">${nombreSesion(s)}</div><div class="session-type">${terapiaLabel(s.tipo)}</div></div>
           <span class="badge ${estadoBadge}">${s.estado.replace('_',' ')}</span>
         </div>`;}).join('');
 }
@@ -1569,7 +1580,7 @@ function renderCalDayDetail(fechaStr) {
           <div style="font-size:10px;color:var(--text3);font-weight:600;">${s.duracion}m</div>
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;">${pac?.nombre||'—'}</div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;">${nombreSesion(s)}</div>
           <div style="font-size:12px;color:var(--text3);font-weight:600;">${terapiaLabel(s.tipo)}</div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
