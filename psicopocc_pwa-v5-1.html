@@ -98,7 +98,8 @@
     border-top: 2px solid var(--border);
     display: flex;
     align-items: stretch;
-    height: 68px;
+    height: calc(68px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
     z-index: 100;
     box-shadow: 0 -4px 20px rgba(100,80,160,0.10);
   }
@@ -145,7 +146,7 @@
   .nav-label { letter-spacing: 0.2px; }
 
   /* ── MAIN ── */
-  .main { flex: 1; padding: 24px; padding-bottom: 130px; max-width: 1100px; margin: 0 auto; width: 100%; }
+  .main { flex: 1; padding: 24px; padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px)); max-width: 1100px; margin: 0 auto; width: 100%; }
 
   /* ── PAGE HEADER ── */
   .page-header {
@@ -499,11 +500,11 @@
     <div class="topbar-mascot">🧠🩷</div>
     <div>
       <div class="topbar-name">psico<span>pocc</span></div>
-      <div class="topbar-sub">Psic. Angélica Posada</div>
+      <div class="topbar-sub">Dra. Angélica Posada</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px;">
-    <div id="conexionBadge" style="font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.3);color:var(--text2);">⏳ Cargando...</div>
+    <div id="conexionBadge" onclick="recargarDesdeSheets()" title="Toca para sincronizar" style="font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.3);color:var(--text2);cursor:pointer;">⏳</div>
     <div class="topbar-date" id="topbarDate"></div>
   </div>
 </header>
@@ -918,11 +919,7 @@ async function load() {
 // ── Llamada GET al backend ──
 async function apiGet(action, params = {}) {
   const qs = new URLSearchParams({ action, ...params }).toString();
-  const res = await fetch(`${API_URL}?${qs}`, {
-    method: 'GET',
-    redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain' }
-  });
+  const res = await fetch(`${API_URL}?${qs}`);
   return res.json();
 }
 
@@ -930,8 +927,6 @@ async function apiGet(action, params = {}) {
 async function apiPost(action, data = {}) {
   const res = await fetch(API_URL, {
     method: 'POST',
-    redirect: 'follow',
-    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ action, data })
   });
   return res.json();
@@ -949,17 +944,106 @@ async function sincronizarDesdeSheets() {
     if (rPac.ok) db.pacientes = rPac.data.map(normalizarPaciente);
     if (rPag.ok) db.pagos     = rPag.data.map(normalizarPago);
     if (rSes.ok) db.sesiones  = rSes.data.map(normalizarSesion);
+
+    // Importar citas de Google Calendar que no estén aún en el Sheet
+    await importarDesdeCalendar();
+
     save();
     mostrarCargando(false);
-    showToast('✅ Datos sincronizados con Google Sheets');
+    modoConectado = true;
+    actualizarBadgeConexion();
+    showToast('✅ Sincronizado con Sheets y Calendar');
   } catch(e) {
-    console.error('❌ Error Sheets:', e);
+    console.error('❌ Error sync:', e);
     mostrarCargando(false);
-    showToast('⚠️ Sin conexión con Sheets — usando datos locales');
     modoConectado = false;
+    actualizarBadgeConexion();
+    showToast('⚠️ Sin conexión — usando datos locales');
     const raw = localStorage.getItem('psicopocc_v2');
-    if (raw) db = JSON.parse(raw);
-    else seedData();
+    if (raw) db = JSON.parse(raw); else seedData();
+  }
+}
+
+// ── Importar eventos de Google Calendar → Sheet + PWA ──────
+async function importarDesdeCalendar() {
+  try {
+    const inicio = new Date(); inicio.setDate(inicio.getDate() - 30);
+    const fin    = new Date(); fin.setDate(fin.getDate() + 90);
+    const r = await apiGet('getCalendario', {
+      inicio: inicio.toISOString(),
+      fin: fin.toISOString()
+    });
+    if (!r.ok || !r.data || !r.data.length) return;
+
+    // IDs de Calendar ya registrados en el Sheet
+    const calIdsExistentes = new Set(db.sesiones.map(s => String(s.calEventId)).filter(Boolean));
+
+    for (const ev of r.data) {
+      if (calIdsExistentes.has(String(ev.id))) continue;
+
+      // Importar TODOS los eventos del calendario
+
+      const fechaInicio = new Date(ev.inicio);
+      const durMin = Math.round((new Date(ev.fin) - fechaInicio) / 60000);
+
+      const nueva = {
+        id:            Date.now() + Math.floor(Math.random() * 9999),
+        pacienteId:    0,
+        fecha:         fechaInicio.toISOString().slice(0, 10),
+        hora:          fechaInicio.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit', hour12: false}),
+        duracion:      durMin > 0 ? durMin : 50,
+        tipo:          'individual',
+        estado:        'programada',
+        notas:         ev.titulo + (ev.notas ? ' · ' + ev.notas : ''),
+        calEventId:    ev.id,
+        desdeCalendar: true
+      };
+
+      db.sesiones.push(nueva);
+      calIdsExistentes.add(String(ev.id));
+
+      // Guardar en Sheet (sin crear nuevo evento Calendar, ya existe)
+      apiPost('addSesionDesdeCalendar', nueva).catch(() => {});
+    }
+  } catch(e) {
+    console.warn('⚠️ No se importó desde Calendar:', e);
+  }
+}
+
+// ── Badge de estado de conexión ─────────────────────────────
+function actualizarBadgeConexion() {
+  const badge = document.getElementById('conexionBadge');
+  if (!badge) return;
+  if (modoConectado) {
+    badge.style.background = 'rgba(125,201,154,0.4)';
+    badge.style.color = '#1A5C30';
+    badge.textContent = '✅ Sync';
+  } else if (API_URL) {
+    badge.style.background = 'rgba(245,200,66,0.4)';
+    badge.style.color = '#7A5A10';
+    badge.textContent = '⚠️ Error';
+  } else {
+    badge.style.background = 'rgba(255,255,255,0.3)';
+    badge.style.color = 'var(--text2)';
+    badge.textContent = '📱 Demo';
+  }
+}
+
+// ── Botón sync manual (tocar el badge) ──────────────────────
+async function recargarDesdeSheets() {
+  if (!API_URL) { showToast('📱 Sin API_URL — modo demo'); return; }
+  const badge = document.getElementById('conexionBadge');
+  if (badge) badge.textContent = '🔄';
+  modoConectado = true;
+  await sincronizarDesdeSheets();
+  renderDashboard();
+  const activa = document.querySelector('.section.active');
+  if (activa) {
+    const id = activa.id;
+    if (id === 'pacientes') renderPacientes();
+    if (id === 'pagos')     renderPagos();
+    if (id === 'agenda')    renderAgenda();
+    if (id === 'calendario') renderCalendario();
   }
 }
 
@@ -971,7 +1055,36 @@ function normalizarPago(p) {
   return { ...p, id: Number(p.id), pacienteId: Number(p.pacienteId), monto: Number(p.monto)||0, pagado: Number(p.pagado)||0 };
 }
 function normalizarSesion(s) {
-  return { ...s, id: Number(s.id), pacienteId: Number(s.pacienteId), duracion: Number(s.duracion)||50 };
+  // Arreglar fecha si viene como ISO string con tiempo (ej: "2026-03-18T06:00:00.000Z")
+  let fecha = s.fecha || '';
+  if (fecha.includes('T')) {
+    // Usar fecha local, no UTC, para evitar desfase de un día
+    const d = new Date(fecha);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    // Si la hora UTC es muy temprana (< 6am), puede ser que sea el día anterior en UTC
+    // Usar la parte de la fecha del string directamente si es posible
+    fecha = fecha.slice(0, 10); // Tomar YYYY-MM-DD directo del string
+  }
+
+  // Arreglar hora si viene como ISO con fecha basura 1899 (ej: "1899-12-31T00:36:36.000Z")
+  let hora = s.hora || '';
+  if (hora.includes('T') || hora.includes('1899')) {
+    const d = new Date(hora);
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const mm = String(d.getUTCMinutes()).padStart(2, '0');
+    hora = hh + ':' + mm;
+  }
+
+  return {
+    ...s,
+    id:         Number(s.id),
+    pacienteId: Number(s.pacienteId),
+    duracion:   Number(s.duracion) || 50,
+    fecha,
+    hora
+  };
 }
 
 // ── Indicador de carga ──
@@ -1184,15 +1297,34 @@ function eliminarPago(id) {
 }
 
 // ════ AGENDA ════
-function guardarSesion() {
-  const s = { id:uid(), pacienteId:parseInt(document.getElementById('s_paciente').value), fecha:document.getElementById('s_fecha').value, hora:document.getElementById('s_hora').value, duracion:parseInt(document.getElementById('s_duracion').value), tipo:document.getElementById('s_tipo').value, estado:document.getElementById('s_estado').value, notas:document.getElementById('s_notas').value };
-  if(!s.pacienteId||!s.fecha||!s.hora){alert('Paciente, fecha y hora son obligatorios');return;}
-  db.sesiones.push(s); save();
+async function guardarSesion() {
+  const s = {
+    id: uid(),
+    pacienteId: parseInt(document.getElementById('s_paciente').value),
+    fecha:    document.getElementById('s_fecha').value,
+    hora:     document.getElementById('s_hora').value,
+    duracion: parseInt(document.getElementById('s_duracion').value),
+    tipo:     document.getElementById('s_tipo').value,
+    estado:   document.getElementById('s_estado').value,
+    notas:    document.getElementById('s_notas').value
+  };
+  if (!s.pacienteId || !s.fecha || !s.hora) { alert('Paciente, fecha y hora son obligatorios'); return; }
+  db.sesiones.push(s);
+  save();
   if (modoConectado) {
-    const pac = db.pacientes.find(x=>x.id===s.pacienteId);
-    apiPost('addSesion', {...s, nombrePaciente: pac?.nombre||''}).catch(()=>{});
+    try {
+      const pac = db.pacientes.find(x => x.id === s.pacienteId);
+      const r = await apiPost('addSesion', { ...s, nombrePaciente: pac?.nombre || '' });
+      if (r && r.calEventId) {
+        const local = db.sesiones.find(x => x.id === s.id);
+        if (local) { local.calEventId = r.calEventId; save(); }
+      }
+    } catch(e) { console.warn('Error addSesion:', e); }
   }
-  closeModal('modalSesion'); renderAgenda(); renderCalendario && renderCalendario(); showToast('✅ ¡Sesión agendada!');
+  closeModal('modalSesion');
+  renderAgenda();
+  if (typeof renderCalendario === 'function') renderCalendario();
+  showToast('✅ ¡Sesión agendada!');
 }
 
 function renderAgenda() {
@@ -1250,24 +1382,6 @@ function formatFecha(str) {
 }
 
 // ════ DASHBOARD ════
-function actualizarBadgeConexion() {
-  const badge = document.getElementById('conexionBadge');
-  if (!badge) return;
-  if (modoConectado) {
-    badge.style.background = 'rgba(125,201,154,0.4)';
-    badge.style.color = '#1A5C30';
-    badge.textContent = '✅ Sincronizado';
-  } else if (API_URL) {
-    badge.style.background = 'rgba(245,200,66,0.4)';
-    badge.style.color = '#7A5A10';
-    badge.textContent = '⚠️ Sin sync';
-  } else {
-    badge.style.background = 'rgba(255,255,255,0.3)';
-    badge.style.color = 'var(--text2)';
-    badge.textContent = '📱 Demo';
-  }
-}
-
 function renderDashboard() {
   const hoy = new Date();
   const mesActual = hoy.toISOString().slice(0,7);
