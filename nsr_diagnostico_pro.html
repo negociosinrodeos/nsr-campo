@@ -869,7 +869,7 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
   }
-  return ContentService.createTextOutput(JSON.stringify({status: 'NSR Diagnóstico Pro · Online ✅'}))
+  return ContentService.createTextOutput(JSON.stringify({status: 'NSR Diagnóstico Pro · Online ✅', version: 'v2'}))
     .setMimeType(ContentService.MimeType.JSON);
 }</div>
       <button class="btn btn-navy btn-sm" onclick="copiar('scriptCode')">📋 Copiar script</button>
@@ -1862,7 +1862,11 @@ async function sincronizarDesdeSheets() {
   try {
     // Jalar datos del Sheets vía doGet con parámetro action=sync
     const url = config.webAppUrl + '?action=sync';
-    const resp = await fetch(url);
+    const resp = await fetch(url, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain' }
+    });
     const result = await resp.json();
 
     if (!result.ok) throw new Error(result.error || 'Error desconocido');
