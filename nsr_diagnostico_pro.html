@@ -1822,12 +1822,34 @@ function actualizarSelectores() {
 // ══════════════════════════════════════════════════════════
 async function enviarSheetsProspecto(p) {
   try {
-    await fetch(config.webAppUrl, {
+    const payload = {
+      tipo:      'prospecto',
+      id:        String(p.id),
+      negocio:   p.nombre || p.negocio || '',
+      giro:      p.giro      || '',
+      dueno:     p.dueno     || '',
+      telefono:  p.telefono  || '',
+      direccion: p.direccion || '',
+      zona:      p.zona      || '',
+      estatus:   p.estatus   || 'nuevo',
+      fechaAlta: p.fechaAlta || '',
+      notas:     p.notas     || ''
+    };
+    const resp = await fetch(config.webAppUrl, {
       method: 'POST',
-      body: JSON.stringify({ tipo: 'prospecto', ...p }),
-      headers: { 'Content-Type': 'text/plain' }
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'text/plain' },
+      redirect: 'follow'
     });
-  } catch(e) { /* silencioso */ }
+    const result = await resp.json();
+    if (result.ok) {
+      toast('☁️ Prospecto guardado en Sheets');
+    } else {
+      toast('⚠️ Sheets: ' + (result.error || 'Error desconocido'));
+    }
+  } catch(e) {
+    toast('⚠️ No se pudo enviar a Sheets: ' + e.message);
+  }
 }
 
 // ══════════════════════════════════════════════════════════
