@@ -291,4 +291,19 @@ html,body{height:100%;background:var(--navy);color:var(--white);font-family:"Bar
   });
 
   // PWA Manifest
-  var manifest = {name:"NSR Consultorios",short_name:"NSR",display:"standalone",bac
+  var manifest = {
+    name: "NSR — Consultorios",
+    short_name: "NSR",
+    display: "standalone",
+    background_color: "#0f2744",
+    theme_color: "#0f2744",
+    start_url: "./NSR_OnePager_Consultorios.html",
+    icons: []
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  document.getElementById('manifest-link').setAttribute('href', url);
+})();
+</script>
+</body>
+</html>
