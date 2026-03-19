@@ -452,14 +452,27 @@ function normalizarSesion(s) {
 // ══════════════════════════════════════════════
 //  API CALLS
 // ══════════════════════════════════════════════
+// Fetch con timeout — Apps Script puede tardar, no bloqueamos para siempre
+async function fetchWithTimeout(url, opts={}, ms=10000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, {...opts, signal:ctrl.signal});
+    clearTimeout(timer);
+    return res;
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
 async function apiGet(action, params={}) {
   const qs = new URLSearchParams({action, ...params}).toString();
-  const res = await fetch(`${API_URL}?${qs}`, { redirect:'follow' });
+  const res = await fetchWithTimeout(`${API_URL}?${qs}`, {redirect:'follow'});
   const text = await res.text();
   return JSON.parse(text);
 }
 async function apiPost(action, data={}) {
-  const res = await fetch(API_URL, {
+  const res = await fetchWithTimeout(API_URL, {
     method:'POST', redirect:'follow',
     headers:{'Content-Type':'text/plain'},
     body: JSON.stringify({action, data})
@@ -483,28 +496,46 @@ async function load() {
 async function sincronizarDesdeSheets() {
   mostrarCargando(true);
   try {
-    const [rPac, rPag, rSes] = await Promise.all([
-      apiGet('getPacientes'),
-      apiGet('getPagos'),
-      apiGet('getSesiones')
-    ]);
-    if (rPac.ok) db.pacientes = rPac.data.map(normalizarPaciente);
-    if (rPag.ok) db.pagos     = rPag.data.map(normalizarPago);
-    if (rSes.ok) db.sesiones  = rSes.data.map(normalizarSesion);
-
-    await importarDesdeCalendar();
-
+    // Una sola llamada getAll en vez de 3 separadas = mucho más rápido
+    const r = await apiGet('getAll');
+    if (r.ok) {
+      if (r.pacientes) db.pacientes = r.pacientes.map(normalizarPaciente);
+      if (r.pagos)     db.pagos     = r.pagos.map(normalizarPago);
+      if (r.sesiones)  db.sesiones  = r.sesiones.map(normalizarSesion);
+    } else {
+      // Fallback: llamadas individuales si getAll no existe aún
+      const [rPac, rPag, rSes] = await Promise.all([
+        apiGet('getPacientes'),
+        apiGet('getPagos'),
+        apiGet('getSesiones')
+      ]);
+      if (rPac.ok) db.pacientes = rPac.data.map(normalizarPaciente);
+      if (rPag.ok) db.pagos     = rPag.data.map(normalizarPago);
+      if (rSes.ok) db.sesiones  = rSes.data.map(normalizarSesion);
+    }
     save();
     modoConectado = true;
+    mostrarCargando(false);
+    actualizarBadge();
     showToast('✅ Sincronizado');
+    renderDashboard();
+    renderSeccionActiva();
+
+    // Calendar en background — no bloquea la UI
+    importarDesdeCalendar().then(()=>{
+      save();
+      renderSeccionActiva();
+      renderDashboard();
+    }).catch(e=>console.warn('Calendar bg:', e));
+
   } catch(e) {
     console.error('❌ Sync error:', e);
     modoConectado = false;
     if (!loadLocal()) seedData();
-    showToast('⚠️ Sin conexión — datos locales');
+    mostrarCargando(false);
+    actualizarBadge();
+    showToast('⚠️ Sin conexión — usando datos locales');
   }
-  mostrarCargando(false);
-  actualizarBadge();
 }
 
 // ── Importar desde Google Calendar evitando duplicados ──
