@@ -1316,7 +1316,7 @@ function renderProspectos() {
 }
 
 function verProspecto(id) {
-  const p = db.prospectos.find(x => x.id === id);
+  const p = db.prospectos.find(x => String(x.id) === String(id));
   if (!p) return;
   document.getElementById('detProspectoTitle').textContent = p.nombre.toUpperCase();
   const diags = db.diagnosticos.filter(d => d.prospectoId === id);
@@ -1355,13 +1355,13 @@ function verProspecto(id) {
           <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;">Notas rápidas</div>
           <textarea id="notasDetalle" rows="2" placeholder="Observaciones, próximo paso, actitud del dueño..." style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:inherit;resize:vertical;">${p.notas||''}</textarea>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="guardarCambiosProspecto(${p.id})" style="width:100%;">💾 Guardar cambios</button>
+        <button class="btn btn-primary btn-sm" onclick="guardarCambiosProspecto('${p.id}')" style="width:100%;">💾 Guardar cambios</button>
       </div>
 
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-primary btn-sm" onclick="cerrarModal('modalDetalleProspecto');iniciarDiagnostico(${p.id})">🩺 Diagnosticar</button>
+        <button class="btn btn-primary btn-sm" onclick="cerrarModal('modalDetalleProspecto');iniciarDiagnostico('${p.id}')">🩺 Diagnosticar</button>
         ${p.telefono ? `<a class="btn btn-secondary btn-sm" href="https://wa.me/52${p.telefono.replace(/\D/g,'')}" target="_blank">💬 WhatsApp</a>` : ''}
-        <button class="btn btn-danger btn-sm" onclick="eliminarProspecto(${p.id})">🗑 Eliminar</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarProspecto('${p.id}')">🗑 Eliminar</button>
       </div>
     </div>
     ${diags.length ? `<div style="margin-top:4px;"><div style="font-weight:700;font-size:13px;color:var(--text2);margin-bottom:8px;">Diagnósticos realizados (${diags.length}):</div>${diags.map(d=>`<div class="prospect-item" onclick="cerrarModal('modalDetalleProspecto');cargarReporteById(${d.id})" style="cursor:pointer;"><div style="flex:1;"><div class="prospect-name">Diagnóstico ${d.fecha}</div><div class="prospect-meta">Score: ${d.scoreGeneral}</div></div></div>`).join('')}</div>` : ''}
@@ -1371,12 +1371,12 @@ function verProspecto(id) {
 
 function iniciarDiagnostico(id) {
   showSection('diagnostico');
-  document.getElementById('diagProspectoSelect').value = id;
+  document.getElementById('diagProspectoSelect').value = String(id);
   seleccionarProspecto();
 }
 
 function cambiarEstatusProspecto(id, estatus) {
-  const p = db.prospectos.find(x=>x.id===id);
+  const p = db.prospectos.find(x=>String(x.id)===String(id));
   if (p) {
     p.estatus = estatus;
     guardarStorage();
@@ -1389,7 +1389,7 @@ function cambiarEstatusProspecto(id, estatus) {
 }
 
 async function guardarCambiosProspecto(id) {
-  const p = db.prospectos.find(x => x.id === id);
+  const p = db.prospectos.find(x => String(x.id) === String(id));
   if (!p) return;
 
   const nuevoEstatus = document.getElementById('selectEstatusDetalle').value;
@@ -1451,8 +1451,8 @@ async function actualizarSheetsProspecto(p) {
 
 function eliminarProspecto(id) {
   if (!confirm('¿Eliminar este prospecto y sus diagnósticos?')) return;
-  db.prospectos = db.prospectos.filter(x=>x.id!==id);
-  db.diagnosticos = db.diagnosticos.filter(x=>x.prospectoId!==id);
+  db.prospectos = db.prospectos.filter(x=>String(x.id)!==String(id));
+  db.diagnosticos = db.diagnosticos.filter(x=>String(x.prospectoId)!==String(id));
   guardarStorage(); renderProspectos(); actualizarStats(); actualizarSelectores();
   cerrarModal('modalDetalleProspecto'); toast('🗑 Prospecto eliminado');
 }
