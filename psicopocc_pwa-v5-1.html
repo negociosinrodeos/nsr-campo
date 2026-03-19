@@ -901,7 +901,7 @@ function renderPagos(filtro='',filtroCat='') {
       <td>${p.concepto}</td><td>$${p.monto.toLocaleString()}</td>
       <td style="color:var(--green-d);font-weight:700">$${p.pagado.toLocaleString()}</td>
       <td style="color:${saldo>0?'var(--pink-dd)':'var(--text3)'};font-weight:700">$${saldo.toLocaleString()}</td>
-      <td>${p.fecha}${p.hora?` <span style="font-size:11px;color:var(--text3);font-weight:700;">⏰${p.hora}</span>":""}</td>
+      <td>${p.fecha}${p.hora ? ` <span style="font-size:11px;color:var(--text3);font-weight:700;">⏰ ${p.hora}</span>` : ""}</td>
       <td><span class="badge ${badge}">${estado}</span></td>
       <td style="display:flex;gap:4px;">
         ${saldo>0?`<button class="btn btn-sm btn-green" onclick="marcarPagado(${p.id})">✓</button>`:''}
