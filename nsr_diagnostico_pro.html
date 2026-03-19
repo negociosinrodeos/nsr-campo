@@ -1194,7 +1194,13 @@ function guardarStorage() {
 function cargarStorage() {
   const d = localStorage.getItem('nsr_db');
   const c = localStorage.getItem('nsr_config');
-  if (d) db = JSON.parse(d);
+  if (d) {
+    db = JSON.parse(d);
+    // Normalizar IDs: siempre número para consistencia
+    db.prospectos  = db.prospectos.map(p  => ({ ...p,  id: Number(p.id)  || p.id  }));
+    db.diagnosticos= db.diagnosticos.map(d => ({ ...d, id: Number(d.id)  || d.id,
+      prospectoId: Number(d.prospectoId) || d.prospectoId }));
+  }
   if (c) config = Object.assign(config, JSON.parse(c));
 }
 
@@ -1298,7 +1304,7 @@ function renderProspectos() {
   container.innerHTML = lista.slice().reverse().map(p => {
     const initials = p.nombre.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
     const diagCount = db.diagnosticos.filter(d => d.prospectoId === p.id).length;
-    return `<div class="prospect-item" onclick="verProspecto(${p.id})">
+    return `<div class="prospect-item" onclick="verProspecto('${p.id}')">
       <div class="prospect-avatar">${initials}</div>
       <div class="prospect-info">
         <div class="prospect-name">${p.nombre}</div>
@@ -1309,7 +1315,7 @@ function renderProspectos() {
         </div>
       </div>
       <div class="prospect-actions">
-        <button class="btn btn-navy btn-sm" onclick="event.stopPropagation();iniciarDiagnostico(${p.id})" title="Diagnosticar">🩺</button>
+        <button class="btn btn-navy btn-sm" onclick="event.stopPropagation();iniciarDiagnostico('${p.id}')" title="Diagnosticar">🩺</button>
       </div>
     </div>`;
   }).join('');
@@ -2012,7 +2018,7 @@ async function sincronizarDesdeSheets() {
         const existe = db.prospectos.find(p => p.id === remoto.id);
         if (!existe && remoto.id) {
           db.prospectos.push({
-            id: remoto.id,
+            id: Number(remoto.id) || remoto.id,
             nombre: remoto.negocio || remoto.nombre || '',
             giro: remoto.giro || '',
             dueno: remoto.dueno || '',
@@ -2034,8 +2040,8 @@ async function sincronizarDesdeSheets() {
         const existe = db.diagnosticos.find(d => d.id === remoto.id);
         if (!existe && remoto.id) {
           db.diagnosticos.push({
-            id: remoto.id,
-            prospectoId: remoto.id_prospecto || remoto.prospectoId || '',
+            id: Number(remoto.id) || remoto.id,
+            prospectoId: Number(remoto.id_prospecto || remoto.prospectoId) || remoto.id_prospecto || remoto.prospectoId || '',
             negocio: remoto.negocio || '',
             giro: remoto.giro || '',
             fecha: remoto.fecha || '',
