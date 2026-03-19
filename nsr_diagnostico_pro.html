@@ -1168,6 +1168,119 @@ const AREAS = [
 ];
 
 // ══════════════════════════════════════════════════════════
+//  CHECKLIST CONSULTORIO — 6 ÁREAS ESPECÍFICAS
+// ══════════════════════════════════════════════════════════
+const AREAS_CONSULTORIO = [
+  {
+    id: 'agenda',
+    icon: '📅',
+    titulo: 'Agenda y Citas',
+    subtitulo: 'Organización, cancelaciones, huecos',
+    preguntas_rapidas: [
+      { id: 'ac1', texto: '¿Tiene un sistema definido para agendar citas (app, agenda física, WhatsApp)?' },
+      { id: 'ac2', texto: '¿Manda recordatorios de cita a sus pacientes antes del día?' },
+      { id: 'ac3', texto: '¿Controla las cancelaciones y reagendamientos?' },
+    ],
+    preguntas_extra: [
+      { id: 'ac4', texto: '¿Sabe cuántos huecos o "no shows" tiene por semana?' },
+      { id: 'ac5', texto: '¿Tiene definida la duración estándar por tipo de consulta?' },
+      { id: 'ac6', texto: '¿Puede ver su agenda del día desde el celular en cualquier momento?' },
+    ]
+  },
+  {
+    id: 'pacientes',
+    icon: '👤',
+    titulo: 'Registro de Pacientes',
+    subtitulo: 'Historial, seguimiento, base de datos',
+    preguntas_rapidas: [
+      { id: 'pa1', texto: '¿Tiene una base de datos digital de sus pacientes con historial?' },
+      { id: 'pa2', texto: '¿Puede encontrar el historial de un paciente en menos de 1 minuto?' },
+      { id: 'pa3', texto: '¿Registra diagnósticos, tratamientos o notas de cada consulta?' },
+    ],
+    preguntas_extra: [
+      { id: 'pa4', texto: '¿Tiene seguimiento automatizado para pacientes que no han regresado?' },
+      { id: 'pa5', texto: '¿Lleva registro de medicamentos recetados o alergias por paciente?' },
+      { id: 'pa6', texto: '¿Su expediente clínico cumple con los requisitos de la NOM-004?' },
+    ]
+  },
+  {
+    id: 'cobros',
+    icon: '💰',
+    titulo: 'Cobros e Ingresos',
+    subtitulo: 'Registro de pagos, corte, contador',
+    preguntas_rapidas: [
+      { id: 'co1', texto: '¿Registra cada pago recibido (efectivo, transferencia, tarjeta)?' },
+      { id: 'co2', texto: '¿Sabe cuánto ingresó esta semana sin tener que sumar en papel?' },
+      { id: 'co3', texto: '¿Tiene organizado el registro de pagos para su contador?' },
+    ],
+    preguntas_extra: [
+      { id: 'co4', texto: '¿Emite recibos o comprobantes a sus pacientes?' },
+      { id: 'co5', texto: '¿Registra cuentas por cobrar (pacientes que quedaron a deber)?' },
+      { id: 'co6', texto: '¿Tiene terminal de pago con tarjeta o link de cobro digital?' },
+    ]
+  },
+  {
+    id: 'comunicacion',
+    icon: '📲',
+    titulo: 'Comunicación con Pacientes',
+    subtitulo: 'WhatsApp, recordatorios, reseñas',
+    preguntas_rapidas: [
+      { id: 'cm1', texto: '¿Usa WhatsApp Business con respuestas automáticas o catálogo de servicios?' },
+      { id: 'cm2', texto: '¿Tiene perfil en Google Maps actualizado con fotos, horarios y servicios?' },
+      { id: 'cm3', texto: '¿Sus pacientes pueden encontrarlo fácilmente en Google o redes sociales?' },
+    ],
+    preguntas_extra: [
+      { id: 'cm4', texto: '¿Tiene estrategia para generar reseñas positivas en Google Maps?' },
+      { id: 'cm5', texto: '¿Manda comunicados o información de salud a sus pacientes por algún canal?' },
+      { id: 'cm6', texto: '¿Tiene un formulario de pre-consulta digital para que el paciente llene antes de llegar?' },
+    ]
+  },
+  {
+    id: 'procesos_c',
+    icon: '⚙️',
+    titulo: 'Procesos y Operación',
+    subtitulo: 'Apertura/cierre, dependencia del doctor',
+    preguntas_rapidas: [
+      { id: 'pc1', texto: '¿El consultorio puede operar en ausencia del médico (recepción, cobros, agenda)?' },
+      { id: 'pc2', texto: '¿Tiene una rutina de apertura y cierre documentada para su personal?' },
+      { id: 'pc3', texto: '¿Cuenta con inventario y control de material médico o consumibles?' },
+    ],
+    preguntas_extra: [
+      { id: 'pc4', texto: '¿Realiza mantenimiento preventivo de equipos médicos?' },
+      { id: 'pc5', texto: '¿Tiene protocolos de higiene y esterilización documentados?' },
+      { id: 'pc6', texto: '¿Cuenta con consentimientos informados digitales o físicos?' },
+    ]
+  },
+  {
+    id: 'presencia',
+    icon: '🌐',
+    titulo: 'Presencia Digital',
+    subtitulo: 'Google Maps, redes, reputación online',
+    preguntas_rapidas: [
+      { id: 'pd1', texto: '¿Tiene perfil verificado de Google Business con información completa?' },
+      { id: 'pd2', texto: '¿Tiene más de 10 reseñas positivas en Google Maps?' },
+      { id: 'pd3', texto: '¿Tiene presencia activa en al menos una red social (FB, IG)?' },
+    ],
+    preguntas_extra: [
+      { id: 'pd4', texto: '¿Responde a las reseñas de Google (positivas y negativas)?' },
+      { id: 'pd5', texto: '¿Tiene sitio web o página de aterrizaje con sus servicios y contacto?' },
+      { id: 'pd6', texto: '¿Sus pacientes pueden agendar cita online o por WhatsApp sin llamar?' },
+    ]
+  }
+];
+
+// Helper: obtener set de áreas según el giro del prospecto actual
+function getAreasActivas() {
+  if (!diagActual) return AREAS;
+  const giro = (diagActual.giro || '').toLowerCase();
+  const esConsultorio = giro.includes('consultorio') || giro.includes('médico') ||
+    giro.includes('medico') || giro.includes('dentist') || giro.includes('psicolog') ||
+    giro.includes('doctor') || giro.includes('clínica') || giro.includes('clinica') ||
+    giro.includes('odontolog') || giro.includes('nutriolog') || giro.includes('oftalm');
+  return esConsultorio ? AREAS_CONSULTORIO : AREAS;
+}
+
+// ══════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -1473,8 +1586,9 @@ function actualizarStats() {
 //  DIAGNÓSTICO — CONSTRUCCIÓN DEL CHECKLIST
 // ══════════════════════════════════════════════════════════
 function buildChecklist() {
+  const areas = getAreasActivas();
   const container = document.getElementById('areasContainer');
-  container.innerHTML = AREAS.map(area => `
+  container.innerHTML = areas.map(area => `
     <div class="area-wrapper" id="area_wrap_${area.id}">
       <div class="area-header" id="area_hdr_${area.id}" onclick="toggleArea('${area.id}')">
         <div class="area-header-left">
@@ -1551,7 +1665,8 @@ function setRespuesta(areaId, pregId, valor, btn) {
 }
 
 function actualizarScoreArea(areaId) {
-  const area = AREAS.find(a => a.id === areaId);
+  const areas = getAreasActivas();
+  const area = areas.find(a => a.id === areaId);
   const r = respuestas[areaId] || {};
   const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
   const respondidas = todas.filter(p => r[p.id]);
@@ -1573,8 +1688,9 @@ function setScoreCircle(areaId, text, cls) {
 }
 
 function actualizarProgreso() {
-  const totalAreas = AREAS.length;
-  const completadas = AREAS.filter(a => {
+  const areas = getAreasActivas();
+  const totalAreas = areas.length;
+  const completadas = areas.filter(a => {
     const r = respuestas[a.id] || {};
     return a.preguntas_rapidas.some(p => r[p.id]);
   }).length;
@@ -1610,8 +1726,23 @@ function seleccionarProspecto() {
     progressCard.style.display = 'block';
     notasCard.style.display = 'block';
     document.getElementById('diagSubtitle').textContent = 'Diagnosticando: ' + p.nombre;
+    // Badge de modo según giro
+    const areas = getAreasActivas();
+    const esConsultorio = areas === AREAS_CONSULTORIO;
+    let modeEl = document.getElementById('diagModebadge');
+    if (!modeEl) {
+      modeEl = document.createElement('div');
+      modeEl.id = 'diagModebage';
+      modeEl.style.cssText = 'display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;';
+      document.getElementById('diagInfoContent').after(modeEl);
+    }
+    modeEl.id = 'diagModebage';
+    modeEl.style.background = esConsultorio ? 'rgba(42,179,179,0.15)' : 'rgba(201,168,76,0.15)';
+    modeEl.style.color = esConsultorio ? '#2ab3b3' : '#C9A84C';
+    modeEl.style.border = esConsultorio ? '1px solid rgba(42,179,179,0.4)' : '1px solid rgba(201,168,76,0.4)';
+    modeEl.textContent = esConsultorio ? '🏥 Modo Consultorio' : '🏪 Modo General';
     // Abrir primera área automáticamente
-    toggleArea('ventas');
+    toggleArea(areas[0].id);
   } else {
     infoBox.style.display = 'none';
     progressCard.style.display = 'none';
@@ -1628,13 +1759,14 @@ function addChip(texto) {
 
 function guardarDiagnostico() {
   if (!diagActual) { toast('⚠️ Selecciona un prospecto primero'); return; }
-  const respondidas = AREAS.filter(a => Object.keys(respuestas[a.id]||{}).length > 0);
+  const areas = getAreasActivas();
+  const respondidas = areas.filter(a => Object.keys(respuestas[a.id]||{}).length > 0);
   if (!respondidas.length) { toast('⚠️ Responde al menos un área antes de guardar'); return; }
 
   // Calcular scores
   const scores = {};
   let totalPts = 0, totalMax = 0;
-  AREAS.forEach(area => {
+  areas.forEach(area => {
     const r = respuestas[area.id] || {};
     const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
     const respondidas = todas.filter(p => r[p.id]);
@@ -1686,12 +1818,12 @@ function guardarDiagnostico() {
 }
 
 function generarHallazgos(scores) {
-  const labels = { ventas:'Ventas', inventario:'Inventario', finanzas:'Finanzas', procesos:'Procesos', personas:'Personas', tecnologia:'Tecnología' };
-  return AREAS.map(a => {
+  const areas = getAreasActivas();
+  return areas.map(a => {
     const s = scores[a.id];
-    if (s === null) return null;
+    if (s === null || s === undefined) return null;
     const nivel = s >= 70 ? 'VERDE' : s >= 40 ? 'AMARILLO' : 'ROJO';
-    return `${labels[a.id]}: ${s}% (${nivel})`;
+    return `${a.titulo}: ${s}% (${nivel})`;
   }).filter(Boolean).join(' | ');
 }
 
@@ -1758,27 +1890,39 @@ function cargarReporteById(id) {
 function generarParaClaude() {
   const d = window._diagActualReporte;
   if (!d) return;
+
+  // Detectar modo según el giro guardado en el diagnóstico
+  const giro = (d.giro || '').toLowerCase();
+  const esConsultorio = giro.includes('consultorio') || giro.includes('médico') ||
+    giro.includes('medico') || giro.includes('dentist') || giro.includes('psicolog') ||
+    giro.includes('doctor') || giro.includes('clínica') || giro.includes('clinica') ||
+    giro.includes('odontolog') || giro.includes('nutriolog') || giro.includes('oftalm');
+  const areasUsadas = esConsultorio ? AREAS_CONSULTORIO : AREAS;
+
+  const scoresLineas = areasUsadas.map(a => {
+    const v = d.areas[a.id];
+    return `• ${a.titulo}: ${(v !== undefined && v !== null) ? v + '%' : 'N/D'}`;
+  }).join('\n');
+
+  const respDetalle = areasUsadas.map(area => {
+    const r = (d.respuestas && d.respuestas[area.id]) || {};
+    const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
+    const resp = todas.filter(p => r[p.id]).map(p => `  [${r[p.id].toUpperCase()}] ${p.texto}`).join('\n');
+    return resp ? `\n${area.icon} ${area.titulo.toUpperCase()}:\n${resp}` : '';
+  }).filter(Boolean).join('\n');
+
   const texto = `=== DIAGNÓSTICO NSR — ${d.negocio.toUpperCase()} ===
 Giro: ${d.giro}
+Modo: ${esConsultorio ? 'Consultorio / Profesional de la Salud' : 'Negocio General'}
 Fecha: ${d.fecha}
 Consultor: ${d.consultor}
 Score General: ${d.scoreGeneral}
 
 SCORES POR ÁREA:
-• Ventas e Ingresos:      ${d.areas.ventas}
-• Inventario y Compras:   ${d.areas.inventario}
-• Finanzas y Gastos:      ${d.areas.finanzas}
-• Procesos y Operación:   ${d.areas.procesos}
-• Personas y Equipo:      ${d.areas.personas}
-• Tecnología y Sistemas:  ${d.areas.tecnologia}
+${scoresLineas}
 
 RESPUESTAS DETALLADAS:
-${AREAS.map(area => {
-  const r = d.respuestas[area.id] || {};
-  const todas = [...area.preguntas_rapidas, ...area.preguntas_extra];
-  const resp = todas.filter(p => r[p.id]).map(p => `  [${r[p.id].toUpperCase()}] ${p.texto}`).join('\n');
-  return resp ? `\n${area.icon} ${area.titulo.toUpperCase()}:\n${resp}` : '';
-}).filter(Boolean).join('\n')}
+${respDetalle}
 
 OPORTUNIDADES DETECTADAS:
 ${d.oportunidades || '(no especificadas)'}
