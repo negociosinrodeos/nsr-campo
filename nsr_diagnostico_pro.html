@@ -1366,7 +1366,7 @@ function verProspecto(id) {
 
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn btn-primary btn-sm" onclick="cerrarModal('modalDetalleProspecto');iniciarDiagnostico('${p.id}')">🩺 Diagnosticar</button>
-        ${p.telefono ? `<a class="btn btn-secondary btn-sm" href="https://wa.me/52${p.telefono.replace(/\D/g,'')}" target="_blank">💬 WhatsApp</a>` : ''}
+        ${p.telefono ? `<a class="btn btn-secondary btn-sm" href="https://wa.me/52${String(p.telefono).replace(/\D/g,'')}" target="_blank">💬 WhatsApp</a>` : ''}
         <button class="btn btn-danger btn-sm" onclick="eliminarProspecto('${p.id}')">🗑 Eliminar</button>
       </div>
     </div>
@@ -2018,16 +2018,16 @@ async function sincronizarDesdeSheets() {
         const existe = db.prospectos.find(p => p.id === remoto.id);
         if (!existe && remoto.id) {
           db.prospectos.push({
-            id: Number(remoto.id) || remoto.id,
-            nombre: remoto.negocio || remoto.nombre || '',
-            giro: remoto.giro || '',
-            dueno: remoto.dueno || '',
-            telefono: remoto.telefono || '',
-            direccion: remoto.direccion || '',
-            zona: remoto.zona || '',
-            estatus: remoto.estatus || 'nuevo',
-            fechaAlta: remoto.fechaAlta || remoto.fecha_alta || '',
-            notas: remoto.notas || ''
+            id:        Number(remoto.id) || remoto.id,
+            nombre:    String(remoto.negocio    || remoto.nombre || ''),
+            giro:      String(remoto.giro       || ''),
+            dueno:     String(remoto.dueno      || ''),
+            telefono:  String(remoto.telefono   || ''),
+            direccion: String(remoto.direccion  || ''),
+            zona:      String(remoto.zona       || ''),
+            estatus:   String(remoto.estatus    || 'nuevo'),
+            fechaAlta: String(remoto.fechaAlta  || remoto.fecha_alta || '').split('T')[0],
+            notas:     String(remoto.notas      || '')
           });
           nuevosP++;
         }
