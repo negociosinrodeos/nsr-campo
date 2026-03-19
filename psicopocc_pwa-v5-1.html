@@ -156,9 +156,9 @@
 <nav class="bottom-nav">
   <button class="nav-btn active" onclick="showSection('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span><span class="nav-label">Inicio</span></button>
   <button class="nav-btn" onclick="showSection('pacientes')" id="nav-pacientes"><span class="nav-icon">🧠</span><span class="nav-label">Pacientes</span></button>
+  <button class="nav-btn" onclick="showSection('servicios')" id="nav-servicios"><span class="nav-icon">🗂️</span><span class="nav-label">Servicios</span></button>
   <button class="nav-btn" onclick="showSection('pagos')" id="nav-pagos"><span class="nav-icon">💳</span><span class="nav-label">Pagos</span></button>
   <button class="nav-btn" onclick="showSection('agenda')" id="nav-agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button>
-  <button class="nav-btn" onclick="showSection('servicios')" id="nav-servicios"><span class="nav-icon">🗂️</span><span class="nav-label">Servicios</span></button>
 </nav>
 
 <main class="main">
@@ -260,6 +260,7 @@
   <div class="form-group"><label>Tipo de terapia</label><select id="p_terapia"><option value="individual">Individual</option><option value="orientacion">Orientación Vocacional</option><option value="pareja">Pareja</option><option value="otro">Otro</option></select></div>
   <div class="form-group"><label>Motivo de consulta</label><textarea id="p_motivo" placeholder="Ej. Ansiedad..."></textarea></div>
   <div class="form-group"><label>⚡ Notas rápidas</label><textarea id="p_notas" placeholder="Recordatorios..."></textarea></div>
+  <div class="form-group"><label>🗂️ Categoría de servicio</label><select id="p_categoria"><option value="">— Sin categoría —</option></select></div>
   <div class="modal-footer">
     <button class="btn btn-ghost" onclick="closeModal('modalPaciente')">Cancelar</button>
     <button class="btn btn-primary" onclick="guardarPaciente()">Guardar 💾</button>
@@ -282,7 +283,11 @@
   <div class="form-group"><label>Paciente *</label><select id="pg_paciente"></select></div>
   <div class="form-row">
     <div class="form-group"><label>Concepto *</label><input type="text" id="pg_concepto" placeholder="Sesión individual..."></div>
-    <div class="form-group"><label>Fecha</label><input type="date" id="pg_fecha"></div>
+    <div class="form-group"><label>Fecha de cita</label><input type="date" id="pg_fecha"></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Hora de cita</label><input type="time" id="pg_hora"></div>
+    <div class="form-group"><label>Duración</label><select id="pg_duracion"><option value="">Sin especificar</option><option value="50">50 min</option><option value="60">60 min</option><option value="90">90 min</option></select></div>
   </div>
   <div class="form-row">
     <div class="form-group"><label>Monto total *</label><input type="number" id="pg_monto" placeholder="0.00"></div>
@@ -644,7 +649,7 @@ function showSection(id) {
 // ══════════════════════════════════════════════
 function openModal(id) {
   document.getElementById(id).classList.add('open');
-  if(id==='modalPago'){fillSelect('pg_paciente');document.getElementById('pg_fecha').value=hoyStr();}
+  if(id==='modalPago'){fillSelect('pg_paciente');document.getElementById('pg_fecha').value=hoyStr();document.getElementById('pg_hora').value='';document.getElementById('pg_duracion').value='';}
 }
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
@@ -672,6 +677,8 @@ function abrirModalPacienteNuevo() {
   document.getElementById('p_estado').value='activo';
   document.getElementById('p_tipocobro').value='sesion';
   document.getElementById('p_terapia').value='individual';
+  document.getElementById('p_categoria').value='';
+  poblarSelectCategoriaPaciente();
   openModal('modalPaciente');
 }
 function editarPacienteActual() {
@@ -689,6 +696,7 @@ function editarPacienteActual() {
   document.getElementById('p_terapia').value=p.terapia||'individual';
   document.getElementById('p_motivo').value=p.motivo||'';
   document.getElementById('p_notas').value=p.notas||'';
+  poblarSelectCategoriaPaciente(p.categoriaId);
   closeModal('modalVerPaciente');
   openModal('modalPaciente');
 }
@@ -703,7 +711,8 @@ function guardarPaciente() {
     tipocobro:document.getElementById('p_tipocobro').value,
     tarifa:parseFloat(document.getElementById('p_tarifa').value)||0,
     terapia:document.getElementById('p_terapia').value,
-    motivo:document.getElementById('p_motivo').value, notas:document.getElementById('p_notas').value
+    motivo:document.getElementById('p_motivo').value, notas:document.getElementById('p_notas').value,
+    categoriaId: document.getElementById('p_categoria').value ? Number(document.getElementById('p_categoria').value) : null
   };
   if(idExistente) {
     // EDITAR — solo actualizar datos, NO crear pago nuevo
@@ -835,7 +844,7 @@ function guardarPago() {
   const pagado=parseFloat(document.getElementById('pg_pagado').value)||0;
   const concepto=document.getElementById('pg_concepto').value.trim();
   if(!concepto||monto<=0){alert('Llena los campos obligatorios');return;}
-  const np={id:uid(),pacienteId:pid,concepto,monto,pagado,fecha:document.getElementById('pg_fecha').value||hoyStr(),metodo:document.getElementById('pg_metodo').value,notas:document.getElementById('pg_notas').value};
+  const np={id:uid(),pacienteId:pid,concepto,monto,pagado,fecha:document.getElementById('pg_fecha').value||hoyStr(),hora:document.getElementById('pg_hora').value||'',duracionCita:document.getElementById('pg_duracion').value||'',metodo:document.getElementById('pg_metodo').value,notas:document.getElementById('pg_notas').value};
   db.pagos.push(np); save();
   if(modoConectado) apiPost('addPago',np).catch(()=>{});
   closeModal('modalPago'); renderPagos(); showToast('✅ Pago registrado');
@@ -861,7 +870,7 @@ function renderPagos(filtro='',filtroCat='') {
       <td>${p.concepto}</td><td>$${p.monto.toLocaleString()}</td>
       <td style="color:var(--green-d);font-weight:700">$${p.pagado.toLocaleString()}</td>
       <td style="color:${saldo>0?'var(--pink-dd)':'var(--text3)'};font-weight:700">$${saldo.toLocaleString()}</td>
-      <td>${p.fecha}</td>
+      <td>${p.fecha}${p.hora?` <span style="font-size:11px;color:var(--text3);font-weight:700;">⏰${p.hora}</span>":""}</td>
       <td><span class="badge ${badge}">${estado}</span></td>
       <td style="display:flex;gap:4px;">
         ${saldo>0?`<button class="btn btn-sm btn-green" onclick="marcarPagado(${p.id})">✓</button>`:''}
@@ -1232,6 +1241,17 @@ function badgeCategoria(pacienteId) {
   return `<span style="background:${cat.color};border-radius:20px;padding:2px 8px;font-size:10px;font-weight:800;font-family:'Nunito',sans-serif;margin-left:4px;">${cat.emoji} ${cat.nombre}</span>`;
 }
 
+
+// ── Poblar select de categoría en modal paciente ──
+function poblarSelectCategoriaPaciente(selectedId=null) {
+  initCategorias();
+  const sel = document.getElementById('p_categoria');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Sin categoría —</option>' +
+    db.categorias.map(cat =>
+      `<option value="${cat.id}" ${Number(cat.id)===Number(selectedId)?'selected':''}>${cat.emoji} ${cat.nombre}</option>`
+    ).join('');
+}
 </script>
 </body>
 </html>
