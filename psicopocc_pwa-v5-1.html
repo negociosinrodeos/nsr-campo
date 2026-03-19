@@ -158,7 +158,7 @@
   <button class="nav-btn" onclick="showSection('pacientes')" id="nav-pacientes"><span class="nav-icon">🧠</span><span class="nav-label">Pacientes</span></button>
   <button class="nav-btn" onclick="showSection('pagos')" id="nav-pagos"><span class="nav-icon">💳</span><span class="nav-label">Pagos</span></button>
   <button class="nav-btn" onclick="showSection('agenda')" id="nav-agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button>
-  <button class="nav-btn" onclick="showSection('calendario')" id="nav-calendario"><span class="nav-icon">🗓️</span><span class="nav-label">Calendario</span></button>
+  <button class="nav-btn" onclick="showSection('servicios')" id="nav-servicios"><span class="nav-icon">🗂️</span><span class="nav-label">Servicios</span></button>
 </nav>
 
 <main class="main">
@@ -170,6 +170,9 @@
         <div class="page-title">🌸 ¡Hola, Angélica!</div>
         <div class="page-sub" id="dashSubtitle"></div>
       </div>
+      <select id="filtroDashCategoria" onchange="renderDashboard()" style="max-width:180px;font-family:'Nunito',sans-serif;font-weight:700;">
+        <option value="">Todos los servicios</option>
+      </select>
     </div>
     <div class="stats-grid" id="statsGrid"></div>
     <div class="dash-grid">
@@ -186,8 +189,9 @@
       <button class="btn btn-primary" onclick="openModal('modalPaciente')">+ Nuevo paciente</button>
     </div>
     <div class="filter-row">
-      <div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="Buscar..." oninput="renderPacientes(this.value)"></div>
-      <select onchange="renderPacientes('',this.value)" style="max-width:160px;"><option value="">Todos</option><option value="activo">Activos</option><option value="inactivo">Inactivos</option><option value="pausa">En pausa</option></select>
+      <div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="searchPacientes" placeholder="Buscar..." oninput="renderPacientes(this.value)"></div>
+      <select id="filtroPacEstado" onchange="renderPacientes(document.getElementById('searchPacientes').value,this.value)" style="max-width:140px;"><option value="">Todos</option><option value="activo">Activos</option><option value="inactivo">Inactivos</option><option value="pausa">En pausa</option></select>
+      <select id="filtroPacCategoria" onchange="renderPacientes(document.getElementById('searchPacientes').value,document.getElementById('filtroPacEstado').value,this.value)" style="max-width:160px;"><option value="">Todas las categorías</option></select>
     </div>
     <div id="pacientesList"></div>
   </section>
@@ -199,7 +203,8 @@
       <button class="btn btn-primary" onclick="openModal('modalPago')">+ Registrar pago</button>
     </div>
     <div class="filter-row">
-      <select onchange="renderPagos(this.value)" style="max-width:180px;"><option value="">Todos</option><option value="pagado">✅ Pagados</option><option value="pendiente">❗ Pendientes</option><option value="parcial">🔸 Parciales</option></select>
+      <select id="filtroEstadoPago" onchange="renderPagos(this.value,document.getElementById('filtroCategoriaPago').value)" style="max-width:160px;"><option value="">Todos los estados</option><option value="pagado">✅ Pagados</option><option value="pendiente">❗ Pendientes</option><option value="parcial">🔸 Parciales</option></select>
+      <select id="filtroCategoriaPago" onchange="renderPagos(document.getElementById('filtroEstadoPago').value,this.value)" style="max-width:160px;"><option value="">Todas las categorías</option></select>
     </div>
     <div class="card"><div class="table-wrap"><table><thead><tr><th>Paciente</th><th>Concepto</th><th>Monto</th><th>Pagado</th><th>Saldo</th><th>Fecha</th><th>Estado</th><th></th></tr></thead><tbody id="pagosBody"></tbody></table></div></div>
   </section>
@@ -216,36 +221,18 @@
     <div id="agendaList"></div>
   </section>
 
-  <!-- CALENDARIO -->
-  <section class="section fade-in" id="calendario">
+  <!-- OTROS SERVICIOS -->
+  <section class="section fade-in" id="servicios">
     <div class="page-header">
-      <div><div class="page-title">🗓️ Calendario</div><div class="page-sub" id="calSubtitle"></div></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button class="btn btn-ghost btn-sm" onclick="calMes(-1)">‹</button>
-        <span id="calMonthLabel" style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--text);min-width:130px;text-align:center;"></span>
-        <button class="btn btn-ghost btn-sm" onclick="calMes(1)">›</button>
-      </div>
+      <div><div class="page-title">🗂️ Otros Servicios</div><div class="page-sub">Categorías y clasificación de pacientes</div></div>
+      <button class="btn btn-primary" onclick="abrirModalCategoria()">+ Nueva categoría</button>
     </div>
-    <div id="calBanner" style="border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px;background:var(--blue);border:2px solid var(--blue-d);">
-      <span id="calBannerIcon" style="font-size:20px;">🔗</span>
-      <div>
-        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--text);">Google Calendar</div>
-        <div id="calBannerMsg" style="font-size:12px;color:var(--text2);font-weight:600;">Conectando...</div>
-      </div>
-    </div>
-    <div class="card" style="padding:16px;">
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px;">
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Dom</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Lun</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Mar</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Mié</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Jue</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--text3);font-family:'Nunito',sans-serif;padding:4px;">Vie</div>
-        <div style="text-align:center;font-size:11px;font-weight:800;color:var(--pink-d);font-family:'Nunito',sans-serif;padding:4px;">Sáb</div>
-      </div>
-      <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
-    </div>
-    <div id="calDayDetail" style="margin-top:16px;"></div>
+
+    <!-- Lista de categorías -->
+    <div id="categoriasList"></div>
+
+    <!-- Pacientes por categoría -->
+    <div id="categoriasPacientes" style="margin-top:20px;"></div>
   </section>
 
 </main>
@@ -331,6 +318,40 @@
   </div>
 </div></div>
 
+<!-- MODAL CATEGORÍA -->
+<div class="modal-overlay" id="modalCategoria"><div class="modal">
+  <div class="modal-title">🗂️ <span id="modalCategoriaTitulo">Nueva categoría</span></div>
+  <input type="hidden" id="cat_id">
+  <div class="form-group"><label>Nombre de la categoría *</label><input type="text" id="cat_nombre" placeholder="Ej. Orientación Vocacional, Terapia de Pareja..."></div>
+  <div class="form-group"><label>Descripción</label><textarea id="cat_desc" placeholder="Breve descripción del servicio..." style="min-height:60px;"></textarea></div>
+  <div class="form-group"><label>Color / ícono (emoji)</label>
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="cat_emoji" placeholder="🧠" style="max-width:70px;text-align:center;font-size:20px;">
+      <input type="color" id="cat_color" value="#C8DEFF" style="width:50px;padding:4px;cursor:pointer;border-radius:8px;">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('modalCategoria')">Cancelar</button>
+    <button class="btn btn-primary" onclick="guardarCategoria()">Guardar 💾</button>
+  </div>
+</div></div>
+
+<!-- MODAL ASIGNAR CATEGORÍA A PACIENTE -->
+<div class="modal-overlay" id="modalAsignarCat"><div class="modal">
+  <div class="modal-title">🏷️ Asignar categoría</div>
+  <input type="hidden" id="asignar_pacienteId">
+  <div class="form-group"><label>Paciente</label><div id="asignarPacienteNombre" style="font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;color:var(--text);padding:8px 0;"></div></div>
+  <div class="form-group"><label>Categoría</label>
+    <select id="asignar_catId">
+      <option value="">— Sin categoría —</option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-ghost" onclick="closeModal('modalAsignarCat')">Cancelar</button>
+    <button class="btn btn-primary" onclick="guardarAsignacion()">Asignar 💾</button>
+  </div>
+</div></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -342,7 +363,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbybyIDas7OrYxUUUr54jGe-
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-let db = { pacientes:[], pagos:[], sesiones:[] };
+let db = { pacientes:[], pagos:[], sesiones:[], categorias:[] };
 let modoConectado = false;
 let pacienteActualId = null;
 let sesionEditandoId  = null;
@@ -354,7 +375,14 @@ const avatarColors = ['av-blue','av-green','av-pink'];
 function save() { try { localStorage.setItem('psicopocc_v3', JSON.stringify(db)); } catch(e){} }
 function loadLocal() {
   const raw = localStorage.getItem('psicopocc_v3') || localStorage.getItem('psicopocc_v2');
-  if (raw) { try { db = JSON.parse(raw); return true; } catch(e){} }
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      db = parsed;
+      if (!db.categorias) db.categorias = [];
+      return true;
+    } catch(e){}
+  }
   return false;
 }
 
@@ -402,7 +430,7 @@ function parsearHora(val) {
 }
 
 function normalizarPaciente(p) {
-  return { ...p, id:Number(p.id), tarifa:Number(p.tarifa)||0 };
+  return { ...p, id:Number(p.id), tarifa:Number(p.tarifa)||0, categoriaId:p.categoriaId?Number(p.categoriaId):null };
 }
 function normalizarPago(p) {
   return { ...p, id:Number(p.id), pacienteId:Number(p.pacienteId),
@@ -543,7 +571,6 @@ function renderSeccionActiva() {
   if (id==='pacientes') renderPacientes();
   if (id==='pagos') renderPagos();
   if (id==='agenda') renderAgenda();
-  if (id==='calendario') renderCalendario();
 }
 
 // ══════════════════════════════════════════════
@@ -609,7 +636,7 @@ function showSection(id) {
   if(id==='pacientes') renderPacientes();
   if(id==='pagos') renderPagos();
   if(id==='agenda') renderAgenda();
-  if(id==='calendario') renderCalendario();
+  if(id==='servicios'){initCategorias();actualizarSelectsCategorias();renderServicios();}
 }
 
 // ══════════════════════════════════════════════
@@ -737,10 +764,12 @@ function abrirModalPagoInicial(paciente) {
   openModal('modalPago');
   showToast('✅ Paciente guardado — registra el primer cargo');
 }
-function renderPacientes(search='',filtroEstado='') {
+function renderPacientes(search='',filtroEstado='',filtroCat='') {
+  initCategorias();
   let pacs=db.pacientes;
-  if(search) pacs=pacs.filter(p=>(p.nombre+p.alias).toLowerCase().includes(search.toLowerCase()));
+  if(search) pacs=pacs.filter(p=>(p.nombre+(p.alias||'')).toLowerCase().includes(search.toLowerCase()));
   if(filtroEstado) pacs=pacs.filter(p=>p.estado===filtroEstado);
+  if(filtroCat) pacs=pacs.filter(p=>Number(p.categoriaId)===Number(filtroCat));
   const list=document.getElementById('pacientesList');
   if(!pacs.length){list.innerHTML=`<div class="empty"><div class="empty-icon">🧠</div><div class="empty-text">Sin pacientes aún</div></div>`;return;}
   list.innerHTML=pacs.map(p=>{
@@ -811,11 +840,13 @@ function guardarPago() {
   if(modoConectado) apiPost('addPago',np).catch(()=>{});
   closeModal('modalPago'); renderPagos(); showToast('✅ Pago registrado');
 }
-function renderPagos(filtro='') {
+function renderPagos(filtro='',filtroCat='') {
+  initCategorias();
   let pagos=[...db.pagos].sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha)));
   if(filtro==='pagado') pagos=pagos.filter(p=>p.pagado>=p.monto);
   if(filtro==='pendiente') pagos=pagos.filter(p=>p.pagado===0);
   if(filtro==='parcial') pagos=pagos.filter(p=>p.pagado>0&&p.pagado<p.monto);
+  if(filtroCat) pagos=pagos.filter(p=>{const pac=db.pacientes.find(x=>x.id===p.pacienteId);return pac&&Number(pac.categoriaId)===Number(filtroCat);});
   const body=document.getElementById('pagosBody');
   if(!pagos.length){body.innerHTML=`<tr><td colspan="8"><div class="empty"><div class="empty-icon">💳</div><div class="empty-text">Sin pagos</div></div></td></tr>`;return;}
   body.innerHTML=pagos.map(p=>{
@@ -917,7 +948,6 @@ async function guardarSesion() {
   }
   closeModal('modalSesion');
   renderAgenda();
-  if (typeof renderCalendario==='function') renderCalendario();
 }
 
 async function cambiarEstadoSesion(id, estado) {
@@ -932,7 +962,6 @@ async function eliminarSesion(id) {
   if(modoConectado) apiPost('deleteSesion',{id:Number(id)}).catch(()=>{});
   db.sesiones=db.sesiones.filter(x=>x.id!==Number(id)); save();
   renderAgenda();
-  if(typeof renderCalendario==='function') renderCalendario();
   showToast('Sesión eliminada');
 }
 
@@ -983,14 +1012,19 @@ function renderAgenda() {
 //  DASHBOARD
 // ══════════════════════════════════════════════
 function renderDashboard() {
+  initCategorias();
+  actualizarSelectsCategorias();
   const hoy=new Date();
   const mesActual=hoy.toISOString().slice(0,7);
   document.getElementById('dashSubtitle').textContent=formatFecha(hoy.toISOString().slice(0,10));
-  const activosPacs=db.pacientes.filter(p=>p.estado==='activo').length;
-  const pagosMes=db.pagos.filter(p=>String(p.fecha).startsWith(mesActual));
+  const filtroCatDash = document.getElementById('filtroDashCategoria')?.value||'';
+  const pacsFiltrados = filtroCatDash ? db.pacientes.filter(p=>Number(p.categoriaId)===Number(filtroCatDash)) : db.pacientes;
+  const idsPacsFiltrados = new Set(pacsFiltrados.map(p=>p.id));
+  const activosPacs=pacsFiltrados.filter(p=>p.estado==='activo').length;
+  const pagosMes=db.pagos.filter(p=>String(p.fecha).startsWith(mesActual)&&(!filtroCatDash||idsPacsFiltrados.has(p.pacienteId)));
   const ingresadoMes=pagosMes.reduce((a,p)=>a+p.pagado,0);
-  const totalPendiente=db.pagos.reduce((a,p)=>a+(p.monto-p.pagado),0);
-  const sesionesMes=db.sesiones.filter(s=>String(s.fecha).startsWith(mesActual)&&s.estado==='completada').length;
+  const totalPendiente=db.pagos.filter(p=>!filtroCatDash||idsPacsFiltrados.has(p.pacienteId)).reduce((a,p)=>a+(p.monto-p.pagado),0);
+  const sesionesMes=db.sesiones.filter(s=>String(s.fecha).startsWith(mesActual)&&s.estado==='completada'&&(!filtroCatDash||idsPacsFiltrados.has(s.pacienteId))).length;
   document.getElementById('statsGrid').innerHTML=`
     <div class="stat-card green"><div class="stat-label">💸 Ingresos del mes</div><div class="stat-value">$${ingresadoMes.toLocaleString()}</div><div class="stat-sub">MXN cobrados</div><div class="stat-icon">🌿</div></div>
     <div class="stat-card pink"><div class="stat-label">⚠️ Por cobrar</div><div class="stat-value">$${totalPendiente.toLocaleString()}</div><div class="stat-sub">Total pendiente</div><div class="stat-icon">🩷</div></div>
@@ -1007,94 +1041,197 @@ function renderDashboard() {
   document.getElementById('sessionesToday').innerHTML=!sesToday.length?`<div style="color:var(--text3);font-size:14px;padding:8px 0;font-weight:600">Sin sesiones hoy. ¡Descansa, Angélica! 🌸</div>`:sesToday.map(s=>{const eb={programada:'badge-blue',completada:'badge-green',cancelada:'badge-pink',no_asistio:'badge-yellow'}[s.estado]||'badge-blue';return `<div class="session-item ${s.estado}" style="margin-bottom:8px;"><div style="text-align:center;min-width:54px;"><div class="session-time">${s.hora||'—'}</div><div class="session-time-label">${s.duracion}min</div></div><div class="session-divider"></div><div style="flex:1;"><div class="session-name">${nombreSesion(s)}</div><div class="session-type">${terapiaLabel(s.tipo)}</div></div><span class="badge ${eb}">${s.estado.replace('_',' ')}</span></div>`;}).join('');
 }
 
+
+
 // ══════════════════════════════════════════════
-//  CALENDARIO
+//  CATEGORÍAS DE SERVICIOS
 // ══════════════════════════════════════════════
-let calYear=new Date().getFullYear(), calMonth=new Date().getMonth(), calSelectedDate=null;
-function calMes(delta){calMonth+=delta;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendario();}
-function renderCalendario() {
-  // Banner
-  const banner=document.getElementById('calBanner');
-  const bannerIcon=document.getElementById('calBannerIcon');
-  const bannerMsg=document.getElementById('calBannerMsg');
-  if(modoConectado){banner.style.background='var(--green)';banner.style.borderColor='var(--green-d)';bannerIcon.textContent='✅';bannerMsg.textContent='Conectado · Sincronizando con Google Calendar.';}
-  else if(API_URL){banner.style.background='#FFF5CC';banner.style.borderColor='#F5C842';bannerIcon.textContent='⚠️';bannerMsg.textContent='API_URL configurada pero sin conexión activa.';}
-  else{bannerIcon.textContent='🔗';bannerMsg.textContent='Demo local · Agrega la API_URL para conectar.';}
-  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  document.getElementById('calMonthLabel').textContent=meses[calMonth]+' '+calYear;
-  document.getElementById('calSubtitle').textContent='Vista mensual';
-  const primerDia=new Date(calYear,calMonth,1).getDay();
-  const diasEnMes=new Date(calYear,calMonth+1,0).getDate();
-  const hoy=new Date();
-  let grid='';
-  for(let i=0;i<primerDia;i++) grid+='<div></div>';
-  for(let d=1;d<=diasEnMes;d++){
-    const fechaStr=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-    const ses=db.sesiones.filter(s=>s.fecha===fechaStr);
-    const isSel=calSelectedDate===fechaStr;
-    const isHoy=d===hoy.getDate()&&calMonth===hoy.getMonth()&&calYear===hoy.getFullYear();
-    let dots='';
-    if(ses.length>0){dots=`<div style="display:flex;justify-content:center;gap:2px;margin-top:2px;">${ses.slice(0,3).map(s=>{const c={programada:'var(--blue-dd)',completada:'var(--green-d)',cancelada:'var(--pink-d)',no_asistio:'var(--warning)'}[s.estado]||'var(--blue-dd)';return `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${c};"></span>`;}).join('')}</div>`;}
-    const bg=isSel?'var(--pink-d)':isHoy?'var(--blue)':ses.length?'var(--offwhite)':'transparent';
-    const col=isSel?'white':'var(--text)';
-    const bdr=isSel?'2px solid var(--pink-dd)':isHoy?'2px solid var(--blue-dd)':'2px solid transparent';
-    grid+=`<div onclick="calSelectDay('${fechaStr}')" style="cursor:pointer;border-radius:10px;padding:6px 2px 4px;text-align:center;background:${bg};border:${bdr};transition:all 0.15s;min-height:46px;">
-      <div style="font-family:'Nunito',sans-serif;font-weight:${isHoy||ses.length||isSel?800:600};font-size:14px;color:${col};line-height:1;">${d}</div>${dots}</div>`;
+
+// db.categorias: [{ id, nombre, desc, emoji, color }]
+// db.pacientes[i].categoriaId: id de categoría asignada
+
+function initCategorias() {
+  if (!db.categorias) {
+    db.categorias = [
+      { id:1, nombre:'Terapia Individual',       desc:'Sesiones de psicoterapia individual', emoji:'🧠', color:'#C8DEFF' },
+      { id:2, nombre:'Orientación Vocacional',   desc:'Orientación y desarrollo profesional', emoji:'🎯', color:'#C9F0D8' },
+      { id:3, nombre:'Terapia de Pareja',         desc:'Sesiones para pareja',                emoji:'💑', color:'#F5B8D8' },
+    ];
+    save();
   }
-  document.getElementById('calGrid').innerHTML=grid;
-  if(calSelectedDate) renderCalDayDetail(calSelectedDate);
 }
-function calSelectDay(fechaStr){calSelectedDate=fechaStr;renderCalendario();}
-function renderCalDayDetail(fechaStr) {
-  const sesiones=db.sesiones.filter(s=>s.fecha===fechaStr).sort((a,b)=>String(a.hora).localeCompare(String(b.hora)));
-  const detail=document.getElementById('calDayDetail');
-  const label=formatFecha(fechaStr);
-  if(!sesiones.length){detail.innerHTML=`<div class="card"><div class="card-title">📅 ${label}</div><div style="display:flex;align-items:center;justify-content:space-between;"><div style="color:var(--text3);font-size:14px;font-weight:600;">Sin sesiones este día</div><button class="btn btn-primary btn-sm" onclick="abrirModalSesion('${fechaStr}')">+ Agregar</button></div></div>`;return;}
-  const items=sesiones.map(s=>{
-    const estadoBadge={programada:'badge-blue',completada:'badge-green',cancelada:'badge-pink',no_asistio:'badge-yellow'}[s.estado]||'badge-blue';
-    const borderColor={programada:'var(--blue-dd)',completada:'var(--green-d)',cancelada:'var(--pink-d)',no_asistio:'var(--warning)'}[s.estado]||'var(--blue-dd)';
-    const calIcon=s.calEventId?'📅 ':''
-    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
-      <div style="min-width:46px;text-align:center;">
-        <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;color:var(--text);border-left:4px solid ${borderColor};padding-left:6px;">${s.hora||'—'}</div>
-        <div style="font-size:10px;color:var(--text3);font-weight:600;">${s.duracion}m</div>
-      </div>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;">${calIcon}${nombreSesion(s)}</div>
-        <div style="font-size:12px;color:var(--text3);font-weight:600;">${terapiaLabel(s.tipo)}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
-        <span class="badge ${estadoBadge}">${s.estado.replace('_',' ')}</span>
-        <div style="display:flex;gap:4px;">
-          <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px;" onclick="abrirEditarSesion(${s.id})">✏️</button>
-          <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px;" onclick="eliminarSesion(${s.id}).then(()=>renderCalendario())">🗑</button>
-        </div>
-      </div>
+
+function abrirModalCategoria(id=null) {
+  if (id) {
+    const cat = db.categorias.find(x=>x.id===Number(id));
+    if (!cat) return;
+    document.getElementById('modalCategoriaTitulo').textContent = 'Editar categoría';
+    document.getElementById('cat_id').value   = cat.id;
+    document.getElementById('cat_nombre').value = cat.nombre;
+    document.getElementById('cat_desc').value   = cat.desc||'';
+    document.getElementById('cat_emoji').value  = cat.emoji||'🗂️';
+    document.getElementById('cat_color').value  = cat.color||'#C8DEFF';
+  } else {
+    document.getElementById('modalCategoriaTitulo').textContent = 'Nueva categoría';
+    document.getElementById('cat_id').value    = '';
+    document.getElementById('cat_nombre').value = '';
+    document.getElementById('cat_desc').value   = '';
+    document.getElementById('cat_emoji').value  = '🗂️';
+    document.getElementById('cat_color').value  = '#C8DEFF';
+  }
+  openModal('modalCategoria');
+}
+
+function guardarCategoria() {
+  const nombre = document.getElementById('cat_nombre').value.trim();
+  if (!nombre) { alert('El nombre es obligatorio'); return; }
+  const idExistente = document.getElementById('cat_id').value;
+  const datos = {
+    nombre,
+    desc:  document.getElementById('cat_desc').value,
+    emoji: document.getElementById('cat_emoji').value || '🗂️',
+    color: document.getElementById('cat_color').value || '#C8DEFF'
+  };
+  if (idExistente) {
+    const idx = db.categorias.findIndex(x=>x.id===Number(idExistente));
+    if (idx>=0) db.categorias[idx] = { ...db.categorias[idx], ...datos };
+    showToast('✅ Categoría actualizada');
+  } else {
+    db.categorias.push({ id: uid(), ...datos });
+    showToast('✅ Categoría creada');
+  }
+  save();
+  closeModal('modalCategoria');
+  renderServicios();
+  actualizarSelectsCategorias();
+}
+
+function eliminarCategoria(id) {
+  if (!confirm('¿Eliminar esta categoría? Los pacientes asignados quedarán sin categoría.')) return;
+  db.categorias = db.categorias.filter(x=>x.id!==Number(id));
+  // Desasignar de pacientes
+  db.pacientes.forEach(p => { if(Number(p.categoriaId)===Number(id)) delete p.categoriaId; });
+  save();
+  renderServicios();
+  actualizarSelectsCategorias();
+  showToast('Categoría eliminada');
+}
+
+function abrirAsignarCategoria(pacienteId) {
+  const pac = db.pacientes.find(x=>x.id===Number(pacienteId));
+  if (!pac) return;
+  document.getElementById('asignar_pacienteId').value = pacienteId;
+  document.getElementById('asignarPacienteNombre').textContent = pac.nombre;
+  const sel = document.getElementById('asignar_catId');
+  sel.innerHTML = '<option value="">— Sin categoría —</option>' +
+    db.categorias.map(cat=>`<option value="${cat.id}" ${Number(pac.categoriaId)===cat.id?'selected':''}>${cat.emoji} ${cat.nombre}</option>`).join('');
+  openModal('modalAsignarCat');
+}
+
+function guardarAsignacion() {
+  const pid  = Number(document.getElementById('asignar_pacienteId').value);
+  const catId = document.getElementById('asignar_catId').value;
+  const pac = db.pacientes.find(x=>x.id===pid);
+  if (pac) {
+    pac.categoriaId = catId ? Number(catId) : null;
+    save();
+    if (modoConectado) apiPost('updatePaciente', pac).catch(()=>{});
+  }
+  closeModal('modalAsignarCat');
+  renderServicios();
+  renderPacientes();
+  showToast('✅ Categoría asignada');
+}
+
+function renderServicios() {
+  initCategorias();
+  const list = document.getElementById('categoriasList');
+
+  if (!db.categorias.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🗂️</div><div class="empty-text">Sin categorías aún. ¡Crea la primera!</div></div>`;
+    document.getElementById('categoriasPacientes').innerHTML = '';
+    return;
+  }
+
+  // Tarjetas de categorías
+  list.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:24px;">
+      ${db.categorias.map(cat => {
+        const pacs = db.pacientes.filter(p=>Number(p.categoriaId)===cat.id);
+        return `
+          <div style="background:var(--white);border-radius:var(--radius);padding:18px;border:2px solid var(--border);box-shadow:var(--shadow);border-top:5px solid ${cat.color};">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:28px;">${cat.emoji}</span>
+                <div>
+                  <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--text);">${cat.nombre}</div>
+                  <div style="font-size:11px;color:var(--text3);font-weight:600;">${pacs.length} paciente${pacs.length!==1?'s':''}</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-ghost btn-sm" onclick="abrirModalCategoria(${cat.id})">✏️</button>
+                <button class="btn btn-ghost btn-sm" onclick="eliminarCategoria(${cat.id})">🗑</button>
+              </div>
+            </div>
+            ${cat.desc ? `<div style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:10px;">${cat.desc}</div>` : ''}
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              ${pacs.slice(0,5).map(p=>`
+                <div style="background:var(--offwhite);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--text2);">
+                  ${p.nombre.split(' ')[0]}
+                </div>`).join('')}
+              ${pacs.length>5?`<div style="background:var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--text2);">+${pacs.length-5}</div>`:''}
+            </div>
+          </div>`;
+      }).join('')}
     </div>`;
-  }).join('');
-  detail.innerHTML=`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div class="card-title" style="margin-bottom:0;">📅 ${label}</div><button class="btn btn-primary btn-sm" onclick="abrirModalSesion('${fechaStr}')">+ Agregar</button></div>${items}</div>`;
+
+  // Sección de asignación de pacientes
+  const sinCategoria = db.pacientes.filter(p=>!p.categoriaId);
+  document.getElementById('categoriasPacientes').innerHTML = `
+    <div class="card">
+      <div class="card-title">🏷️ Asignar categorías a pacientes</div>
+      ${db.pacientes.length === 0 ? '<div style="color:var(--text3);font-size:14px;font-weight:600;">Sin pacientes registrados.</div>' :
+        db.pacientes.map(p => {
+          const cat = db.categorias.find(x=>x.id===Number(p.categoriaId));
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="patient-avatar ${avColor(p.id)}" style="width:36px;height:36px;font-size:13px;">${p.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+                <div>
+                  <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;">${p.nombre}</div>
+                  <div style="font-size:11px;color:var(--text3);font-weight:600;">${p.estado}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                ${cat ? `<span style="background:${cat.color};border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;">${cat.emoji} ${cat.nombre}</span>` : '<span class="badge badge-neutral">Sin categoría</span>'}
+                <button class="btn btn-ghost btn-sm" onclick="abrirAsignarCategoria(${p.id})">🏷️</button>
+              </div>
+            </div>`;
+        }).join('')}
+    </div>`;
 }
 
-// ══════════════════════════════════════════════
-//  SEED DATA (solo si no hay datos)
-// ══════════════════════════════════════════════
-function seedData(){
-  db.pacientes=[{id:1,nombre:'Ana García',alias:'Anita',tel:'871-100-2222',email:'ana@mail.com',inicio:'2024-09-01',estado:'activo',tipocobro:'sesion',tarifa:700,motivo:'Ansiedad generalizada',notas:'Avances constantes 🌱',terapia:'individual'}];
-  db.pagos=[];db.sesiones=[];save();
+// ── Actualizar todos los selects de categorías en filtros ──
+function actualizarSelectsCategorias() {
+  initCategorias();
+  const opts = '<option value="">Todas las categorías</option>' +
+    db.categorias.map(cat=>`<option value="${cat.id}">${cat.emoji} ${cat.nombre}</option>`).join('');
+  ['filtroPacCategoria','filtroCategoriaPago','filtroDashCategoria'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ const val=el.value; el.innerHTML=opts; el.value=val; }
+  });
 }
 
-// ══════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════
-document.getElementById('topbarDate').textContent=new Date().toLocaleDateString('es-MX',{weekday:'short',day:'numeric',month:'short'});
-document.getElementById('agendaDate').value=hoyStr();
-document.getElementById('pg_fecha').value=hoyStr();
+// ── Etiqueta de categoría para mostrar en listas ──
+function badgeCategoria(pacienteId) {
+  if(!db.categorias) return '';
+  const pac = db.pacientes.find(x=>x.id===Number(pacienteId));
+  if(!pac?.categoriaId) return '';
+  const cat = db.categorias.find(x=>x.id===Number(pac.categoriaId));
+  if(!cat) return '';
+  return `<span style="background:${cat.color};border-radius:20px;padding:2px 8px;font-size:10px;font-weight:800;font-family:'Nunito',sans-serif;margin-left:4px;">${cat.emoji} ${cat.nombre}</span>`;
+}
 
-(async()=>{
-  await load();
-  actualizarBadge();
-  renderDashboard();
-})();
 </script>
 </body>
 </html>
