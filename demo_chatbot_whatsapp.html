@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Chatbot WhatsApp — NSR</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --navy: #0f2744;
+  --orange: #e8821a;
+  --gold: #c9a227;
+  --wa-green: #25D366;
+  --wa-dark: #075E54;
+  --wa-bg: #ECE5DD;
+  --wa-bubble-in: #ffffff;
+  --wa-bubble-out: #DCF8C6;
+  --wa-header: #128C7E;
+  --wa-teal: #00BFA5;
+  --text-dark: #111;
+  --text-muted: #667781;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: linear-gradient(135deg, #0a1628 0%, #0f2744 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px 50px;
+  gap: 20px;
+}
+
+/* Header NSR */
+.nsr-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.nsr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(201,162,39,0.3);
+  border-radius: 30px;
+  padding: 6px 16px;
+  margin-bottom: 12px;
+}
+.nsr-badge span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c9a227;
+}
+.nsr-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.nsr-title em {
+  color: #e8821a;
+  font-style: normal;
+}
+.nsr-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 4px;
+}
+
+/* Nivel badges */
+.niveles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.nivel-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+.nivel-badge.active { opacity: 1; }
+.n1 { background: rgba(96,165,250,0.15); border-color: #60a5fa; color: #60a5fa; }
+.n2 { background: rgba(232,130,26,0.15); border-color: #e8821a; color: #e8821a; }
+.n3 { background: rgba(167,139,250,0.15); border-color: #a78bfa; color: #a78bfa; }
+
+/* Layout principal */
+.main-layout {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 860px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Phone wrapper */
+.phone-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.phone-frame {
+  width: 300px;
+  background: #1a1a2e;
+  border-radius: 36px;
+  padding: 12px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  position: relative;
+}
+.phone-notch {
+  width: 80px;
+  height: 22px;
+  background: #1a1a2e;
+  border-radius: 0 0 14px 14px;
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.notch-cam {
+  width: 8px; height: 8px;
+  background: #333;
+  border-radius: 50%;
+}
+.notch-speaker {
+  width: 36px; height: 4px;
+  background: #333;
+  border-radius: 4px;
+}
+
+/* WhatsApp UI */
+.wa-app {
+  background: var(--wa-bg);
+  border-radius: 22px;
+  overflow: hidden;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* WA Header */
+.wa-header {
+  background: var(--wa-header);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.wa-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--wa-dark), var(--wa-teal));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.wa-contact-info { flex: 1; }
+.wa-contact-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+.wa-contact-status {
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+}
+.wa-dots {
+  display: flex;
+  gap: 3px;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 4px;
+}
+.wa-dots span {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+}
+
+/* WA Messages */
+.wa-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  scroll-behavior: smooth;
+}
+.wa-messages::-webkit-scrollbar { width: 3px; }
+.wa-messages::-webkit-scrollbar-track { background: transparent; }
+.wa-messages::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
+
+/* Date separator */
+.date-sep {
+  text-align: center;
+  margin: 6px 0;
+}
+.date-sep span {
+  background: rgba(255,255,255,0.75);
+  color: #667781;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Bubbles */
+.bubble {
+  max-width: 82%;
+  padding: 6px 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  word-wrap: break-word;
+  animation: popIn 0.25s ease;
+}
+@keyframes popIn {
+  from { opacity:0; transform: scale(0.92) translateY(4px); }
+  to { opacity:1; transform: scale(1) translateY(0); }
+}
+
+.bubble-in {
+  background: var(--wa-bubble-in);
+  color: var(--text-dark);
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+.bubble-in::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 0;
+  border: 8px solid transparent;
+  border-top-color: var(--wa-bubble-in);
+  border-left: 0;
+}
+
+.bubble-out {
+  background: var(--wa-bubble-out);
+  color: var(--text-dark);
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+.bubble-out::before {
+  content: '';
+  position: absolute;
+  right: -8px; top: 0;
+  border: 8px solid transparent;
+  border-top-color: var(--wa-bubble-out);
+  border-right: 0;
+}
+
+.bubble-time {
+  position: absolute;
+  bottom: 3px; right: 8px;
+  font-size: 9px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.bubble-out .bubble-time { color: #7f9e79; }
+
+.check-double { font-size: 9px; color: #53bdeb; }
+
+/* Bot name tag */
+.bot-tag {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--wa-header);
+  margin-bottom: 2px;
+  display: block;
+}
+
+/* Quick replies */
+.quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+.qr-btn {
+  background: transparent;
+  border: 1px solid var(--wa-header);
+  color: var(--wa-header);
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Barlow', sans-serif;
+}
+.qr-btn:hover {
+  background: var(--wa-header);
+  color: #fff;
+}
+
+/* Image bubble */
+.img-bubble {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(135deg, #0f2744, #1a3a5c);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-size: 22px;
+}
+.img-bubble-label {
+  font-size: 9px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Typing indicator */
+.typing {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  padding: 8px 12px 16px;
+  background: var(--wa-bubble-in);
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+  width: 50px;
+}
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #667781;
+  animation: typingBounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* WA Input bar */
+.wa-input-bar {
+  background: #f0f0f0;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.wa-input {
+  flex: 1;
+  background: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-family: 'Barlow', sans-serif;
+  outline: none;
+  color: #333;
+}
+.wa-send {
+  width: 34px; height: 34px;
+  background: var(--wa-header);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ===== PANEL DERECHO ===== */
+.right-panel {
+  flex: 1;
+  min-width: 280px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Info card */
+.info-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+.info-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e8821a;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.info-card p {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+
+/* Nivel indicator */
+.nivel-detail {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.nivel-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: background 0.2s;
+}
+.nivel-row:last-child { border-bottom: none; }
+.nivel-row.highlighted { background: rgba(232,130,26,0.06); }
+.nivel-num {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+.n1c { color: #60a5fa; }
+.n2c { color: #e8821a; }
+.n3c { color: #a78bfa; }
+.nivel-info { padding: 12px; flex: 1; }
+.nivel-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+.nivel-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.4;
+}
+.nivel-price {
+  font-size: 11px;
+  font-weight: 700;
+  color: #c9a227;
+  margin-top: 4px;
+}
+
+/* Scenario buttons */
+.scenario-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.scenario-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Barlow', sans-serif;
+}
+.scenario-btn:hover, .scenario-btn.active {
+  background: rgba(232,130,26,0.1);
+  border-color: rgba(232,130,26,0.4);
+}
+.scenario-btn-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e8821a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.scenario-btn-desc {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+
+/* NSR recommendation box */
+.recommend-box {
+  background: linear-gradient(135deg, rgba(232,130,26,0.12), rgba(201,162,39,0.06));
+  border: 1px solid rgba(232,130,26,0.3);
+  border-radius: 12px;
+  padding: 14px;
+}
+.recommend-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #c9a227;
+  margin-bottom: 8px;
+}
+.recommend-text {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+.recommend-price {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.price-tag {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e8821a;
+}
+.price-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+}
+.wa-btn {
+  background: var(--wa-green);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: opacity 0.2s;
+  text-decoration: none;
+}
+.wa-btn:hover { opacity: 0.85; }
+
+/* Footer */
+.demo-footer {
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+  letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER NSR -->
+<div class="nsr-header">
+  <div class="nsr-badge">
+    <span>Demo · Chatbot WhatsApp</span>
+  </div>
+  <div class="nsr-title">Chatbot para <em>WhatsApp</em></div>
+  <div class="nsr-sub">Simula cómo responde tu negocio automáticamente · 24/7</div>
+</div>
+
+<!-- Nivel selector -->
+<div class="niveles">
+  <div class="nivel-badge n1" onclick="setNivel(1)" id="nb1">Nivel 1 · Básico</div>
+  <div class="nivel-badge n2 active" onclick="setNivel(2)" id="nb2">Nivel 2 · Flujos ⭐</div>
+  <div class="nivel-badge n3" onclick="setNivel(3)" id="nb3">Nivel 3 · IA</div>
+</div>
+
+<!-- Main layout -->
+<div class="main-layout">
+
+  <!-- PHONE -->
+  <div class="phone-wrap">
+    <div class="phone-frame">
+      <div class="phone-notch">
+        <div class="notch-cam"></div>
+        <div class="notch-speaker"></div>
+      </div>
+
+      <div class="wa-app">
+        <!-- Header WhatsApp -->
+        <div class="wa-header">
+          <div class="wa-avatar">☕</div>
+          <div class="wa-contact-info">
+            <div class="wa-contact-name">Café Ejemplo</div>
+            <div class="wa-contact-status" id="wa-status">en línea</div>
+          </div>
+          <div class="wa-dots"><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- Messages -->
+        <div class="wa-messages" id="chat">
+          <div class="date-sep"><span>hoy</span></div>
+        </div>
+
+        <!-- Input bar -->
+        <div class="wa-input-bar">
+          <input class="wa-input" type="text" placeholder="Escribe un mensaje..." id="userInput" onkeydown="if(event.key==='Enter')sendUserMsg()">
+          <button class="wa-send" onclick="sendUserMsg()">➤</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- Niveles info -->
+    <div class="nivel-detail">
+      <div class="nivel-row" id="row1">
+        <div class="nivel-num n1c">1</div>
+        <div class="nivel-info">
+          <div class="nivel-name">WhatsApp Business básico</div>
+          <div class="nivel-desc">Mensajes automáticos de bienvenida y ausencia. Sin bot real.</div>
+          <div class="nivel-price">Setup $400–500 MXN</div>
+        </div>
+      </div>
+      <div class="nivel-row highlighted" id="row2">
+        <div class="nivel-num n2c">2</div>
+        <div class="nivel-info">
+          <div class="nivel-name">Flujos predefinidos ⭐ Recomendado</div>
+          <div class="nivel-desc">Menú, horarios, promos y preguntas frecuentes con botones. Responde 24/7.</div>
+          <div class="nivel-price">Setup $2,500–3,500 + $300–800/mes plataforma</div>
+        </div>
+      </div>
+      <div class="nivel-row" id="row3">
+        <div class="nivel-num n3c">3</div>
+        <div class="nivel-info">
+          <div class="nivel-name">IA conversacional</div>
+          <div class="nivel-desc">Entiende lenguaje natural. Requiere Meta Business verificado.</div>
+          <div class="nivel-price">Setup $5,000–8,000 + $500–1,500/mes APIs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario buttons -->
+    <div class="info-card">
+      <div class="info-card-title">🎮 Simula una conversación</div>
+      <div class="scenario-grid">
+        <button class="scenario-btn active" id="sc1" onclick="loadScenario('menu')">
+          <div class="scenario-btn-label">📋 Ver menú</div>
+          <div class="scenario-btn-desc">Cliente pide ver opciones y precios</div>
+        </button>
+        <button class="scenario-btn" id="sc2" onclick="loadScenario('horario')">
+          <div class="scenario-btn-label">🕐 Horario y ubicación</div>
+          <div class="scenario-btn-desc">¿A qué hora abren? ¿Dónde están?</div>
+        </button>
+        <button class="scenario-btn" id="sc3" onclick="loadScenario('promo')">
+          <div class="scenario-btn-label">🎁 Promoción del día</div>
+          <div class="scenario-btn-desc">Cliente pregunta por descuentos</div>
+        </button>
+        <button class="scenario-btn" id="sc4" onclick="loadScenario('reserva')">
+          <div class="scenario-btn-label">📅 Hacer reservación</div>
+          <div class="scenario-btn-desc">Reservar mesa o evento</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recomendación NSR -->
+    <div class="recommend-box">
+      <div class="recommend-title">💡 Lo que ofrece NSR</div>
+      <div class="recommend-text" id="recommend-text">
+        Para tu cafetería, el <strong>Nivel 2 con flujos básicos</strong> cubre el 90% de las preguntas que te llegan por WhatsApp. Tu cliente no paga plataformas — solo me paga a mí el setup y yo configuro todo.
+      </div>
+      <div class="recommend-price">
+        <div>
+          <div class="price-tag" id="price-main">$2,500 MXN setup</div>
+          <div class="price-sub" id="price-sub">+ plataforma según tu nivel</div>
+        </div>
+        <a class="wa-btn" href="https://wa.me/528713474088?text=Hola%20Jose%2C%20me%20interesa%20el%20chatbot%20para%20mi%20negocio" target="_blank">
+          📱 Cotizar
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="demo-footer">Negocio Sin Rodeos · Demo educativo · @negociosinrodeos</div>
+
+<script>
+// ===== DATA =====
+const scenarios = {
+  menu: {
+    bot: "¡Hola! 👋 Bienvenido a *Café Ejemplo*. ☕\n\nSoy el asistente automático. ¿Qué quieres ver?",
+    quickReplies: ["📋 Ver menú", "🕐 Horarios", "📍 Ubicación", "🎁 Promos"],
+    followUp: {
+      "📋 Ver menú": {
+        type: "menu",
+        text: "Aquí nuestro menú del día ⬇️",
+        extra: "🔥 *Bebidas calientes*\n☕ Americano — $35\n☕ Cappuccino — $45\n🍫 Chocolate — $40\n\n🧊 *Bebidas frías*\n☕ Frap café — $55\n🥛 Matcha latte — $60\n🍓 Smoothie fresa — $55\n\n🥐 *Comida*\n🥐 Croissant — $30\n🥗 Ensalada Caesar — $75\n🥪 Club sándwich — $80",
+        qr: ["¿Tienen sin gluten?", "🔙 Volver", "📅 Hacer pedido"]
+      },
+      "🕐 Horarios": {
+        text: "Nuestros horarios:\n\n📅 Lun–Vie: 7:00am – 9:00pm\n📅 Sábado: 8:00am – 8:00pm\n📅 Domingo: 9:00am – 3:00pm\n\n📍 Blvd. Independencia 1234, Torreón",
+        qr: ["¿Tienen delivery?", "🔙 Volver"]
+      },
+      "📍 Ubicación": {
+        text: "📍 Nos encuentras en:\n*Blvd. Independencia 1234*\nCol. Centro, Torreón Coah.\n\n🗺️ [Ver en Google Maps]\n\n🚗 Tenemos estacionamiento propio ✅",
+        qr: ["🕐 Horarios", "🔙 Volver"]
+      },
+      "🎁 Promos": {
+        text: "🎉 *Promos de esta semana:*\n\n☕ 2x1 en americanos — Lunes y Miércoles\n🥐 Desayuno completo — $99 (antes $130)\n👥 Grupo de 4+ — 10% de descuento\n\n⏰ Válido hasta el domingo",
+        qr: ["📋 Ver menú", "📅 Reservar", "🔙 Volver"]
+      }
+    }
+  },
+  horario: {
+    bot: "¡Hola! 👋 Gracias por escribirnos.\n\n¿En qué te puedo ayudar hoy?",
+    quickReplies: ["🕐 Horarios", "📍 Dónde están", "📋 Ver menú", "🎁 Promos"],
+    followUp: {
+      "🕐 Horarios": {
+        text: "📅 Nuestros horarios:\n\n*Lunes a Viernes:* 7:00am – 9:00pm\n*Sábado:* 8:00am – 8:00pm\n*Domingo:* 9:00am – 3:00pm\n\n✅ Abrimos todos los días del año excepto 25 de diciembre.",
+        qr: ["📍 Ubicación", "📋 Menú", "🔙 Volver"]
+      },
+      "📍 Dónde están": {
+        text: "📍 *Café Ejemplo*\nBlvd. Independencia 1234\nCol. Centro, Torreón, Coah.\n\n🅿️ Estacionamiento gratuito\n♿ Acceso para personas con discapacidad\n\n🗺️ [Ver en Google Maps]",
+        qr: ["🕐 Horarios", "📋 Menú", "🔙 Volver"]
+      }
+    }
+  },
+  promo: {
+    bot: "¡Hola! 🎉 ¡Qué bueno que nos escribes!\n\nTenemos novedades esta semana. ¿Qué te interesa?",
+    quickReplies: ["🎁 Ver promos", "☕ Membresía café", "👥 Grupos", "📋 Menú completo"],
+    followUp: {
+      "🎁 Ver promos": {
+        text: "🔥 *Promos activas:*\n\n☕ *2x1 Americanos*\nLunes y Miércoles todo el día\n\n🥐 *Desayuno del día*\nCafé + croissant + fruta — $89\n(Disponible 7–11am)\n\n👥 *Descuento grupos*\n4 personas o más — 10% en cuenta\n\n⏰ Válido hasta el domingo 15",
+        qr: ["☕ Membresía", "📅 Reservar", "📋 Menú"]
+      },
+      "☕ Membresía café": {
+        text: "🌟 *Membresía Café Ejemplo*\n\n$299/mes — Beneficios:\n✅ 1 café diario gratis\n✅ 20% de descuento en comida\n✅ Acceso anticipado a promos\n✅ WiFi premium\n\n👉 Inscríbete directamente aquí o pregúntanos en caja.",
+        qr: ["🎁 Promos", "📅 Ir hoy", "🔙 Volver"]
+      }
+    }
+  },
+  reserva: {
+    bot: "¡Hola! Bienvenido a *Café Ejemplo* 🙌\n\n¿Quieres hacer una reservación?",
+    quickReplies: ["📅 Reservar mesa", "🎂 Evento especial", "👥 ¿Cuánto espacio?", "📋 Ver menú primero"],
+    followUp: {
+      "📅 Reservar mesa": {
+        text: "📅 Para reservar tu mesa necesito:\n\n1️⃣ ¿Para cuántas personas?\n2️⃣ ¿Qué día y hora?\n3️⃣ Tu nombre\n\nEscríbeme los datos o llámanos al\n📞 871 347 4088\n\n*Tiempo máximo de espera reservada: 15 min*",
+        qr: ["🎂 Evento", "📋 Menú", "🔙 Volver"]
+      },
+      "🎂 Evento especial": {
+        text: "🎉 ¡Con gusto organizamos tu evento!\n\nOfrecemos:\n🎂 Cumpleaños\n👔 Reuniones de trabajo\n💝 Desayunos especiales\n\nCapacidad máxima: *30 personas*\n\n📲 Para cotización de evento escríbenos o llama al 871 347 4088 y te atendemos personalmente.",
+        qr: ["📅 Reservar mesa", "🔙 Volver"]
+      },
+      "👥 ¿Cuánto espacio?": {
+        text: "📐 *Nuestro espacio:*\n\n🪑 Interior: 45 lugares\n🌿 Terraza: 20 lugares\n🏢 Sala privada: hasta 15 personas\n\n*¿Para cuántos son?* Dime y busco la mejor opción para ti.",
+        qr: ["📅 Reservar", "🎂 Evento", "🔙 Volver"]
+      }
+    }
+  }
+};
+
+let currentScenario = 'menu';
+let currentNivel = 2;
+let pendingFollowUp = null;
+
+function getTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
+function addBubble(text, type, extra, qrOptions) {
+  const chat = document.getElementById('chat');
+
+  // Remove typing if present
+  const typing = chat.querySelector('.typing');
+  if (typing) typing.remove();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble bubble-' + type;
+
+  let html = '';
+  if (type === 'in') html += '<span class="bot-tag">🤖 Bot NSR</span>';
+
+  if (extra && extra.type === 'menu') {
+    html += `<div class="img-bubble"><span style="font-size:30px">📋</span><span class="img-bubble-label">Menú Digital</span></div>`;
+  }
+
+  // Format text
+  let formatted = text
+    .replace(/\*(.+?)\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+  html += formatted;
+
+  if (extra && extra.type !== 'menu' && extra.extra) {
+    html += '<br><br>';
+    let extraFormatted = extra.extra
+      .replace(/\*(.+?)\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    html += extraFormatted;
+  }
+
+  const check = type === 'out' ? '<span class="check-double">✓✓</span>' : '';
+  html += `<div class="bubble-time">${getTime()} ${check}</div>`;
+
+  bubble.innerHTML = html;
+  chat.appendChild(bubble);
+
+  // Quick replies
+  if (qrOptions && qrOptions.length) {
+    const qrDiv = document.createElement('div');
+    qrDiv.className = 'quick-replies';
+    qrDiv.style.alignSelf = 'flex-start';
+    qrOptions.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'qr-btn';
+      btn.textContent = opt;
+      btn.onclick = () => handleQuickReply(opt, qrDiv);
+      qrDiv.appendChild(btn);
+    });
+    chat.appendChild(qrDiv);
+    pendingFollowUp = null;
+  }
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const t = document.createElement('div');
+  t.className = 'typing';
+  t.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  chat.appendChild(t);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function handleQuickReply(option, qrDiv) {
+  // Disable all buttons
+  qrDiv.querySelectorAll('.qr-btn').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '0.4';
+    b.style.cursor = 'default';
+  });
+
+  // Show as sent
+  addBubble(option, 'out');
+
+  if (option === '🔙 Volver') {
+    setTimeout(() => {
+      showTyping();
+      setTimeout(() => {
+        const sc = scenarios[currentScenario];
+        addBubble(sc.bot, 'in', null, sc.quickReplies);
+      }, 900);
+    }, 400);
+    return;
+  }
+
+  const sc = scenarios[currentScenario];
+  const followUp = sc.followUp && sc.followUp[option];
+
+  if (followUp) {
+    setTimeout(() => {
+      showTyping();
+      setTimeout(() => {
+        const extra = followUp.type === 'menu' ? followUp : null;
+        addBubble(followUp.text, 'in', extra, followUp.qr || []);
+        if (followUp.extra && followUp.type !== 'menu') {
+          // Already included
+        }
+      }, 1100);
+    }, 400);
+  } else {
+    setTimeout(() => {
+      showTyping();
+      setTimeout(() => {
+        addBubble("Para eso te conecto con nuestro equipo 😊\n📞 *871 347 4088*\n\n¡Gracias por escribirnos!", 'in', null, ['🔙 Menú principal']);
+      }, 900);
+    }, 400);
+  }
+}
+
+function sendUserMsg() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addBubble(text, 'out');
+
+  // Simple keyword matching
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      const lower = text.toLowerCase();
+      let response = '';
+      let qr = [];
+
+      if (lower.match(/men[uú]|carta|precios?|bebidas?/)) {
+        response = "¡Claro! Te mando el menú ahora mismo 👇";
+        qr = ["📋 Ver menú", "🎁 Promos", "🔙 Volver"];
+      } else if (lower.match(/hola|buenos|holi|hey/)) {
+        const sc = scenarios[currentScenario];
+        addBubble(sc.bot, 'in', null, sc.quickReplies);
+        return;
+      } else if (lower.match(/hora|horario|abren|cierran|cuando/)) {
+        response = "📅 *Horarios:*\nLun–Vie: 7am–9pm\nSábado: 8am–8pm\nDomingo: 9am–3pm";
+        qr = ["📍 Ubicación", "📋 Menú", "🔙 Volver"];
+      } else if (lower.match(/promo|descuento|oferta|promo/)) {
+        response = "🎉 Tenemos varias promos esta semana. ¡Mira!";
+        qr = ["🎁 Ver promos", "☕ Membresía", "🔙 Volver"];
+      } else if (lower.match(/reserv|mesa|lugar|apartar/)) {
+        response = "📅 Con mucho gusto te ayudo con tu reservación. ¿Para cuántas personas?";
+        qr = ["📅 Reservar mesa", "🎂 Evento especial", "🔙 Volver"];
+      } else {
+        response = "Entendido 😊 Para resolver eso déjame conectarte con nuestro equipo.\n📞 *871 347 4088*";
+        qr = ["📋 Ver menú", "🔙 Volver"];
+      }
+
+      addBubble(response, 'in', null, qr);
+    }, 1200);
+  }, 300);
+}
+
+function loadScenario(key) {
+  currentScenario = key;
+
+  // Update buttons
+  ['sc1','sc2','sc3','sc4'].forEach(id => document.getElementById(id).classList.remove('active'));
+  const map = {menu:'sc1',horario:'sc2',promo:'sc3',reserva:'sc4'};
+  document.getElementById(map[key]).classList.add('active');
+
+  // Clear chat
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '<div class="date-sep"><span>hoy</span></div>';
+
+  const sc = scenarios[key];
+  setTimeout(() => {
+    showTyping();
+    setTimeout(() => {
+      addBubble(sc.bot, 'in', null, sc.quickReplies);
+    }, 900);
+  }, 200);
+}
+
+function setNivel(n) {
+  currentNivel = n;
+  [1,2,3].forEach(i => {
+    document.getElementById('nb'+i).classList.toggle('active', i === n);
+    document.getElementById('row'+i).classList.toggle('highlighted', i === n);
+  });
+
+  const recText = document.getElementById('recommend-text');
+  const priceMain = document.getElementById('price-main');
+  const priceSub = document.getElementById('price-sub');
+  const waStatus = document.getElementById('wa-status');
+
+  if (n === 1) {
+    recText.innerHTML = 'El <strong>Nivel 1</strong> es básico pero ayuda: mensaje de bienvenida profesional, horarios automáticos y respuestas rápidas. <strong>Ideal para arrancar sin gastar.</strong>';
+    priceMain.textContent = '$400–500 MXN setup';
+    priceSub.textContent = 'Sin costo mensual de plataforma';
+    waStatus.textContent = 'respuestas automáticas activas';
+  } else if (n === 2) {
+    recText.innerHTML = 'Para tu cafetería, el <strong>Nivel 2 con flujos básicos</strong> cubre el 90% de las preguntas que te llegan por WhatsApp. Tu cliente no paga plataformas — solo me paga a mí el setup.';
+    priceMain.textContent = '$2,500–3,500 MXN setup';
+    priceSub.textContent = '+ $300–800/mes plataforma (o sin plataforma)';
+    waStatus.textContent = 'bot activo 24/7';
+  } else {
+    recText.innerHTML = 'El <strong>Nivel 3 con IA</strong> es para negocios que ya facturan bien y quieren automatizar consultas complejas. Requiere Meta Business verificado. <em>No lo recomiendo para arrancar.</em>';
+    priceMain.textContent = '$5,000–8,000 MXN setup';
+    priceSub.textContent = '+ $500–1,500/mes en APIs';
+    waStatus.textContent = 'IA conversacional activa';
+  }
+}
+
+// Init
+window.onload = () => {
+  loadScenario('menu');
+};
+</script>
+</body>
+</html>

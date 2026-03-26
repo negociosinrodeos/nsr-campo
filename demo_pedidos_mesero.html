@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0d1117">
+<title>NSR Demo — Pedidos Mesero</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0d1117;
+  --surface: #161b22;
+  --card:    #1c2230;
+  --border:  rgba(255,255,255,0.07);
+  --accent:  #f0a500;
+  --accent2: #e07b00;
+  --green:   #2ea86a;
+  --red:     #e05252;
+  --text:    #e6edf3;
+  --muted:   #7d8590;
+  --radius:  14px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow:hidden; }
+body {
+  font-family:'Instrument Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  flex-direction:column;
+  height:100svh;
+}
+
+/* ── HEADER ── */
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  flex-shrink:0;
+}
+.header-left { display:flex; align-items:center; gap:10px; }
+.mesa-badge {
+  background:var(--accent);
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:11px;
+  letter-spacing:1px;
+  padding:5px 12px;
+  border-radius:100px;
+}
+.header-title {
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--text);
+}
+.header-sub { font-size:11px; color:var(--muted); }
+.status-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(46,168,106,0.4); }
+  50%      { box-shadow:0 0 0 6px rgba(46,168,106,0); }
+}
+
+/* ── CATS NAV ── */
+.cats {
+  display:flex;
+  gap:8px;
+  padding:12px 16px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  flex-shrink:0;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.cats::-webkit-scrollbar { display:none; }
+.cat-btn {
+  flex-shrink:0;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--muted);
+  font-family:'Syne',sans-serif;
+  font-size:12px;
+  font-weight:600;
+  padding:7px 14px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:all .2s;
+  white-space:nowrap;
+}
+.cat-btn.active {
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#000;
+}
+
+/* ── CONTENT SPLIT ── */
+.content {
+  display:flex;
+  flex:1;
+  overflow:hidden;
+  gap:0;
+}
+
+/* ── ITEMS LIST ── */
+.items-panel {
+  flex:1;
+  overflow-y:auto;
+  padding:12px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.items-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.item-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px 12px;
+  cursor:pointer;
+  transition:all .15s;
+  position:relative;
+  overflow:hidden;
+}
+.item-card::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(240,165,0,.06),transparent);
+  opacity:0;
+  transition:opacity .2s;
+}
+.item-card:active { transform:scale(.97); }
+.item-card:active::before { opacity:1; }
+.item-card.in-order { border-color:rgba(240,165,0,.35); }
+.item-emoji { font-size:28px; margin-bottom:8px; }
+.item-name {
+  font-family:'Syne',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:4px;
+}
+.item-price {
+  font-size:13px;
+  font-weight:500;
+  color:var(--accent);
+}
+.item-qty-badge {
+  position:absolute;
+  top:8px; right:8px;
+  background:var(--accent);
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:10px;
+  width:20px; height:20px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transform:scale(0);
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.item-qty-badge.show { transform:scale(1); }
+
+/* ── ORDER PANEL ── */
+.order-panel {
+  width:160px;
+  background:var(--surface);
+  border-left:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.order-header {
+  padding:12px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.order-title {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:2px;
+}
+.order-count { font-size:10px; color:var(--muted); }
+
+.order-items {
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+  scrollbar-width:none;
+}
+.order-items::-webkit-scrollbar { display:none; }
+
+.order-item {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 8px;
+  border-radius:8px;
+  background:var(--card);
+  margin-bottom:6px;
+  animation:slideIn .2s ease-out;
+}
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(20px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+.oi-emoji { font-size:16px; flex-shrink:0; }
+.oi-name  { font-size:10px; font-weight:500; flex:1; line-height:1.2; color:var(--text); }
+.oi-qty {
+  font-family:'Syne',sans-serif;
+  font-size:10px;
+  font-weight:800;
+  color:var(--accent);
+  flex-shrink:0;
+}
+.oi-remove {
+  width:16px; height:16px;
+  border-radius:50%;
+  background:rgba(224,82,82,.15);
+  border:none;
+  color:var(--red);
+  font-size:10px;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  transition:background .2s;
+}
+.oi-remove:active { background:rgba(224,82,82,.3); }
+
+.order-empty {
+  text-align:center;
+  padding:30px 12px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+}
+.order-empty-icon { font-size:28px; display:block; margin-bottom:8px; opacity:.4; }
+
+/* ── ORDER FOOTER ── */
+.order-footer {
+  padding:10px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.total-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.total-label { font-size:11px; color:var(--muted); }
+.total-amount {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:16px;
+  color:var(--accent);
+}
+.send-btn {
+  width:100%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:12px;
+  border:none;
+  border-radius:10px;
+  padding:11px 6px;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.5px;
+}
+.send-btn:active { transform:scale(.97); opacity:.9; }
+.send-btn:disabled {
+  background:var(--card);
+  color:var(--muted);
+  cursor:not-allowed;
+}
+.clear-btn {
+  width:100%;
+  background:transparent;
+  color:var(--muted);
+  font-size:10px;
+  border:none;
+  cursor:pointer;
+  padding:6px;
+  margin-top:4px;
+  border-radius:6px;
+  transition:color .2s;
+}
+.clear-btn:active { color:var(--red); }
+
+/* ── NOTE INPUT ── */
+.note-area {
+  padding:8px;
+  flex-shrink:0;
+  border-top:1px solid var(--border);
+}
+.note-input {
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:10px;
+  padding:6px 8px;
+  resize:none;
+  outline:none;
+  height:44px;
+}
+.note-input::placeholder { color:var(--muted); }
+.note-input:focus { border-color:rgba(240,165,0,.3); }
+
+/* ── SUCCESS OVERLAY ── */
+.success-overlay {
+  position:fixed; inset:0;
+  background:rgba(13,17,23,.95);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:16px;
+  z-index:100;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .3s;
+}
+.success-overlay.show { opacity:1; pointer-events:all; }
+.success-icon {
+  width:72px; height:72px;
+  border-radius:50%;
+  background:rgba(46,168,106,.15);
+  border:2px solid var(--green);
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px;
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn {
+  from { transform:scale(0); }
+  to   { transform:scale(1); }
+}
+.success-title {
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:20px;
+  color:var(--text);
+}
+.success-sub { font-size:13px; color:var(--muted); text-align:center; padding:0 40px; }
+.success-ticket {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 20px;
+  width:260px;
+  margin-top:8px;
+}
+.ticket-row {
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  padding:4px 0;
+  border-bottom:1px solid var(--border);
+  color:var(--muted);
+}
+.ticket-row:last-child { border:none; }
+.ticket-row span:last-child { color:var(--text); font-weight:500; }
+.ticket-total {
+  display:flex;
+  justify-content:space-between;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  padding-top:10px;
+  margin-top:6px;
+  border-top:1px solid var(--border);
+}
+.ticket-total span:last-child { color:var(--accent); }
+.new-order-btn {
+  background:var(--accent);
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:13px;
+  border:none;
+  border-radius:100px;
+  padding:12px 32px;
+  cursor:pointer;
+  margin-top:8px;
+}
+
+/* ── NSR TAG ── */
+.nsr-tag {
+  position:fixed;
+  top:0; left:50%;
+  transform:translateX(-50%);
+  background:var(--accent);
+  color:#000;
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:9px;
+  letter-spacing:2px;
+  padding:3px 14px;
+  border-radius:0 0 8px 8px;
+  z-index:200;
+}
+</style>
+</head>
+<body>
+
+<div class="nsr-tag">NSR DEMO</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="mesa-badge">MESA 4</div>
+    <div>
+      <div class="header-title">Pedidos</div>
+      <div class="header-sub">Mesero: Carlos</div>
+    </div>
+  </div>
+  <div class="status-dot"></div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="cats">
+  <button class="cat-btn active" onclick="filterCat('todos')">Todo</button>
+  <button class="cat-btn" onclick="filterCat('bebidas')">☕ Bebidas</button>
+  <button class="cat-btn" onclick="filterCat('alimentos')">🍽 Alimentos</button>
+  <button class="cat-btn" onclick="filterCat('postres')">🍰 Postres</button>
+  <button class="cat-btn" onclick="filterCat('extras')">➕ Extras</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ITEMS -->
+  <div class="items-panel">
+    <div class="items-grid" id="itemsGrid"></div>
+  </div>
+
+  <!-- ORDER -->
+  <div class="order-panel">
+    <div class="order-header">
+      <div class="order-title">Orden</div>
+      <div class="order-count" id="orderCount">0 productos</div>
+    </div>
+
+    <div class="note-area">
+      <textarea class="note-input" id="noteInput" placeholder="Nota (sin azúcar, extra hielo…)"></textarea>
+    </div>
+
+    <div class="order-items" id="orderItems">
+      <div class="order-empty">
+        <span class="order-empty-icon">🛒</span>
+        Toca un producto para agregarlo
+      </div>
+    </div>
+
+    <div class="order-footer">
+      <div class="total-row">
+        <span class="total-label">Total</span>
+        <span class="total-amount" id="totalAmount">$0</span>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="enviarPedido()" disabled>Enviar pedido →</button>
+      <button class="clear-btn" onclick="limpiarOrden()">Limpiar todo</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">✓</div>
+  <div class="success-title">¡Pedido enviado!</div>
+  <div class="success-sub">La cocina recibió la orden. Se guardó en Google Sheets automáticamente.</div>
+  <div class="success-ticket" id="successTicket"></div>
+  <button class="new-order-btn" onclick="nuevaOrden()">+ Nueva orden</button>
+</div>
+
+<script>
+const MENU = [
+  { id:1,  cat:'bebidas',   emoji:'☕', name:'Americano',      price:48 },
+  { id:2,  cat:'bebidas',   emoji:'🥛', name:'Latte',          price:58 },
+  { id:3,  cat:'bebidas',   emoji:'⚡', name:'Espresso',       price:38 },
+  { id:4,  cat:'bebidas',   emoji:'🧊', name:'Cold Brew',      price:68 },
+  { id:5,  cat:'bebidas',   emoji:'🍫', name:'Mocha',          price:74 },
+  { id:6,  cat:'bebidas',   emoji:'🍦', name:'Frappé',         price:72 },
+  { id:7,  cat:'alimentos', emoji:'🥑', name:'Avo Toast',      price:92 },
+  { id:8,  cat:'alimentos', emoji:'🥐', name:'Croissant',      price:48 },
+  { id:9,  cat:'alimentos', emoji:'🥪', name:'Sándwich',       price:105 },
+  { id:10, cat:'alimentos', emoji:'🍳', name:'Huevos Ranch.',  price:88 },
+  { id:11, cat:'postres',   emoji:'🎂', name:'Cheesecake',     price:65 },
+  { id:12, cat:'postres',   emoji:'🍪', name:'Cookie',         price:35 },
+  { id:13, cat:'postres',   emoji:'🍮', name:'Flan',           price:42 },
+  { id:14, cat:'extras',    emoji:'🥛', name:'Leche extra',    price:12 },
+  { id:15, cat:'extras',    emoji:'🍯', name:'Miel',           price:10 },
+  { id:16, cat:'extras',    emoji:'🧁', name:'Crema chantilly',price:15 },
+];
+
+let order = {};
+let currentCat = 'todos';
+
+function filterCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(cat) || (cat==='todos' && b.textContent==='Todo'))
+  );
+  renderItems();
+}
+
+function renderItems() {
+  const grid = document.getElementById('itemsGrid');
+  const items = currentCat === 'todos' ? MENU : MENU.filter(i => i.cat === currentCat);
+  grid.innerHTML = items.map(item => {
+    const qty = order[item.id]?.qty || 0;
+    return `
+    <div class="item-card ${qty>0?'in-order':''}" onclick="addItem(${item.id})" id="card-${item.id}">
+      <div class="item-qty-badge ${qty>0?'show':''}" id="badge-${item.id}">${qty}</div>
+      <div class="item-emoji">${item.emoji}</div>
+      <div class="item-name">${item.name}</div>
+      <div class="item-price">$${item.price}</div>
+    </div>`;
+  }).join('');
+}
+
+function addItem(id) {
+  const item = MENU.find(i => i.id === id);
+  if (!order[id]) order[id] = { ...item, qty: 0 };
+  order[id].qty++;
+  updateUI();
+  // haptic
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function removeItem(id) {
+  if (!order[id]) return;
+  order[id].qty--;
+  if (order[id].qty <= 0) delete order[id];
+  updateUI();
+}
+
+function limpiarOrden() {
+  order = {};
+  updateUI();
+}
+
+function updateUI() {
+  // update badges on visible cards
+  MENU.forEach(item => {
+    const badge = document.getElementById(`badge-${item.id}`);
+    const card  = document.getElementById(`card-${item.id}`);
+    const qty   = order[item.id]?.qty || 0;
+    if (badge) { badge.textContent = qty; badge.classList.toggle('show', qty > 0); }
+    if (card)  { card.classList.toggle('in-order', qty > 0); }
+  });
+
+  // order panel
+  const items = Object.values(order).filter(i => i.qty > 0);
+  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = items.reduce((s, i) => s + i.qty, 0);
+
+  document.getElementById('orderCount').textContent = `${count} producto${count!==1?'s':''}`;
+  document.getElementById('totalAmount').textContent = `$${total}`;
+  document.getElementById('sendBtn').disabled = count === 0;
+
+  const panel = document.getElementById('orderItems');
+  if (items.length === 0) {
+    panel.innerHTML = `<div class="order-empty"><span class="order-empty-icon">🛒</span>Toca un producto para agregarlo</div>`;
+  } else {
+    panel.innerHTML = items.map(i => `
+      <div class="order-item">
+        <span class="oi-emoji">${i.emoji}</span>
+        <span class="oi-name">${i.name}</span>
+        <span class="oi-qty">×${i.qty}</span>
+        <button class="oi-remove" onclick="removeItem(${i.id})">−</button>
+      </div>`).join('');
+  }
+}
+
+function enviarPedido() {
+  const items = Object.values(order).filter(i => i.qty > 0);
+  const total = items.reduce((s,i) => s + i.price * i.qty, 0);
+  const nota  = document.getElementById('noteInput').value;
+
+  const ticket = document.getElementById('successTicket');
+  ticket.innerHTML = items.map(i =>
+    `<div class="ticket-row"><span>${i.emoji} ${i.name} ×${i.qty}</span><span>$${i.price * i.qty}</span></div>`
+  ).join('') +
+  (nota ? `<div class="ticket-row"><span>📝 Nota</span><span>${nota}</span></div>` : '') +
+  `<div class="ticket-total"><span>Total</span><span>$${total}</span></div>`;
+
+  document.getElementById('successOverlay').classList.add('show');
+  // En producción: fetch a Google Sheets via Apps Script aquí
+}
+
+function nuevaOrden() {
+  order = {};
+  document.getElementById('noteInput').value = '';
+  document.getElementById('successOverlay').classList.remove('show');
+  updateUI();
+}
+
+// Init
+renderItems();
+</script>
+</body>
+</html>

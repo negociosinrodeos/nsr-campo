@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a0a00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Café Demo — Menú Digital</title>
+<link rel="manifest" href="#" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --espresso: #1a0a00;
+  --dark-roast: #2d1500;
+  --medium-roast: #4a2800;
+  --caramel: #c8822a;
+  --gold: #e8a84c;
+  --cream: #f5e6c8;
+  --milk: #faf4e8;
+  --white: #ffffff;
+  --text-dark: #1a0a00;
+  --text-muted: #8b6b4a;
+  --card-bg: rgba(255,255,255,0.92);
+  --blur: blur(20px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--espresso);
+  color: var(--text-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200,130,42,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(74,40,0,0.6) 0%, transparent 60%),
+    linear-gradient(160deg, #1a0a00 0%, #2d1500 40%, #1a0800 100%);
+}
+
+/* Coffee steam animation */
+.steam-wrap {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: rise var(--dur, 8s) var(--delay, 0s) infinite ease-out;
+}
+
+.particle:nth-child(1)  { width:3px;  height:3px;  background:rgba(232,168,76,0.4); left:20%; --dur:9s;  --delay:0s;   }
+.particle:nth-child(2)  { width:2px;  height:2px;  background:rgba(245,230,200,0.3); left:35%; --dur:7s;  --delay:1.5s; }
+.particle:nth-child(3)  { width:4px;  height:4px;  background:rgba(200,130,42,0.25); left:55%; --dur:10s; --delay:0.8s; }
+.particle:nth-child(4)  { width:2px;  height:2px;  background:rgba(232,168,76,0.3);  left:70%; --dur:8s;  --delay:3s;   }
+.particle:nth-child(5)  { width:3px;  height:3px;  background:rgba(245,230,200,0.2); left:85%; --dur:11s; --delay:1s;   }
+.particle:nth-child(6)  { width:2px;  height:2px;  background:rgba(200,130,42,0.35); left:10%; --dur:6s;  --delay:2s;   }
+.particle:nth-child(7)  { width:5px;  height:5px;  background:rgba(232,168,76,0.15); left:45%; --dur:12s; --delay:0.3s; }
+.particle:nth-child(8)  { width:2px;  height:2px;  background:rgba(245,230,200,0.25);left:60%; --dur:7s;  --delay:4s;   }
+.particle:nth-child(9)  { width:3px;  height:3px;  background:rgba(200,130,42,0.3);  left:78%; --dur:9s;  --delay:2.5s; }
+.particle:nth-child(10) { width:2px;  height:2px;  background:rgba(232,168,76,0.4);  left:92%; --dur:8s;  --delay:1.2s; }
+
+@keyframes rise {
+  0%   { transform: translateY(100vh) translateX(0)    scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translateY(40vh)  translateX(20px) scale(1); }
+  90%  { opacity: 0.3; }
+  100% { transform: translateY(-10vh) translateX(-10px) scale(0.5); opacity: 0; }
+}
+
+/* Decorative ring */
+.hero-ring {
+  position: absolute;
+  width: 340px; height: 340px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,130,42,0.15);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ringPulse 6s ease-in-out infinite;
+}
+.hero-ring::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,168,76,0.08);
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.6; }
+  50%       { transform: translate(-50%, -50%) scale(1.05); opacity: 1;   }
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  animation: heroIn 1.2s ease-out both;
+}
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cafe-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.cafe-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 10vw, 72px);
+  font-weight: 900;
+  color: var(--cream);
+  line-height: 1;
+  margin-bottom: 6px;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+.cafe-name em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.cafe-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(14px, 3vw, 18px);
+  font-style: italic;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(200,130,42,0.15);
+  border: 1px solid rgba(200,130,42,0.3);
+  border-radius: 100px;
+  padding: 8px 20px;
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  backdrop-filter: var(--blur);
+  margin-bottom: 50px;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--caramel);
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.2; }
+}
+
+.scroll-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.scroll-cta:hover { color: var(--gold); }
+
+.scroll-arrow {
+  width: 32px; height: 32px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
+}
+
+/* ── NAV ── */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(26,10,0,0.85);
+  backdrop-filter: var(--blur);
+  border-bottom: 1px solid rgba(200,130,42,0.15);
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sticky-nav::-webkit-scrollbar { display: none; }
+
+.nav-inner {
+  display: flex;
+  gap: 0;
+  min-width: max-content;
+  padding: 0 4px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 18px; right: 18px;
+  height: 2px;
+  background: var(--caramel);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.nav-btn.active, .nav-btn:hover { color: var(--gold); }
+.nav-btn.active::after { transform: scaleX(1); }
+
+/* ── MENU SECTIONS ── */
+.menu-wrap {
+  background: var(--milk);
+  min-height: 60vh;
+  padding: 0 0 80px;
+}
+
+.section {
+  padding: 50px 16px 20px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.section-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--caramel);
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--espresso);
+  line-height: 1.1;
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(200,130,42,0.3), transparent);
+}
+
+/* CARDS */
+.card-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: 0 2px 20px rgba(26,10,0,0.06);
+  border: 1px solid rgba(200,130,42,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,130,42,0.04), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.menu-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 8px rgba(26,10,0,0.1);
+}
+
+.menu-card:active::before { opacity: 1; }
+
+.card-emoji {
+  width: 54px; height: 54px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cream), #ede0c4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--espresso);
+  margin-bottom: 3px;
+  line-height: 1.2;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 100px;
+  background: rgba(200,130,42,0.1);
+  color: var(--caramel);
+  border: 1px solid rgba(200,130,42,0.2);
+}
+
+.tag.hot   { background: rgba(220,50,30,0.08);  color: #c03020; border-color: rgba(220,50,30,0.2); }
+.tag.cold  { background: rgba(50,120,200,0.08); color: #3060a0; border-color: rgba(50,120,200,0.2); }
+.tag.new   { background: rgba(40,160,80,0.1);   color: #208040; border-color: rgba(40,160,80,0.25); }
+.tag.pop   { background: rgba(200,130,42,0.12); color: var(--caramel); }
+
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--espresso);
+  white-space: nowrap;
+  align-self: center;
+}
+
+.card-price span {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  display: block;
+  text-align: right;
+  line-height: 1;
+}
+
+/* FEATURED card */
+.menu-card.featured {
+  background: linear-gradient(135deg, var(--dark-roast) 0%, var(--medium-roast) 100%);
+  border-color: rgba(200,130,42,0.3);
+}
+
+.menu-card.featured .card-name  { color: var(--cream); }
+.menu-card.featured .card-desc  { color: rgba(245,230,200,0.65); }
+.menu-card.featured .card-price { color: var(--gold); }
+.menu-card.featured .card-price span { color: rgba(245,230,200,0.5); }
+.menu-card.featured .card-emoji { background: linear-gradient(135deg, rgba(200,130,42,0.2), rgba(74,40,0,0.4)); }
+
+.featured-badge {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--caramel);
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+/* ── DIVIDER ── */
+.section-divider {
+  max-width: 500px;
+  margin: 8px auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(200,130,42,0.15);
+}
+
+.section-divider span {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: rgba(200,130,42,0.5);
+  white-space: nowrap;
+}
+
+/* ── FOOTER ── */
+.menu-footer {
+  background: var(--espresso);
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.footer-logo em { color: var(--gold); font-style: italic; }
+
+.footer-sub {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+
+.footer-info strong { color: var(--cream); }
+
+.powered-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: rgba(139,107,74,0.5);
+  letter-spacing: 1px;
+  border-top: 1px solid rgba(200,130,42,0.1);
+  padding-top: 20px;
+  text-transform: uppercase;
+}
+
+.powered-by a {
+  color: var(--caramel);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--dark-roast);
+  border: 1px solid rgba(200,130,42,0.3);
+  color: var(--cream);
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── NSR BANNER ── */
+.nsr-banner {
+  position: fixed;
+  top: 12px; right: 12px;
+  background: rgba(26,10,0,0.9);
+  border: 1px solid rgba(200,130,42,0.3);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 9px;
+  color: rgba(200,130,42,0.7);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  z-index: 200;
+  backdrop-filter: var(--blur);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.nsr-banner strong {
+  color: var(--caramel);
+  display: block;
+  font-size: 10px;
+}
+
+/* Loading state */
+.loading-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--caramel), var(--gold));
+  width: 0%;
+  z-index: 9999;
+  transition: width 0.4s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="loading-bar" id="loadingBar"></div>
+
+<!-- NSR Demo Badge -->
+<div class="nsr-banner">
+  <strong>NSR Demo</strong>
+  negociosinrodeos.com
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="steam-wrap">
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
+  <div class="hero-ring"></div>
+  <div class="hero-inner">
+    <p class="cafe-eyebrow">Torreón, Coahuila · Est. 2019</p>
+    <h1 class="cafe-name">Café <em>del</em><br>Origen</h1>
+    <p class="cafe-subtitle">Espresso · Specialty · Pastelería</p>
+    <div class="hero-badge">Menú del día disponible</div>
+    <div class="scroll-cta" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+      <span>Ver Menú</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="sticky-nav" id="menu">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="scrollTo('espresso')">Espresso</button>
+    <button class="nav-btn" onclick="scrollTo('frios')">Bebidas Frías</button>
+    <button class="nav-btn" onclick="scrollTo('especialidades')">Especialidades</button>
+    <button class="nav-btn" onclick="scrollTo('alimentos')">Alimentos</button>
+    <button class="nav-btn" onclick="scrollTo('postres')">Postres</button>
+  </div>
+</nav>
+
+<!-- MENU CONTENT -->
+<div class="menu-wrap">
+
+  <!-- ESPRESSO -->
+  <section class="section" id="espresso">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Espresso</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="card-grid">
+
+      <div class="menu-card featured" onclick="showToast('☕ Americano seleccionado')">
+        <div class="featured-badge">⭐ Favorito</div>
+        <div class="card-emoji">☕</div>
+        <div class="card-info">
+          <p class="card-name">Americano del Origen</p>
+          <p class="card-desc">Doble shot de espresso con agua caliente filtrada. Suave y equilibrado.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$48<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('☕ Cappuccino seleccionado')">
+        <div class="card-emoji">☕</div>
+        <div class="card-info">
+          <p class="card-name">Cappuccino</p>
+          <p class="card-desc">Espresso con leche vaporizada y espuma cremosa. Clásico perfecto.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+          </div>
+        </div>
+        <div class="card-price">$52<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('☕ Latte seleccionado')">
+        <div class="card-emoji">🥛</div>
+        <div class="card-info">
+          <p class="card-name">Latte Artesanal</p>
+          <p class="card-desc">Espresso suave con leche entera vaporizada. Arte latte incluido.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+            <span class="tag new">Nuevo</span>
+          </div>
+        </div>
+        <div class="card-price">$58<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('☕ Espresso seleccionado')">
+        <div class="card-emoji">⚡</div>
+        <div class="card-info">
+          <p class="card-name">Espresso Solo</p>
+          <p class="card-desc">Un shot concentrado. Para los que saben lo que quieren.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+          </div>
+        </div>
+        <div class="card-price">$38<span>MXN</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"><span>✦</span></div>
+
+  <!-- FRÍOS -->
+  <section class="section" id="frios">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Bebidas Frías</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="card-grid">
+
+      <div class="menu-card featured" onclick="showToast('🧊 Cold Brew seleccionado')">
+        <div class="featured-badge">🔥 Top ventas</div>
+        <div class="card-emoji">🧊</div>
+        <div class="card-info">
+          <p class="card-name">Cold Brew 24h</p>
+          <p class="card-desc">Macerado en frío por 24 horas. Intenso, suave, sin acidez. Te cambia la vida.</p>
+          <div class="card-tags">
+            <span class="tag cold">Frío</span>
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$68<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🍦 Frappé seleccionado')">
+        <div class="card-emoji">🍦</div>
+        <div class="card-info">
+          <p class="card-name">Frappé de la Casa</p>
+          <p class="card-desc">Base de espresso, leche, hielo y crema. Personalizable a tu gusto.</p>
+          <div class="card-tags">
+            <span class="tag cold">Frío</span>
+          </div>
+        </div>
+        <div class="card-price">$72<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🥤 Latte frío seleccionado')">
+        <div class="card-emoji">🥤</div>
+        <div class="card-info">
+          <p class="card-name">Iced Latte Vainilla</p>
+          <p class="card-desc">Espresso sobre hielo con leche fría y sirope artesanal de vainilla.</p>
+          <div class="card-tags">
+            <span class="tag cold">Frío</span>
+            <span class="tag new">Nuevo</span>
+          </div>
+        </div>
+        <div class="card-price">$64<span>MXN</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"><span>✦</span></div>
+
+  <!-- ESPECIALIDADES -->
+  <section class="section" id="especialidades">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Especialidades</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="card-grid">
+
+      <div class="menu-card featured" onclick="showToast('🍫 Mocha seleccionado')">
+        <div class="featured-badge">Chef recomienda</div>
+        <div class="card-emoji">🍫</div>
+        <div class="card-info">
+          <p class="card-name">Mocha Oscuro</p>
+          <p class="card-desc">Espresso con chocolate amargo 70%, leche vaporizada y crema. Pecado menor.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$74<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🌿 Matcha seleccionado')">
+        <div class="card-emoji">🌿</div>
+        <div class="card-info">
+          <p class="card-name">Matcha Latte</p>
+          <p class="card-desc">Matcha japonés ceremonial con leche de avena. Para los que quieren quedar bien.</p>
+          <div class="card-tags">
+            <span class="tag cold">Frío</span>
+            <span class="tag new">Nuevo</span>
+          </div>
+        </div>
+        <div class="card-price">$78<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🍯 Honey Latte seleccionado')">
+        <div class="card-emoji">🍯</div>
+        <div class="card-info">
+          <p class="card-name">Honey Cinnamon Latte</p>
+          <p class="card-desc">Espresso, canela, miel de abeja local y leche vaporizada. Torreón en taza.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+          </div>
+        </div>
+        <div class="card-price">$70<span>MXN</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"><span>✦</span></div>
+
+  <!-- ALIMENTOS -->
+  <section class="section" id="alimentos">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Alimentos</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="card-grid">
+
+      <div class="menu-card" onclick="showToast('🥐 Croissant seleccionado')">
+        <div class="card-emoji">🥐</div>
+        <div class="card-info">
+          <p class="card-name">Croissant de Mantequilla</p>
+          <p class="card-desc">Horneado en casa, hojaldrado, crujiente por fuera. Con mermelada de la casa.</p>
+          <div class="card-tags">
+            <span class="tag new">Hoy</span>
+          </div>
+        </div>
+        <div class="card-price">$48<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card featured" onclick="showToast('🥑 Avocado toast seleccionado')">
+        <div class="featured-badge">⭐ Estrella</div>
+        <div class="card-emoji">🥑</div>
+        <div class="card-info">
+          <p class="card-name">Avocado Toast</p>
+          <p class="card-desc">Pan artesanal, aguacate, huevo estrellado, chile tajín y limon. Millennial approved.</p>
+          <div class="card-tags">
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$92<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🥪 Sándwich seleccionado')">
+        <div class="card-emoji">🥪</div>
+        <div class="card-info">
+          <p class="card-name">Sándwich del Origen</p>
+          <p class="card-desc">Pollo a la plancha, queso manchego, lechuga, tomate y pesto. Pan ciabatta.</p>
+          <div class="card-tags">
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$105<span>MXN</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="section-divider"><span>✦</span></div>
+
+  <!-- POSTRES -->
+  <section class="section" id="postres">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Postres</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="card-grid">
+
+      <div class="menu-card featured" onclick="showToast('🎂 Cheesecake seleccionado')">
+        <div class="featured-badge">Hoy disponible</div>
+        <div class="card-emoji">🎂</div>
+        <div class="card-info">
+          <p class="card-name">Cheesecake de Cajeta</p>
+          <p class="card-desc">Base de galleta, queso crema, cajeta lagunera. La represetación más fiel de la región.</p>
+          <div class="card-tags">
+            <span class="tag new">Especial</span>
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$65<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🍪 Cookie seleccionada')">
+        <div class="card-emoji">🍪</div>
+        <div class="card-info">
+          <p class="card-name">Cookie de Choco Chip</p>
+          <p class="card-desc">Horneada al momento. Crujiente afuera, suave adentro. Imposible comer una sola.</p>
+          <div class="card-tags">
+            <span class="tag hot">Caliente</span>
+          </div>
+        </div>
+        <div class="card-price">$35<span>MXN</span></div>
+      </div>
+
+      <div class="menu-card" onclick="showToast('🍮 Flan seleccionado')">
+        <div class="card-emoji">🍮</div>
+        <div class="card-info">
+          <p class="card-name">Flan Napolitano</p>
+          <p class="card-desc">Receta de la abuela del dueño. Sin discusión.</p>
+          <div class="card-tags">
+            <span class="tag pop">Popular</span>
+          </div>
+        </div>
+        <div class="card-price">$42<span>MXN</span></div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="menu-footer">
+  <div class="footer-logo">Café <em>del</em> Origen</div>
+  <p class="footer-sub">Specialty Coffee · Torreón</p>
+  <div class="footer-info">
+    <p>📍 <strong>Av. Juárez 123, Centro, Torreón</strong></p>
+    <p>🕐 <strong>Lunes–Viernes 8am–8pm · Sáb–Dom 9am–6pm</strong></p>
+    <p>📱 <strong>871 000 0000</strong></p>
+  </div>
+  <div class="powered-by">
+    Menú digital por <a href="#">negociosinrodeos.com</a> · NSR
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Nav active state on scroll ──
+const sections = ['espresso','frios','especialidades','alimentos','postres'];
+const navBtns  = document.querySelectorAll('.nav-btn');
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const offset = el.getBoundingClientRect().top + window.scrollY - 60;
+  window.scrollTo({ top: offset, behavior: 'smooth' });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      const idx = sections.indexOf(id);
+      navBtns.forEach((b,i) => b.classList.toggle('active', i === idx));
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg + ' — ¡Pídelo al mesero!';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Loading bar sim ──
+const bar = document.getElementById('loadingBar');
+let w = 0;
+const fill = setInterval(() => {
+  w += Math.random() * 20;
+  if (w >= 100) { w = 100; clearInterval(fill); setTimeout(()=> bar.style.opacity='0', 300); }
+  bar.style.width = w + '%';
+}, 100);
+
+// ── Card entrance animation ──
+const cards = document.querySelectorAll('.menu-card');
+const cardObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      e.target.style.opacity    = '0';
+      e.target.style.transform  = 'translateY(20px)';
+      e.target.style.transition = `opacity 0.4s ${i*0.05}s, transform 0.4s ${i*0.05}s`;
+      requestAnimationFrame(() => {
+        e.target.style.opacity   = '1';
+        e.target.style.transform = 'translateY(0)';
+      });
+      cardObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+cards.forEach(c => {
+  c.style.opacity = '0';
+  cardObs.observe(c);
+});
+</script>
+</body>
+</html>

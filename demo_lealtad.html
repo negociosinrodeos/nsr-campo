@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a0533">
+<title>NSR Demo — Lealtad Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0f0621;
+  --surface: #170934;
+  --card:    #1e1040;
+  --border:  rgba(167,139,250,0.12);
+  --purple:  #a78bfa;
+  --pink:    #f472b6;
+  --gold:    #fbbf24;
+  --green:   #34d399;
+  --text:    #f1f0ff;
+  --muted:   #6b5fa0;
+  --r:       16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100svh;
+  overflow-x:hidden;
+}
+
+/* glow bg */
+body::before {
+  content:'';
+  position:fixed;
+  top:-20%; left:50%;
+  transform:translateX(-50%);
+  width:600px; height:400px;
+  background:radial-gradient(ellipse, rgba(167,139,250,.15) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.nsr-tag {
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  color:#fff;
+  font-weight:700;
+  font-size:9px;
+  letter-spacing:2px;
+  text-align:center;
+  padding:4px;
+}
+
+/* ── VIEWS ── */
+.view { display:none; padding:0 0 80px; }
+.view.active { display:block; }
+
+/* ── LOGIN VIEW ── */
+.login-wrap {
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  gap:24px;
+}
+.brand-icon {
+  width:80px; height:80px;
+  border-radius:24px;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px;
+  box-shadow:0 20px 60px rgba(167,139,250,.3);
+}
+.brand-name {
+  font-size:26px;
+  font-weight:800;
+  text-align:center;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.brand-sub { font-size:13px; color:var(--muted); text-align:center; }
+
+.login-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:24px;
+  width:100%;
+  max-width:320px;
+}
+.login-title { font-size:16px; font-weight:700; margin-bottom:16px; }
+.field { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.field label { font-size:12px; color:var(--muted); font-weight:500; }
+.field input {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  font-size:16px;
+  padding:12px 14px;
+  outline:none;
+  transition:border-color .2s;
+}
+.field input:focus { border-color:var(--purple); }
+.field input::placeholder { color:var(--muted); font-size:14px; }
+
+.login-btn {
+  width:100%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  padding:14px;
+  cursor:pointer;
+  transition:opacity .2s;
+}
+.login-btn:active { opacity:.85; }
+.login-hint { font-size:11px; color:var(--muted); text-align:center; margin-top:10px; }
+
+/* ── DASHBOARD ── */
+.dash-header {
+  padding:20px 20px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.greeting { font-size:13px; color:var(--muted); }
+.user-name { font-size:20px; font-weight:800; }
+.logout-btn {
+  background:none; border:none;
+  color:var(--muted); font-size:12px; cursor:pointer;
+}
+
+/* HERO CARD */
+.hero-card {
+  margin:16px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#2d1060,#1a0a50,#0f2060);
+  border:1px solid rgba(167,139,250,.2);
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.hero-card::before {
+  content:'';
+  position:absolute;
+  top:-40%; right:-20%;
+  width:200px; height:200px;
+  background:radial-gradient(circle,rgba(244,114,182,.2),transparent 70%);
+}
+.hero-card::after {
+  content:'';
+  position:absolute;
+  bottom:-30%; left:-10%;
+  width:180px; height:180px;
+  background:radial-gradient(circle,rgba(167,139,250,.15),transparent 70%);
+}
+.card-label {
+  font-size:10px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.5);
+  margin-bottom:6px;
+}
+.card-user-name {
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+.stars-row {
+  display:flex;
+  gap:6px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.star {
+  width:32px; height:32px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  transition:all .3s;
+}
+.star.filled { background:linear-gradient(135deg,var(--gold),#f59e0b); box-shadow:0 4px 12px rgba(251,191,36,.4); }
+.star.empty  { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); filter:grayscale(1); }
+
+.pts-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.pts-num {
+  font-size:38px;
+  font-weight:900;
+  line-height:1;
+  background:linear-gradient(135deg,var(--gold),#fff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.pts-label { font-size:11px; color:rgba(255,255,255,.5); margin-bottom:6px; }
+.next-reward {
+  font-size:11px;
+  color:rgba(255,255,255,.6);
+  background:rgba(255,255,255,.08);
+  border-radius:100px;
+  padding:5px 12px;
+}
+
+/* PROGRESS */
+.pts-progress {
+  margin:0 16px;
+  background:rgba(255,255,255,.08);
+  border-radius:100px;
+  height:6px;
+  overflow:hidden;
+  margin-top:-8px;
+  margin-bottom:16px;
+}
+.pts-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--purple),var(--pink),var(--gold));
+  border-radius:100px;
+  transition:width .8s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* STATS ROW */
+.stats-row {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  padding:0 16px;
+  margin-bottom:20px;
+}
+.stat-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 10px;
+  text-align:center;
+}
+.stat-num {
+  font-size:22px;
+  font-weight:800;
+  color:var(--purple);
+  line-height:1;
+  margin-bottom:3px;
+}
+.stat-label { font-size:9px; color:var(--muted); letter-spacing:.5px; }
+
+/* REWARDS */
+.section-title {
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.5px;
+  padding:0 16px;
+  margin-bottom:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-size:10px;
+  letter-spacing:2px;
+}
+.rewards-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:0 16px;
+  margin-bottom:20px;
+}
+.reward-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  position:relative;
+  overflow:hidden;
+}
+.reward-card.unlocked { border-color:rgba(167,139,250,.4); }
+.reward-card.locked   { opacity:.5; }
+.reward-card:active   { transform:scale(.97); }
+.reward-emoji { font-size:28px; margin-bottom:8px; }
+.reward-name { font-size:12px; font-weight:600; margin-bottom:4px; }
+.reward-pts  { font-size:11px; color:var(--muted); }
+.reward-pts strong { color:var(--purple); }
+.unlock-chip {
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:1px;
+  padding:3px 8px;
+  border-radius:100px;
+  display:inline-block;
+  margin-top:6px;
+}
+.lock-chip {
+  background:rgba(255,255,255,.06);
+  color:var(--muted);
+  font-size:8px;
+  padding:3px 8px;
+  border-radius:100px;
+  display:inline-block;
+  margin-top:6px;
+}
+
+/* HISTORY */
+.history-list { padding:0 16px; }
+.hist-item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.hist-icon {
+  width:36px; height:36px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+}
+.hist-icon.earn   { background:rgba(52,211,153,.1); }
+.hist-icon.redeem { background:rgba(167,139,250,.1); }
+.hist-name  { font-size:13px; font-weight:500; }
+.hist-date  { font-size:10px; color:var(--muted); }
+.hist-pts   { margin-left:auto; font-weight:700; font-size:14px; }
+.hist-pts.earn   { color:var(--green); }
+.hist-pts.redeem { color:var(--purple); }
+
+/* CANJEAR BTN */
+.canjear-btn {
+  position:fixed;
+  bottom:20px; left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  border:none;
+  border-radius:100px;
+  padding:16px 40px;
+  cursor:pointer;
+  box-shadow:0 8px 30px rgba(167,139,250,.4);
+  transition:all .2s;
+  z-index:50;
+}
+.canjear-btn:active { transform:translateX(-50%) scale(.97); }
+
+/* REDEEM OVERLAY */
+.overlay {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.7);
+  display:flex; align-items:flex-end;
+  z-index:100;
+  opacity:0; pointer-events:none;
+  transition:opacity .3s;
+  backdrop-filter:blur(4px);
+}
+.overlay.show { opacity:1; pointer-events:all; }
+.sheet {
+  background:var(--card);
+  border-radius:20px 20px 0 0;
+  padding:24px;
+  width:100%;
+  border-top:1px solid var(--border);
+  transform:translateY(100%);
+  transition:transform .35s cubic-bezier(.34,1.1,.64,1);
+}
+.overlay.show .sheet { transform:translateY(0); }
+.sheet-handle {
+  width:36px; height:4px;
+  background:var(--muted);
+  border-radius:100px;
+  margin:0 auto 20px;
+  opacity:.4;
+}
+.sheet-title { font-size:18px; font-weight:800; margin-bottom:4px; }
+.sheet-sub   { font-size:13px; color:var(--muted); margin-bottom:20px; }
+.reward-options { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.reward-opt {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.reward-opt.sel { border-color:var(--purple); background:rgba(167,139,250,.08); }
+.reward-opt-icon { font-size:24px; }
+.reward-opt-name { font-size:14px; font-weight:600; }
+.reward-opt-cost { font-size:11px; color:var(--muted); }
+.reward-opt-cost strong { color:var(--purple); }
+.confirm-btn {
+  width:100%;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-family:'Outfit',sans-serif;
+  font-weight:800;
+  font-size:15px;
+  padding:16px;
+  cursor:pointer;
+}
+.cancel-btn {
+  width:100%;
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:14px;
+  padding:12px;
+  cursor:pointer;
+  margin-top:6px;
+}
+</style>
+</head>
+<body>
+
+<div class="nsr-tag">NSR DEMO — LEALTAD DIGITAL</div>
+
+<!-- LOGIN -->
+<div class="view active" id="viewLogin">
+  <div class="login-wrap">
+    <div class="brand-icon">☕</div>
+    <div>
+      <div class="brand-name">Café del Origen</div>
+      <div class="brand-sub">Programa de Lealtad</div>
+    </div>
+    <div class="login-card">
+      <div class="login-title">Accede a tu cuenta</div>
+      <div class="field">
+        <label>Tu nombre</label>
+        <input type="text" id="loginNombre" placeholder="Ej: María González">
+      </div>
+      <div class="field">
+        <label>Teléfono</label>
+        <input type="tel" id="loginTel" placeholder="871 000 0000">
+      </div>
+      <button class="login-btn" onclick="login()">Entrar →</button>
+      <div class="login-hint">¿Nuevo cliente? Se crea tu cuenta automáticamente.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view" id="viewDash">
+  <div class="dash-header">
+    <div>
+      <div class="greeting">Bienvenida de nuevo</div>
+      <div class="user-name" id="dashName">—</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Salir</button>
+  </div>
+
+  <!-- HERO CARD -->
+  <div class="hero-card">
+    <div class="card-label">Tu tarjeta digital</div>
+    <div class="card-user-name" id="heroName">—</div>
+    <div class="stars-row" id="starsRow"></div>
+    <div class="pts-row">
+      <div>
+        <div class="pts-num" id="ptsNum">0</div>
+        <div class="pts-label">puntos acumulados</div>
+      </div>
+      <div class="next-reward" id="nextReward">Faltan 0 pts</div>
+    </div>
+  </div>
+  <div class="pts-progress">
+    <div class="pts-fill" id="ptsFill" style="width:0%"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="statVisitas">0</div>
+      <div class="stat-label">Visitas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statCanjes">0</div>
+      <div class="stat-label">Canjes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statAhorros">$0</div>
+      <div class="stat-label">Ahorrado</div>
+    </div>
+  </div>
+
+  <!-- REWARDS -->
+  <div class="section-title">Tus recompensas</div>
+  <div class="rewards-grid" id="rewardsGrid"></div>
+
+  <!-- HISTORY -->
+  <div class="section-title">Historial</div>
+  <div class="history-list" id="histList"></div>
+
+  <button class="canjear-btn" onclick="openRedeem()">Canjear puntos ✨</button>
+</div>
+
+<!-- REDEEM OVERLAY -->
+<div class="overlay" id="redeemOverlay" onclick="if(event.target===this)closeRedeem()">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Canjear recompensa</div>
+    <div class="sheet-sub" id="sheetSub">—</div>
+    <div class="reward-options" id="rewardOptions"></div>
+    <button class="confirm-btn" onclick="confirmarCanje()">Confirmar canje</button>
+    <button class="cancel-btn" onclick="closeRedeem()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+const REWARDS = [
+  { id:1, emoji:'☕', name:'Café gratis',       pts:80,  value:48 },
+  { id:2, emoji:'🧁', name:'Postre a mitad',    pts:50,  value:32 },
+  { id:3, emoji:'🥐', name:'Croissant gratis',  pts:40,  value:48 },
+  { id:4, emoji:'🎁', name:'Bebida especial',   pts:150, value:74 },
+];
+
+const HISTORY_BASE = [
+  { type:'earn',   emoji:'☕', name:'Americano × 2',      pts:'+16', date:'Hoy' },
+  { type:'earn',   emoji:'🥑', name:'Avo Toast',          pts:'+8',  date:'Ayer' },
+  { type:'redeem', emoji:'🎁', name:'Canje: Café gratis', pts:'-80', date:'Lun' },
+  { type:'earn',   emoji:'🍫', name:'Mocha + Croissant',  pts:'+20', date:'Lun' },
+  { type:'earn',   emoji:'🧊', name:'Cold Brew',          pts:'+12', date:'Sáb' },
+];
+
+let user = null;
+let selectedReward = null;
+
+function login(){
+  const nombre = document.getElementById('loginNombre').value.trim();
+  const tel    = document.getElementById('loginTel').value.trim();
+  if(!nombre){ alert('Ingresa tu nombre'); return; }
+
+  user = {
+    nombre,
+    tel: tel || '871 000 0000',
+    pts: 124,
+    visitas: 18,
+    canjes: 3,
+    ahorros: 160,
+  };
+
+  document.getElementById('viewLogin').classList.remove('active');
+  document.getElementById('viewDash').classList.add('active');
+  renderDash();
+}
+
+function logout(){
+  user = null;
+  document.getElementById('viewDash').classList.remove('active');
+  document.getElementById('viewLogin').classList.add('active');
+  document.getElementById('loginNombre').value='';
+  document.getElementById('loginTel').value='';
+}
+
+function renderDash(){
+  if(!user) return;
+  const firstName = user.nombre.split(' ')[0];
+  document.getElementById('dashName').textContent  = user.nombre;
+  document.getElementById('heroName').textContent  = firstName;
+  document.getElementById('ptsNum').textContent    = user.pts;
+  document.getElementById('statVisitas').textContent= user.visitas;
+  document.getElementById('statCanjes').textContent = user.canjes;
+  document.getElementById('statAhorros').textContent= '$'+user.ahorros;
+
+  // stars (10 visitas = 1 estrella)
+  const stars = Math.floor(user.visitas / 2);
+  const starsRow = document.getElementById('starsRow');
+  starsRow.innerHTML = Array.from({length:10},(_,i)=>
+    `<div class="star ${i<stars?'filled':'empty'}">${i<stars?'⭐':'☆'}</div>`
+  ).join('');
+
+  // progress hacia sig reward
+  const nextRewardPts = 150;
+  const pct = Math.min(100, (user.pts / nextRewardPts * 100));
+  document.getElementById('ptsFill').style.width = pct + '%';
+  document.getElementById('nextReward').textContent = `Faltan ${Math.max(0,nextRewardPts-user.pts)} pts`;
+
+  // rewards
+  document.getElementById('rewardsGrid').innerHTML = REWARDS.map(r => {
+    const unlocked = user.pts >= r.pts;
+    return `<div class="reward-card ${unlocked?'unlocked':'locked'}">
+      <div class="reward-emoji">${r.emoji}</div>
+      <div class="reward-name">${r.name}</div>
+      <div class="reward-pts"><strong>${r.pts}</strong> puntos</div>
+      ${unlocked ? '<span class="unlock-chip">¡Disponible!</span>' : '<span class="lock-chip">🔒 Bloqueado</span>'}
+    </div>`;
+  }).join('');
+
+  // history
+  document.getElementById('histList').innerHTML = HISTORY_BASE.map(h=>`
+    <div class="hist-item">
+      <div class="hist-icon ${h.type}">${h.emoji}</div>
+      <div>
+        <div class="hist-name">${h.name}</div>
+        <div class="hist-date">${h.date}</div>
+      </div>
+      <div class="hist-pts ${h.type}">${h.pts} pts</div>
+    </div>`).join('');
+}
+
+function openRedeem(){
+  document.getElementById('sheetSub').textContent = `Tienes ${user.pts} puntos disponibles`;
+  document.getElementById('rewardOptions').innerHTML = REWARDS.map(r=>{
+    const ok = user.pts >= r.pts;
+    return `<div class="reward-opt ${ok?'':'locked'}" onclick="${ok?'selectReward('+r.id+')':''}" id="opt-${r.id}">
+      <span class="reward-opt-icon">${r.emoji}</span>
+      <div>
+        <div class="reward-opt-name">${r.name}</div>
+        <div class="reward-opt-cost"><strong>${r.pts}</strong> puntos • Valor: $${r.value}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('redeemOverlay').classList.add('show');
+}
+
+function selectReward(id){
+  selectedReward = REWARDS.find(r=>r.id===id);
+  document.querySelectorAll('.reward-opt').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('opt-'+id).classList.add('sel');
+}
+
+function closeRedeem(){ document.getElementById('redeemOverlay').classList.remove('show'); selectedReward=null; }
+
+function confirmarCanje(){
+  if(!selectedReward){ alert('Selecciona una recompensa'); return; }
+  user.pts    -= selectedReward.pts;
+  user.canjes += 1;
+  user.ahorros += selectedReward.value;
+  closeRedeem();
+  renderDash();
+  setTimeout(()=>alert(`✅ ¡${selectedReward.name} canjeado!\nMuestra esta pantalla al barista.`),300);
+}
+</script>
+</body>
+</html>
