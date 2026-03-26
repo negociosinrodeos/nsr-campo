@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ServicioPRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1f2d45;
+    --accent: #f97316;
+    --accent2: #fb923c;
+    --text: #f1f5f9;
+    --muted: #64748b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --radius: 12px;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ---- SPLASH / LOADER ---- */
+  #splash {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity .4s ease, visibility .4s;
+  }
+  #splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-logo {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    animation: fadeUp .6s ease both;
+  }
+  .splash-logo span { color: var(--accent); }
+  .splash-sub {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-top: 6px;
+    animation: fadeUp .6s .15s ease both;
+  }
+  .splash-bar {
+    width: 120px; height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    margin-top: 32px;
+    overflow: hidden;
+    animation: fadeUp .6s .25s ease both;
+  }
+  .splash-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0;
+    border-radius: 99px;
+    animation: loadBar 1.2s .4s ease forwards;
+  }
+
+  @keyframes loadBar { to { width: 100%; } }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes slideIn { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes pop { 0%{transform:scale(.9);opacity:0} 100%{transform:scale(1);opacity:1} }
+
+  /* ---- LAYOUT ---- */
+  #app { display: flex; flex-direction: column; min-height: 100dvh; }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .topbar-logo {
+    font-family: var(--font-display);
+    font-size: 1.3rem; font-weight: 800; letter-spacing: -.5px;
+  }
+  .topbar-logo span { color: var(--accent); }
+  .topbar-badge {
+    font-size: .65rem; font-weight: 600;
+    background: var(--accent);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 99px;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  .content { flex: 1; padding: 20px; max-width: 680px; margin: 0 auto; width: 100%; }
+
+  /* ---- NAV BOTTOM ---- */
+  .nav {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: sticky; bottom: 0; z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; gap: 4px;
+    cursor: pointer;
+    border: none; background: none; color: var(--muted);
+    font-family: var(--font-body);
+    font-size: .62rem; font-weight: 500;
+    letter-spacing: .3px;
+    transition: color .2s;
+    text-transform: uppercase;
+  }
+  .nav-item svg { transition: transform .2s; }
+  .nav-item.active { color: var(--accent); }
+  .nav-item.active svg { transform: scale(1.15); }
+  .nav-icon { font-size: 1.3rem; }
+
+  /* ---- VIEWS ---- */
+  .view { display: none; animation: slideIn .25s ease; }
+  .view.active { display: block; }
+
+  /* ---- HOME ---- */
+  .home-greeting {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .home-greeting span { color: var(--accent); }
+  .home-sub { color: var(--muted); font-size: .88rem; margin-bottom: 24px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+  }
+  .stat-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+  .stat-value { font-family: var(--font-display); font-size: 1.8rem; font-weight: 800; }
+  .stat-value.green { color: var(--success); }
+  .stat-value.orange { color: var(--accent); }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .activity-list { display: flex; flex-direction: column; gap: 10px; }
+  .activity-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s;
+  }
+  .activity-item:active { transform: scale(.98); }
+  .activity-item:hover { border-color: var(--accent); }
+  .activity-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .activity-dot.green { background: var(--success); }
+  .activity-dot.orange { background: var(--accent); }
+  .activity-dot.blue { background: #3b82f6; }
+  .activity-info { flex: 1; }
+  .activity-name { font-size: .9rem; font-weight: 500; }
+  .activity-detail { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .activity-amount {
+    font-family: var(--font-display);
+    font-size: .95rem; font-weight: 700; color: var(--accent);
+  }
+
+  /* ---- COTIZAR ---- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--accent);
+  }
+
+  label { display: block; font-size: .75rem; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: .9rem;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--surface); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+
+  .items-list { margin-bottom: 14px; }
+  .item-row {
+    display: grid;
+    grid-template-columns: 2fr 60px 80px 36px;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    animation: pop .2s ease;
+  }
+  .item-row input { margin-bottom: 0; }
+  .item-row .item-total {
+    font-size: .8rem; color: var(--accent); text-align: right; padding-right: 4px;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none; cursor: pointer;
+    font-family: var(--font-body);
+    font-size: .9rem; font-weight: 500;
+    transition: all .15s;
+  }
+  .btn:active { transform: scale(.96); }
+  .btn-primary { background: var(--accent); color: #000; width: 100%; font-weight: 600; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost { background: var(--surface2); color: var(--muted); font-size: .8rem; padding: 8px 14px; }
+  .btn-danger { background: var(--danger); color: #fff; padding: 6px; border-radius: 6px; font-size: .8rem; }
+  .btn-sm { padding: 8px 14px; font-size: .8rem; }
+  .btn-success { background: var(--success); color: #000; }
+
+  .total-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .total-label { font-size: .8rem; color: var(--muted); }
+  .total-value {
+    font-family: var(--font-display);
+    font-size: 1.8rem; font-weight: 800; color: var(--success);
+  }
+
+  /* ---- CLIENTES ---- */
+  .search-input {
+    position: relative; margin-bottom: 16px;
+  }
+  .search-input input { margin-bottom: 0; padding-left: 40px; }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--muted);
+  }
+
+  .client-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 14px;
+    transition: border-color .2s, transform .15s;
+  }
+  .client-card:active { transform: scale(.98); }
+  .client-card:hover { border-color: var(--accent); }
+  .client-avatar {
+    width: 44px; height: 44px;
+    background: var(--surface2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+  }
+  .client-info { flex: 1; }
+  .client-name { font-size: .95rem; font-weight: 500; }
+  .client-detail { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .client-badge {
+    font-size: .65rem; font-weight: 600;
+    background: var(--surface2);
+    color: var(--muted);
+    padding: 3px 8px; border-radius: 99px;
+  }
+
+  /* ---- EVIDENCIA ---- */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .upload-zone:hover { border-color: var(--accent); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .upload-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .upload-text { font-size: .9rem; color: var(--muted); }
+  .upload-text strong { color: var(--accent); }
+
+  .photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .photo-thumb {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    animation: pop .25s ease;
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-thumb .photo-del {
+    position: absolute; top: 4px; right: 4px;
+    background: rgba(0,0,0,.7);
+    border: none; color: #fff;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: .7rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,.8));
+    padding: 6px 6px 4px;
+    font-size: .6rem; color: #fff;
+    text-align: center;
+  }
+
+  /* ---- REPORTES ---- */
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .report-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .report-title { font-family: var(--font-display); font-size: .95rem; font-weight: 700; }
+  .report-date { font-size: .72rem; color: var(--muted); }
+  .report-body { padding: 14px 16px; }
+  .report-meta { font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
+  .report-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: .7rem; padding: 3px 10px;
+    border-radius: 99px; font-weight: 500;
+  }
+  .chip-orange { background: rgba(249,115,22,.15); color: var(--accent); }
+  .chip-green { background: rgba(34,197,94,.15); color: var(--success); }
+  .chip-blue { background: rgba(59,130,246,.15); color: #60a5fa; }
+
+  /* ---- MODAL ---- */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 500;
+    display: flex; align-items: flex-end;
+    opacity: 0; visibility: hidden;
+    transition: opacity .25s, visibility .25s;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal {
+    background: var(--surface);
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    max-height: 90dvh;
+    overflow-y: auto;
+    transform: translateY(40px);
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    margin: 0 auto 20px;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  /* ---- REPORT PREVIEW ---- */
+  #reportPreview {
+    background: #fff;
+    color: #111;
+    padding: 28px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    font-family: var(--font-body);
+  }
+  #reportPreview h1 { font-family: var(--font-display); color: #111; font-size: 1.4rem; }
+  #reportPreview .rp-header { border-bottom: 2px solid #f97316; padding-bottom: 12px; margin-bottom: 16px; }
+  #reportPreview .rp-label { font-size: .7rem; text-transform: uppercase; color: #888; letter-spacing: .5px; }
+  #reportPreview .rp-val { font-size: .92rem; font-weight: 500; color: #111; margin-bottom: 10px; }
+  #reportPreview .rp-section { font-family: var(--font-display); font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #f97316; margin: 16px 0 8px; }
+  #reportPreview table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  #reportPreview th { text-align: left; border-bottom: 1px solid #e2e8f0; padding: 6px 8px; font-size: .7rem; text-transform: uppercase; color: #888; }
+  #reportPreview td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; color: #333; }
+  #reportPreview .rp-total { text-align: right; font-family: var(--font-display); font-size: 1.3rem; font-weight: 800; color: #f97316; margin-top: 12px; }
+  #reportPreview .rp-photos { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 8px; }
+  #reportPreview .rp-photos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; }
+  #reportPreview .rp-footer { font-size: .72rem; color: #aaa; text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+
+  /* ---- SIGNATURE ---- */
+  #sigCanvas {
+    width: 100%;
+    height: 150px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: crosshair;
+    touch-action: none;
+    display: block;
+  }
+
+  /* ---- TOAST ---- */
+  #toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-size: .85rem;
+    z-index: 9998;
+    opacity: 0;
+    transition: all .3s;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  }
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  #toast.success { border-color: var(--success); color: var(--success); }
+  #toast.error { border-color: var(--danger); color: var(--danger); }
+
+  .empty-state {
+    text-align: center; padding: 48px 20px; color: var(--muted);
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; opacity: .4; }
+  .empty-text { font-size: .88rem; }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .badge-count {
+    background: var(--accent);
+    color: #000;
+    font-size: .65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 99px;
+    margin-left: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">Servicio<span>PRO</span></div>
+  <div class="splash-sub">Tu negocio, en orden.</div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-logo">Servicio<span>PRO</span></div>
+    <div class="topbar-badge">Demo NSR</div>
+  </div>
+
+  <div class="content">
+
+    <!-- HOME -->
+    <div class="view active" id="v-home">
+      <div class="home-greeting">Hola, <span id="workerName">Técnico</span> 👋</div>
+      <div class="home-sub" id="todayDate">Cargando fecha...</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Trabajos este mes</div>
+          <div class="stat-value orange" id="statJobs">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cobrado (MXN)</div>
+          <div class="stat-value green" id="statRevenue">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Clientes</div>
+          <div class="stat-value" id="statClients">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cotizaciones</div>
+          <div class="stat-value" id="statQuotes">0</div>
+        </div>
+      </div>
+
+      <div class="section-title">Actividad reciente</div>
+      <div class="activity-list" id="activityList">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">Aún sin actividad.<br>¡Crea tu primera cotización!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COTIZAR -->
+    <div class="view" id="v-cotizar">
+      <div class="card">
+        <div class="card-title">📋 Nueva cotización</div>
+        <label>Cliente</label>
+        <select id="quoteClient">
+          <option value="">— Selecciona cliente —</option>
+        </select>
+        <label>Descripción del trabajo</label>
+        <textarea id="quoteDesc" placeholder="Ej: Instalación de minisplit 1.5 ton en recámara principal..."></textarea>
+        <label>Tipo de servicio</label>
+        <select id="quoteType">
+          <option value="Plomería">🔧 Plomería</option>
+          <option value="Electricidad">⚡ Electricidad</option>
+          <option value="Minisplit / Clima">❄️ Minisplit / Clima</option>
+          <option value="Albañilería">🧱 Albañilería</option>
+          <option value="Otro">🔨 Otro</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🧾 Conceptos</div>
+        <div class="items-list" id="itemsList"></div>
+        <button class="btn btn-ghost" onclick="addItem()">+ Agregar concepto</button>
+      </div>
+
+      <div class="total-box">
+        <div>
+          <div class="total-label">Total estimado</div>
+        </div>
+        <div class="total-value" id="quoteTotal">$0.00</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveQuote()">💾 Guardar cotización</button>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="view" id="v-clientes">
+      <div class="search-input">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar cliente..." id="clientSearch" oninput="renderClients()">
+      </div>
+      <div id="clientList"></div>
+      <br>
+      <button class="btn btn-primary" onclick="openModal('modalCliente')">+ Nuevo cliente</button>
+    </div>
+
+    <!-- EVIDENCIA -->
+    <div class="view" id="v-evidencia">
+      <div class="card">
+        <div class="card-title">📸 Evidencia fotográfica</div>
+        <label>Trabajo relacionado</label>
+        <select id="evidenceJob">
+          <option value="">— Seleccionar trabajo —</option>
+        </select>
+        <label>Etiqueta de fotos</label>
+        <select id="photoLabel">
+          <option value="Antes">📷 Antes del trabajo</option>
+          <option value="Durante">🔄 Durante el trabajo</option>
+          <option value="Después">✅ Después del trabajo</option>
+          <option value="Detalle">🔎 Detalle / Problema</option>
+        </select>
+
+        <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
+          <input type="file" id="photoInput" accept="image/*" multiple capture="environment" style="display:none" onchange="handlePhotos(event)">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text"><strong>Tomar foto</strong> o seleccionar galería</div>
+        </div>
+
+        <div class="photos-grid" id="photosGrid"></div>
+      </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="view" id="v-reportes">
+      <div class="card">
+        <div class="card-title">📄 Generar reporte</div>
+        <label>Trabajo / Cotización</label>
+        <select id="reportJob">
+          <option value="">— Seleccionar —</option>
+        </select>
+        <button class="btn btn-primary" onclick="generateReport()">📄 Generar reporte</button>
+      </div>
+
+      <div id="reportPreviewWrap" style="display:none">
+        <div id="reportPreview"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-success btn-sm" onclick="exportSheets()">📊 Exportar a Sheets</button>
+          <button class="btn btn-outline btn-sm" onclick="printReport()">🖨️ Imprimir / PDF</button>
+          <button class="btn btn-outline btn-sm" onclick="shareReport()">📤 Compartir</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section-title">Historial</div>
+      <div id="reportHistory"></div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nav-item active" onclick="goTo('home',this)">
+      <span class="nav-icon">🏠</span>Inicio
+    </button>
+    <button class="nav-item" onclick="goTo('cotizar',this)">
+      <span class="nav-icon">📋</span>Cotizar
+    </button>
+    <button class="nav-item" onclick="goTo('clientes',this)">
+      <span class="nav-icon">👥</span>Clientes
+    </button>
+    <button class="nav-item" onclick="goTo('evidencia',this)">
+      <span class="nav-icon">📸</span>Fotos
+    </button>
+    <button class="nav-item" onclick="goTo('reportes',this)">
+      <span class="nav-icon">📄</span>Reportes
+    </button>
+  </nav>
+</div>
+
+<!-- MODAL: NUEVO CLIENTE -->
+<div class="modal-overlay" id="modalCliente">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">👤 Nuevo cliente</div>
+    <label>Nombre completo</label>
+    <input type="text" id="newClientName" placeholder="Juan García López">
+    <label>Teléfono</label>
+    <input type="tel" id="newClientPhone" placeholder="871 234 5678">
+    <label>Dirección</label>
+    <input type="text" id="newClientAddress" placeholder="Calle, Colonia, Ciudad">
+    <label>Notas</label>
+    <textarea id="newClientNotes" placeholder="Casa azul, portón negro..."></textarea>
+    <button class="btn btn-primary" onclick="saveClient()">✅ Guardar cliente</button>
+    <br><br>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeModal('modalCliente')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL: FIRMA -->
+<div class="modal-overlay" id="modalFirma">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✍️ Firma del cliente</div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">El cliente firma para confirmar que el trabajo fue realizado satisfactoriamente.</p>
+    <canvas id="sigCanvas"></canvas>
+    <br><br>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="clearSig()">🗑 Borrar</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveSig()">✅ Confirmar firma</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  workerName: 'Técnico',
+  clients: [],
+  quotes: [],
+  photos: [],
+  reports: [],
+  sig: null
+};
+
+function save() { try { localStorage.setItem('spro_v2', JSON.stringify(state)); } catch(e){} }
+function load() {
+  try {
+    const d = localStorage.getItem('spro_v2');
+    if (d) state = JSON.parse(d);
+  } catch(e){}
+  if (!state.clients) state.clients = [];
+  if (!state.quotes) state.quotes = [];
+  if (!state.photos) state.photos = [];
+  if (!state.reports) state.reports = [];
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  load();
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hide');
+    initApp();
+  }, 1800);
+});
+
+function initApp() {
+  document.getElementById('workerName').textContent = state.workerName;
+  const now = new Date();
+  document.getElementById('todayDate').textContent = now.toLocaleDateString('es-MX', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  refreshStats();
+  renderActivity();
+  renderClients();
+  renderPhotos();
+  renderJobSelects();
+  renderReportHistory();
+  setupSigCanvas();
+  addItem(); // start with one item
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goTo(view, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('v-'+view).classList.add('active');
+  el.classList.add('active');
+  if (view === 'clientes') renderClients();
+  if (view === 'evidencia') renderPhotos();
+  if (view === 'reportes') { renderReportHistory(); renderJobSelects(); }
+  if (view === 'cotizar') { renderJobSelects(); }
+  if (view === 'home') { refreshStats(); renderActivity(); }
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function refreshStats() {
+  document.getElementById('statJobs').textContent = state.quotes.length;
+  document.getElementById('statRevenue').textContent = '$' + state.quotes.reduce((s,q) => s + (q.total||0), 0).toLocaleString('es-MX',{minimumFractionDigits:0});
+  document.getElementById('statClients').textContent = state.clients.length;
+  document.getElementById('statQuotes').textContent = state.quotes.length;
+}
+
+function renderActivity() {
+  const el = document.getElementById('activityList');
+  if (!state.quotes.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Aún sin actividad.<br>¡Crea tu primera cotización!</div></div>`;
+    return;
+  }
+  const recent = [...state.quotes].reverse().slice(0, 5);
+  el.innerHTML = recent.map(q => {
+    const c = state.clients.find(x=>x.id===q.clientId);
+    const colors = ['green','orange','blue'];
+    const col = colors[q.type ? q.type.length % 3 : 0];
+    return `<div class="activity-item">
+      <div class="activity-dot ${col}"></div>
+      <div class="activity-info">
+        <div class="activity-name">${q.type} — ${c ? c.name : 'Sin cliente'}</div>
+        <div class="activity-detail">${q.desc ? q.desc.substring(0,50)+'...' : ''} · ${q.date}</div>
+      </div>
+      <div class="activity-amount">$${(q.total||0).toLocaleString('es-MX')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// COTIZAR
+// ============================================================
+function addItem() {
+  const list = document.getElementById('itemsList');
+  const id = Date.now();
+  const row = document.createElement('div');
+  row.className = 'item-row';
+  row.id = 'item-'+id;
+  row.innerHTML = `
+    <input type="text" placeholder="Concepto / Material" class="i-desc" oninput="calcTotal()">
+    <input type="number" placeholder="Cant" class="i-qty" value="1" min="1" oninput="calcTotal()">
+    <input type="number" placeholder="Precio" class="i-price" min="0" oninput="calcTotal()">
+    <button class="btn btn-danger" onclick="document.getElementById('item-${id}').remove();calcTotal()">✕</button>`;
+  list.appendChild(row);
+  calcTotal();
+}
+
+function calcTotal() {
+  let total = 0;
+  document.querySelectorAll('.item-row').forEach(row => {
+    const qty = parseFloat(row.querySelector('.i-qty').value) || 0;
+    const price = parseFloat(row.querySelector('.i-price').value) || 0;
+    total += qty * price;
+  });
+  document.getElementById('quoteTotal').textContent = '$' + total.toLocaleString('es-MX', {minimumFractionDigits:2});
+  return total;
+}
+
+function saveQuote() {
+  const clientId = document.getElementById('quoteClient').value;
+  const desc = document.getElementById('quoteDesc').value.trim();
+  const type = document.getElementById('quoteType').value;
+
+  if (!desc) { toast('Describe el trabajo primero', 'error'); return; }
+
+  const items = [];
+  let total = 0;
+  document.querySelectorAll('.item-row').forEach(row => {
+    const d = row.querySelector('.i-desc').value;
+    const q = parseFloat(row.querySelector('.i-qty').value) || 1;
+    const p = parseFloat(row.querySelector('.i-price').value) || 0;
+    if (d) { items.push({desc:d, qty:q, price:p}); total += q*p; }
+  });
+
+  if (!items.length) { toast('Agrega al menos un concepto', 'error'); return; }
+
+  const quote = {
+    id: Date.now(),
+    clientId,
+    desc,
+    type,
+    items,
+    total,
+    date: new Date().toLocaleDateString('es-MX'),
+    status: 'Cotización'
+  };
+
+  state.quotes.push(quote);
+  save();
+  toast('✅ Cotización guardada', 'success');
+  refreshStats();
+  renderActivity();
+  renderJobSelects();
+
+  // reset form
+  document.getElementById('quoteDesc').value = '';
+  document.getElementById('itemsList').innerHTML = '';
+  addItem();
+  calcTotal();
+}
+
+// ============================================================
+// CLIENTES
+// ============================================================
+function renderClients() {
+  const search = (document.getElementById('clientSearch')?.value || '').toLowerCase();
+  const el = document.getElementById('clientList');
+  const filtered = state.clients.filter(c =>
+    c.name.toLowerCase().includes(search) ||
+    (c.phone||'').includes(search)
+  );
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">${search ? 'Sin resultados' : 'Aún no tienes clientes registrados.'}</div></div>`;
+    return;
+  }
+  el.innerHTML = filtered.map(c => {
+    const initials = c.name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    const jobs = state.quotes.filter(q=>q.clientId===String(c.id)).length;
+    return `<div class="client-card">
+      <div class="client-avatar">${initials}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-detail">📱 ${c.phone || 'Sin tel'} · 📍 ${c.address || 'Sin dirección'}</div>
+      </div>
+      <div class="client-badge">${jobs} trabajo${jobs!==1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function saveClient() {
+  const name = document.getElementById('newClientName').value.trim();
+  const phone = document.getElementById('newClientPhone').value.trim();
+  const address = document.getElementById('newClientAddress').value.trim();
+  const notes = document.getElementById('newClientNotes').value.trim();
+  if (!name) { toast('El nombre es requerido', 'error'); return; }
+  state.clients.push({ id: Date.now(), name, phone, address, notes });
+  save();
+  updateClientSelect();
+  renderClients();
+  closeModal('modalCliente');
+  toast('✅ Cliente guardado', 'success');
+  refreshStats();
+  document.getElementById('newClientName').value = '';
+  document.getElementById('newClientPhone').value = '';
+  document.getElementById('newClientAddress').value = '';
+  document.getElementById('newClientNotes').value = '';
+}
+
+function updateClientSelect() {
+  const sel = document.getElementById('quoteClient');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— Selecciona cliente —</option>' +
+    state.clients.map(c => `<option value="${c.id}" ${String(c.id)===current?'selected':''}>${c.name}</option>`).join('');
+}
+
+// ============================================================
+// PHOTOS
+// ============================================================
+function handlePhotos(e) {
+  const label = document.getElementById('photoLabel').value;
+  const jobId = document.getElementById('evidenceJob').value;
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      state.photos.push({ id: Date.now()+Math.random(), jobId, label, src: ev.target.result, date: new Date().toLocaleDateString('es-MX') });
+      save();
+      renderPhotos();
+      toast('📸 Foto guardada', 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function renderPhotos() {
+  const grid = document.getElementById('photosGrid');
+  if (!state.photos.length) {
+    grid.innerHTML = '';
+    return;
+  }
+  grid.innerHTML = state.photos.slice().reverse().map(p => `
+    <div class="photo-thumb">
+      <img src="${p.src}" alt="${p.label}">
+      <button class="photo-del" onclick="deletePhoto('${p.id}')">✕</button>
+      <div class="photo-label">${p.label}</div>
+    </div>`).join('');
+}
+
+function deletePhoto(id) {
+  state.photos = state.photos.filter(p => String(p.id) !== String(id));
+  save();
+  renderPhotos();
+  toast('Foto eliminada');
+}
+
+// ============================================================
+// REPORT JOB SELECTS
+// ============================================================
+function renderJobSelects() {
+  updateClientSelect();
+  const opts = '<option value="">— Seleccionar —</option>' +
+    state.quotes.map(q => {
+      const c = state.clients.find(x=>String(x.id)===String(q.clientId));
+      return `<option value="${q.id}">${q.type} — ${c?c.name:'Sin cliente'} (${q.date})</option>`;
+    }).join('');
+  ['evidenceJob','reportJob'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = opts || '<option value="">Sin trabajos guardados</option>';
+  });
+}
+
+// ============================================================
+// REPORT GENERATION
+// ============================================================
+function generateReport() {
+  const jobId = document.getElementById('reportJob').value;
+  if (!jobId) { toast('Selecciona un trabajo', 'error'); return; }
+  const q = state.quotes.find(x=>String(x.id)===String(jobId));
+  if (!q) return;
+  const c = state.clients.find(x=>String(x.id)===String(q.clientId));
+  const photos = state.photos.filter(p=>String(p.jobId)===String(jobId));
+
+  const photoHTML = photos.length ? `
+    <div class="rp-section">Evidencia fotográfica</div>
+    <div class="rp-photos">${photos.map(p=>`<img src="${p.src}" alt="${p.label}">`).join('')}</div>` : '';
+
+  const itemsHTML = q.items.map(i=>`
+    <tr><td>${i.desc}</td><td style="text-align:center">${i.qty}</td><td style="text-align:right">$${(i.price).toLocaleString('es-MX',{minimumFractionDigits:2})}</td><td style="text-align:right">$${(i.qty*i.price).toLocaleString('es-MX',{minimumFractionDigits:2})}</td></tr>`).join('');
+
+  document.getElementById('reportPreview').innerHTML = `
+    <div class="rp-header">
+      <h1>ServicioPRO</h1>
+      <div style="font-size:.75rem;color:#888">Reporte de trabajo · Folio #${String(q.id).slice(-6)}</div>
+    </div>
+    <div class="rp-label">Tipo de servicio</div>
+    <div class="rp-val">${q.type}</div>
+    <div class="rp-label">Cliente</div>
+    <div class="rp-val">${c ? c.name : 'No especificado'} ${c&&c.phone?'· '+c.phone:''}</div>
+    <div class="rp-label">Dirección</div>
+    <div class="rp-val">${c&&c.address?c.address:'No especificada'}</div>
+    <div class="rp-label">Fecha</div>
+    <div class="rp-val">${q.date}</div>
+    <div class="rp-label">Descripción</div>
+    <div class="rp-val">${q.desc}</div>
+    <div class="rp-section">Conceptos y materiales</div>
+    <table>
+      <thead><tr><th>Concepto</th><th style="text-align:center">Cant.</th><th style="text-align:right">P.U.</th><th style="text-align:right">Total</th></tr></thead>
+      <tbody>${itemsHTML}</tbody>
+    </table>
+    <div class="rp-total">TOTAL: $${(q.total||0).toLocaleString('es-MX',{minimumFractionDigits:2})}</div>
+    ${photoHTML}
+    <div class="rp-footer">Generado con ServicioPRO · ${new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'})}</div>`;
+
+  document.getElementById('reportPreviewWrap').style.display = 'block';
+
+  // save to history
+  if (!state.reports.find(r=>r.jobId===jobId)) {
+    const cn = c?c.name:'Sin cliente';
+    state.reports.push({ id: Date.now(), jobId, clientName: cn, type: q.type, total: q.total, date: q.date });
+    save();
+  }
+  renderReportHistory();
+  toast('📄 Reporte generado', 'success');
+}
+
+function renderReportHistory() {
+  const el = document.getElementById('reportHistory');
+  if (!state.reports.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📄</div><div class="empty-text">Sin reportes generados aún.</div></div>`;
+    return;
+  }
+  el.innerHTML = state.reports.slice().reverse().map(r => `
+    <div class="report-card">
+      <div class="report-header">
+        <div>
+          <div class="report-title">${r.type} — ${r.clientName}</div>
+          <div class="report-date">${r.date}</div>
+        </div>
+        <span class="chip chip-green">$${(r.total||0).toLocaleString('es-MX')}</span>
+      </div>
+      <div class="report-body">
+        <div class="report-actions">
+          <button class="btn btn-ghost btn-sm" onclick="reloadReport('${r.jobId}')">👁 Ver</button>
+          <button class="btn btn-ghost btn-sm" onclick="exportSheets('${r.jobId}')">📊 Sheets</button>
+          <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨 PDF</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function reloadReport(jobId) {
+  document.getElementById('reportJob').value = jobId;
+  generateReport();
+  document.getElementById('reportPreviewWrap').scrollIntoView({behavior:'smooth'});
+}
+
+function exportSheets(jobId) {
+  const qid = jobId || document.getElementById('reportJob').value;
+  if (!qid) { toast('Genera un reporte primero', 'error'); return; }
+  const q = state.quotes.find(x=>String(x.id)===String(qid));
+  if (!q) return;
+  const c = state.clients.find(x=>String(x.id)===String(q.clientId));
+  // Build CSV
+  const rows = [
+    ['ServicioPRO - Reporte de trabajo'],
+    ['Folio', String(q.id).slice(-6)],
+    ['Fecha', q.date],
+    ['Cliente', c?c.name:''],
+    ['Teléfono', c?c.phone||'':''],
+    ['Servicio', q.type],
+    ['Descripción', q.desc],
+    [],
+    ['Concepto','Cantidad','Precio Unitario','Total'],
+    ...q.items.map(i=>[i.desc, i.qty, i.price, i.qty*i.price]),
+    [],
+    ['','','TOTAL', q.total]
+  ];
+  const csv = rows.map(r=>r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `reporte_${q.type}_${q.date.replace(/\//g,'-')}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('📊 CSV descargado — ábrelo en Sheets o Excel', 'success');
+}
+
+function printReport() {
+  const content = document.getElementById('reportPreview').innerHTML;
+  if (!content) { toast('Genera un reporte primero', 'error'); return; }
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Reporte ServicioPRO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>body{font-family:'DM Sans',sans-serif;padding:28px;color:#111}h1{font-family:'Syne',sans-serif}.rp-header{border-bottom:2px solid #f97316;padding-bottom:12px;margin-bottom:16px}.rp-label{font-size:.7rem;text-transform:uppercase;color:#888;letter-spacing:.5px}.rp-val{margin-bottom:10px;font-weight:500}.rp-section{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f97316;margin:16px 0 8px}table{width:100%;border-collapse:collapse}th{text-align:left;border-bottom:1px solid #e2e8f0;padding:6px 8px;font-size:.7rem;text-transform:uppercase;color:#888}td{padding:6px 8px;border-bottom:1px solid #f1f5f9}.rp-total{text-align:right;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#f97316;margin-top:12px}.rp-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.rp-photos img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;border:1px solid #e2e8f0}.rp-footer{font-size:.72rem;color:#aaa;text-align:center;margin-top:20px;padding-top:12px;border-top:1px solid #e2e8f0}</style>
+  </head><body>${content}</body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(), 500);
+}
+
+function shareReport() {
+  if (navigator.share) {
+    navigator.share({ title: 'Reporte ServicioPRO', text: 'Te comparto el reporte de trabajo.' })
+      .then(()=>toast('Compartido ✅'))
+      .catch(()=>{});
+  } else {
+    toast('Usa el botón de imprimir / PDF para compartir');
+  }
+}
+
+// ============================================================
+// SIGNATURE CANVAS
+// ============================================================
+function setupSigCanvas() {
+  const canvas = document.getElementById('sigCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const pt = e.touches ? e.touches[0] : e;
+    return { x: (pt.clientX - rect.left) * (canvas.width / rect.width), y: (pt.clientY - rect.top) * (canvas.height / rect.height) };
+  }
+
+  canvas.addEventListener('mousedown', e=>{ drawing=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); });
+  canvas.addEventListener('mousemove', e=>{ if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.strokeStyle='#f97316'; ctx.lineWidth=2; ctx.stroke(); });
+  canvas.addEventListener('mouseup', ()=>drawing=false);
+  canvas.addEventListener('touchstart', e=>{ e.preventDefault(); drawing=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); });
+  canvas.addEventListener('touchmove', e=>{ e.preventDefault(); if(!drawing)return; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.strokeStyle='#f97316'; ctx.lineWidth=3; ctx.stroke(); });
+  canvas.addEventListener('touchend', ()=>drawing=false);
+}
+
+function clearSig() {
+  const canvas = document.getElementById('sigCanvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+}
+
+function saveSig() {
+  const canvas = document.getElementById('sigCanvas');
+  state.sig = canvas.toDataURL();
+  save();
+  closeModal('modalFirma');
+  toast('✅ Firma guardada', 'success');
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (type ? ' '+type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.className=''; }, 2800);
+}
+
+// ============================================================
+// DEMO SEED DATA (first load)
+// ============================================================
+function seedDemo() {
+  if (state.clients.length) return;
+  state.clients = [
+    { id: 1000, name: 'Roberto Salinas', phone: '871 123 4567', address: 'Col. Las Flores, Torreón', notes: 'Casa azul' },
+    { id: 1001, name: 'María Jiménez', phone: '871 987 6543', address: 'Col. Centro, Torreón', notes: '' },
+  ];
+  state.quotes = [
+    { id: 2000, clientId: '1000', desc: 'Instalación minisplit 1.5 ton recámara principal', type: 'Minisplit / Clima', items: [{desc:'Mano de obra',qty:1,price:800},{desc:'Soporte metálico',qty:1,price:150}], total:950, date:'15/03/2025', status:'Completado' },
+    { id: 2001, clientId: '1001', desc: 'Cambio de tubería cocina, fuga en sifón', type: 'Plomería', items: [{desc:'Tubería PVC 1/2"',qty:3,price:45},{desc:'Mano de obra',qty:1,price:400}], total:535, date:'18/03/2025', status:'Cotización' },
+  ];
+  save();
+}
+
+load();
+seedDemo();
+</script>
+</body>
+</html>
