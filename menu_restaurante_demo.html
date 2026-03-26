@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Urban Kitchen — Menú Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0ede8;
+    --text-muted: #888;
+    --accent: #e8a020;
+    --accent2: #c45c1a;
+    --red: #d94f3d;
+    --green: #3d9e6e;
+    --blue: #3a7bd5;
+    --purple: #7c4dff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 40px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(232,160,32,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(196,92,26,0.15) 0%, transparent 50%),
+      linear-gradient(180deg, #0d0d0d 0%, #1a1008 50%, #0d0d0d 100%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,160,32,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,160,32,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .hero-badge {
+    position: absolute;
+    top: 24px;
+    right: 20px;
+    background: rgba(232,160,32,0.12);
+    border: 1px solid rgba(232,160,32,0.3);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
+
+  .nsr-tag {
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    font-weight: 500;
+  }
+
+  .hero-content {
+    position: relative;
+    padding: 0 24px;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 16vw, 80px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span {
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    letter-spacing: 0.3px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0d0d0d;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 2px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .hero-cta:active { transform: scale(0.97); }
+
+  .hero-cta-arrow {
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+
+  .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+  .hero-meta {
+    margin-top: 24px;
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 5px; }
+
+  /* ─── NAV TABS ─── */
+  .nav-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 16px;
+    gap: 4px;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    flex-shrink: 0;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .nav-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    padding: 32px 20px 8px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    right: 20px;
+    margin-top: -16px;
+    pointer-events: none;
+    letter-spacing: 2px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .section-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .tag-hot { background: rgba(217,79,61,0.15); color: var(--red); border: 1px solid rgba(217,79,61,0.3); }
+  .tag-new { background: rgba(61,158,110,0.15); color: var(--green); border: 1px solid rgba(61,158,110,0.3); }
+  .tag-star { background: rgba(232,160,32,0.15); color: var(--accent); border: 1px solid rgba(232,160,32,0.3); }
+  .tag-bar { background: rgba(124,77,255,0.15); color: var(--purple); border: 1px solid rgba(124,77,255,0.3); }
+  .tag-chef { background: rgba(58,123,213,0.15); color: var(--blue); border: 1px solid rgba(58,123,213,0.3); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 20px 0;
+  }
+
+  /* ─── CARDS ─── */
+  .cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    transition: transform 0.15s, border-color 0.15s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .card:active { transform: scale(0.98); }
+  .card:hover { border-color: rgba(232,160,32,0.2); }
+
+  .card-visual {
+    width: 90px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Gradient backgrounds per category */
+  .grad-espresso { background: linear-gradient(135deg, #2c1810 0%, #5c3320 100%); }
+  .grad-coctel { background: linear-gradient(135deg, #1a0d2e 0%, #3d1f5c 100%); }
+  .grad-entrada { background: linear-gradient(135deg, #0d1f12 0%, #1a3d24 100%); }
+  .grad-pizza { background: linear-gradient(135deg, #2e1508 0%, #5c2e10 100%); }
+  .grad-burger { background: linear-gradient(135deg, #1f1208 0%, #3d2410 100%); }
+  .grad-postre { background: linear-gradient(135deg, #1f0d1a 0%, #3d1a33 100%); }
+
+  .card-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 60%);
+  }
+
+  .card-body {
+    flex: 1;
+    padding: 14px 14px 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-name {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.3;
+    flex: 1;
+  }
+
+  .card-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  .badge-popular { background: rgba(217,79,61,0.15); color: #e87060; }
+  .badge-nuevo { background: rgba(61,158,110,0.15); color: #5ec48a; }
+  .badge-chef { background: rgba(58,123,213,0.15); color: #6ea8e8; }
+  .badge-sin-alcohol { background: rgba(232,160,32,0.1); color: var(--accent); }
+  .badge-vegano { background: rgba(61,158,110,0.12); color: #5ec48a; }
+  .badge-estrella { background: rgba(232,160,32,0.15); color: var(--accent); }
+
+  .card-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px 0 0 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .card.featured .card-highlight { opacity: 1; }
+
+  /* ─── COCKTAIL CARD (horizontal scroll) ─── */
+  .cocktail-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 0 16px;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .cocktail-scroll::-webkit-scrollbar { display: none; }
+
+  .cocktail-card {
+    flex-shrink: 0;
+    width: 160px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+
+  .cocktail-card:active { transform: scale(0.97); }
+  .cocktail-card:hover { border-color: rgba(124,77,255,0.4); }
+
+  .cocktail-visual {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cocktail-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, var(--surface) 100%);
+  }
+
+  .cocktail-info {
+    padding: 10px 12px 14px;
+  }
+
+  .cocktail-name {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+
+  .cocktail-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .cocktail-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--purple);
+    letter-spacing: 1px;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    padding: 40px 24px 32px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .footer-tagline {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .footer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .footer-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .footer-info-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .footer-nsr {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-nsr-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  .footer-nsr-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(232,160,32,0.08);
+    border: 1px solid rgba(232,160,32,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.4;
+    animation: bounce 2s infinite;
+  }
+
+  .scroll-hint-line {
+    width: 1px;
+    height: 24px;
+    background: var(--accent);
+  }
+
+  .scroll-hint-text {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ─── SECTION HIDDEN ─── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.10s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.20s; }
+
+  .cocktail-card {
+    animation: fadeUp 0.3s ease both;
+  }
+  .cocktail-card:nth-child(1) { animation-delay: 0.05s; }
+  .cocktail-card:nth-child(2) { animation-delay: 0.10s; }
+  .cocktail-card:nth-child(3) { animation-delay: 0.15s; }
+  .cocktail-card:nth-child(4) { animation-delay: 0.20s; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="nsr-tag">NSR DEMO · negociosinrodeos.com</div>
+  <div class="hero-badge">Menú Digital</div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Cocina Internacional</div>
+    <h1 class="hero-title">URBAN<br><span>KITCHEN</span></h1>
+    <p class="hero-subtitle">Sabores del mundo · Coctelería de autor · Torreón</p>
+    <a href="#menu" class="hero-cta" onclick="showMenu()">
+      Ver Menú
+      <span class="hero-cta-arrow">→</span>
+    </a>
+    <div class="hero-meta">
+      <span>📍 Centro, Torreón</span>
+      <span>🕐 1pm – 11pm</span>
+      <span>🍽 Menú del día</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span class="scroll-hint-text">Ver menú</span>
+    <div class="scroll-hint-line"></div>
+  </div>
+</section>
+
+<!-- ═══ MENU ═══ -->
+<div id="menu" style="display:none;">
+
+  <!-- NAV -->
+  <nav class="nav-wrapper">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('entradas', this)">Entradas</button>
+      <button class="nav-tab" onclick="switchTab('pizzas', this)">Pizzas</button>
+      <button class="nav-tab" onclick="switchTab('burgers', this)">Burgers</button>
+      <button class="nav-tab" onclick="switchTab('especialidades', this)">Chef</button>
+      <button class="nav-tab" onclick="switchTab('cocteles', this)">Cocteles</button>
+      <button class="nav-tab" onclick="switchTab('postres', this)">Postres</button>
+    </div>
+  </nav>
+
+  <!-- ═══ ENTRADAS ═══ -->
+  <div class="section active" id="sec-entradas">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-new">Para Empezar</div>
+        <h2 class="section-title">Entradas</h2>
+      </div>
+      <div class="section-num">01</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-entrada">🥗</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Hummus de la Casa</div>
+            <div class="card-price">$95</div>
+          </div>
+          <div class="card-desc">Garbanzo, tahini, limón y aceite de oliva. Pan naan recién horneado al lado.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+            <span class="badge badge-vegano">Vegano</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-entrada">🦐</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Camarones al Ajillo</div>
+            <div class="card-price">$145</div>
+          </div>
+          <div class="card-desc">Camarones jumbo salteados con ajo, chile de árbol y mantequilla. Pan artesanal.</div>
+          <div class="card-badges">
+            <span class="badge badge-estrella">Estrella</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-entrada">🧀</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Tabla de Quesos</div>
+            <div class="card-price">$180</div>
+          </div>
+          <div class="card-desc">Selección de quesos locales e importados, mermelada de higo, nueces y galletas.</div>
+          <div class="card-badges">
+            <span class="badge badge-nuevo">Nuevo</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-entrada">🫙</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Dips Urbanos</div>
+            <div class="card-price">$115</div>
+          </div>
+          <div class="card-desc">Guacamole, pico de gallo y crema de chipotle. Totopos y pan naan.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PIZZAS ═══ -->
+  <div class="section" id="sec-pizzas">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-hot">Top Ventas</div>
+        <h2 class="section-title">Pizzas</h2>
+      </div>
+      <div class="section-num">02</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-pizza">🍕</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Mediterránea</div>
+            <div class="card-price">$195</div>
+          </div>
+          <div class="card-desc">Salsa de jitomate, queso manchego, aceitunas kalamata, jitomates cherry y albahaca fresca.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+            <span class="badge badge-chef">Chef</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-pizza">🍕</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">BBQ Brisket</div>
+            <div class="card-price">$225</div>
+          </div>
+          <div class="card-desc">Res deshebrada al BBQ, cebolla morada, jalapeño encurtido y mezcla de quesos. Brutal.</div>
+          <div class="card-badges">
+            <span class="badge badge-estrella">Estrella</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-pizza">🍕</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Trufa Negra</div>
+            <div class="card-price">$245</div>
+          </div>
+          <div class="card-desc">Crema de trufa, setas, prosciutto y rúcula. Para los que saben lo que piden.</div>
+          <div class="card-badges">
+            <span class="badge badge-nuevo">Nuevo</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-pizza">🍕</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Pollo Tikka</div>
+            <div class="card-price">$205</div>
+          </div>
+          <div class="card-desc">Pollo marinado en especias indias, salsa yogurt, cebolla y cilantro. Fusión real.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BURGERS ═══ -->
+  <div class="section" id="sec-burgers">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-hot">Favoritos</div>
+        <h2 class="section-title">Burgers</h2>
+      </div>
+      <div class="section-num">03</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-burger">🍔</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Urban Smash</div>
+            <div class="card-price">$185</div>
+          </div>
+          <div class="card-desc">Doble smash de res, mix de quesos americano y cheddar, cebolla caramelizada, pepinillo.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+            <span class="badge badge-estrella">Estrella</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-burger">🍔</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Mar y Tierra</div>
+            <div class="card-price">$210</div>
+          </div>
+          <div class="card-desc">Res + camarón empanizado, mayonesa de brandy, aguacate y tocino. La locura.</div>
+          <div class="card-badges">
+            <span class="badge badge-chef">Chef</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-burger">🍔</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Crispy Buffalo</div>
+            <div class="card-price">$168</div>
+          </div>
+          <div class="card-desc">Pollo frito crujiente, salsa buffalo, coleslaw y queso azul. Pica. Aviso dado.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+            <span class="badge badge-nuevo">Nuevo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ESPECIALIDADES ═══ -->
+  <div class="section" id="sec-especialidades">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-chef">Chef Recomienda</div>
+        <h2 class="section-title">Del Chef</h2>
+      </div>
+      <div class="section-num">04</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-pizza">🥩</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Kebab de Cordero</div>
+            <div class="card-price">$235</div>
+          </div>
+          <div class="card-desc">Cordero especiado en pan naan artesanal, tzatziki, cebolla morada y hierbas frescas.</div>
+          <div class="card-badges">
+            <span class="badge badge-chef">Chef</span>
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-entrada">🍜</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Ramen Urban</div>
+            <div class="card-price">$195</div>
+          </div>
+          <div class="card-desc">Caldo tonkotsu, cerdo chashu, noodles frescos, huevo marinado y nori. Adictivo.</div>
+          <div class="card-badges">
+            <span class="badge badge-nuevo">Nuevo</span>
+            <span class="badge badge-estrella">Estrella</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-burger">🥘</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Risotto de Setas</div>
+            <div class="card-price">$210</div>
+          </div>
+          <div class="card-desc">Arroz arborio, mezcla de setas, parmesano añejo, trufa y hierbas. Sin prisa.</div>
+          <div class="card-badges">
+            <span class="badge badge-chef">Chef</span>
+            <span class="badge badge-vegano">Vegetariano</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COCTELES ═══ -->
+  <div class="section" id="sec-cocteles">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-bar">Mixología</div>
+        <h2 class="section-title">Cocteles</h2>
+      </div>
+      <div class="section-num">05</div>
+    </div>
+    <div class="cocktail-scroll">
+      <div class="cocktail-card">
+        <div class="cocktail-visual grad-coctel">🍹</div>
+        <div class="cocktail-info">
+          <div class="cocktail-name">Urban Negroni</div>
+          <div class="cocktail-desc">Gin, Campari, vermut rojo, naranja. Clásico sin disculpas.</div>
+          <div class="cocktail-price">$115</div>
+        </div>
+      </div>
+      <div class="cocktail-card">
+        <div class="cocktail-visual" style="background: linear-gradient(135deg, #0d1a2e 0%, #1a3d5c 100%);">🍸</div>
+        <div class="cocktail-info">
+          <div class="cocktail-name">Mezcal Sour</div>
+          <div class="cocktail-desc">Mezcal artesanal, limón, clara de huevo, sal de gusano.</div>
+          <div class="cocktail-price">$125</div>
+        </div>
+      </div>
+      <div class="cocktail-card">
+        <div class="cocktail-visual" style="background: linear-gradient(135deg, #1a0d0d 0%, #3d1a1a 100%);">🍷</div>
+        <div class="cocktail-info">
+          <div class="cocktail-name">Sangría Urban</div>
+          <div class="cocktail-desc">Vino tinto, frutos rojos, brandy, naranja y canela. Jarra disponible.</div>
+          <div class="cocktail-price">$105</div>
+        </div>
+      </div>
+      <div class="cocktail-card">
+        <div class="cocktail-visual" style="background: linear-gradient(135deg, #0a1a0d 0%, #1a3d20 100%);">🥂</div>
+        <div class="cocktail-info">
+          <div class="cocktail-name">Mojito de Pepino</div>
+          <div class="cocktail-desc">Ron blanco, pepino, menta, limón y soda. Refrescante de verdad.</div>
+          <div class="cocktail-price">$98</div>
+        </div>
+      </div>
+      <div class="cocktail-card">
+        <div class="cocktail-visual grad-coctel">🧃</div>
+        <div class="cocktail-info">
+          <div class="cocktail-name">Virgin Mule</div>
+          <div class="cocktail-desc">Jengibre, limón, pepino y agua mineral. Sin alcohol, sin drama.</div>
+          <div class="cocktail-price">$68</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Also show as cards -->
+    <div class="cards-grid" style="margin-top: 8px;">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-coctel">🍾</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Margarita de la Casa</div>
+            <div class="card-price">$110</div>
+          </div>
+          <div class="card-desc">Tequila reposado, triple sec, limón fresco. La versión que no te decepciona.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-coctel">🫖</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Agua Fresca Artesanal</div>
+            <div class="card-price">$45</div>
+          </div>
+          <div class="card-desc">Jamaica, horchata o tamarindo. Rotación diaria según temporada.</div>
+          <div class="card-badges">
+            <span class="badge badge-sin-alcohol">Sin Alcohol</span>
+            <span class="badge badge-nuevo">Nuevo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ POSTRES ═══ -->
+  <div class="section" id="sec-postres">
+    <div class="section-header" style="position:relative;">
+      <div>
+        <div class="section-tag tag-star">Para Cerrar</div>
+        <h2 class="section-title">Postres</h2>
+      </div>
+      <div class="section-num">06</div>
+    </div>
+    <div class="cards-grid">
+      <div class="card featured">
+        <div class="card-highlight"></div>
+        <div class="card-visual grad-postre">🍮</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Lava Cake</div>
+            <div class="card-price">$98</div>
+          </div>
+          <div class="card-desc">Pastel de chocolate con centro líquido, helado de vainilla y sal de mar. Imperdible.</div>
+          <div class="card-badges">
+            <span class="badge badge-estrella">Estrella</span>
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-postre">🍰</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Cheesecake de Cajeta</div>
+            <div class="card-price">$85</div>
+          </div>
+          <div class="card-desc">Base de galleta, queso crema, cajeta lagunera. La representación más fiel de la región.</div>
+          <div class="card-badges">
+            <span class="badge badge-popular">Popular</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-visual grad-postre">🍦</div>
+        <div class="card-body">
+          <div class="card-top">
+            <div class="card-name">Tiramisú Urbano</div>
+            <div class="card-price">$92</div>
+          </div>
+          <div class="card-desc">Mascarpone, café espresso, amaretto y cacao. Receta clásica. Sin modificaciones.</div>
+          <div class="card-badges">
+            <span class="badge badge-chef">Chef</span>
+            <span class="badge badge-nuevo">Nuevo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-logo">URBAN KITCHEN</div>
+    <div class="footer-tagline">Cocina Internacional · Torreón</div>
+
+    <div class="footer-info">
+      <div class="footer-info-item">
+        <div class="footer-info-icon">📍</div>
+        <span>Av. Principal 456, Centro, Torreón</span>
+      </div>
+      <div class="footer-info-item">
+        <div class="footer-info-icon">🕐</div>
+        <span>Lunes–Sábado 1pm–11pm · Dom 1pm–9pm</span>
+      </div>
+      <div class="footer-info-item">
+        <div class="footer-info-icon">📱</div>
+        <span>871 000 0000</span>
+      </div>
+    </div>
+
+    <div class="footer-nsr">
+      <div class="footer-nsr-text">Menú digital por negociosinrodeos.com</div>
+      <div class="footer-nsr-badge">NSR</div>
+    </div>
+  </footer>
+
+</div><!-- /menu -->
+
+<script>
+  function showMenu() {
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('menu').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function switchTab(tabId, btn) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    // Deactivate all tabs
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    // Show target
+    document.getElementById('sec-' + tabId).classList.add('active');
+    btn.classList.add('active');
+    // Scroll tab into view
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+</script>
+
+</body>
+</html>
