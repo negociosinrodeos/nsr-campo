@@ -655,6 +655,109 @@
       </div>
     </div>
 
+    <!-- ══════ FASE 1: HISTORIA DEL NEGOCIO ══════ -->
+    <div class="card" id="diagHistoriaCard" style="display:none;">
+      <div class="card-header">🎙️ Fase 1 — Historia del Negocio</div>
+      <div class="card-sub">Escucha primero. Deja que hablen. Estas respuestas guían todo lo demás.</div>
+
+      <!-- Tiempo operando -->
+      <div class="field">
+        <label>¿Cuánto tiempo llevan operando?</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;" id="tiempoChips">
+          <span class="giro-tag" onclick="setHistoriaChip('historia_tiempo','Menos de 6 meses',this)">-6 meses</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_tiempo','6 meses - 1 año',this)">6m - 1 año</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_tiempo','1 - 3 años',this)">1-3 años</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_tiempo','3 - 5 años',this)">3-5 años</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_tiempo','Más de 5 años',this)">+5 años</span>
+        </div>
+        <input type="text" id="historia_tiempo" placeholder="Ej: 2 años y medio, desde 2021..." />
+      </div>
+
+      <!-- Cómo nació -->
+      <div class="field">
+        <label>¿Cómo nació la idea del negocio?</label>
+        <textarea id="historia_origen" placeholder="Déjalos hablar. Anota palabras clave: pasión, necesidad, herencia familiar, oportunidad de mercado..." rows="3"></textarea>
+      </div>
+
+      <!-- Socios -->
+      <div class="field">
+        <label>¿Es solo o tiene socios?</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span class="giro-tag" onclick="setHistoriaChip('historia_socios','Solo / familiar',this)">Solo / Familiar</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_socios','Con socios',this)">Con socios</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_socios','Franquicia / Licencia',this)">Franquicia</span>
+        </div>
+        <input type="text" id="historia_socios" placeholder="Detalle de la estructura..." />
+      </div>
+
+      <!-- Qué les apasiona -->
+      <div class="field">
+        <label>💛 ¿Qué es lo que más les gusta / apasiona de su negocio?</label>
+        <textarea id="historia_pasion" placeholder="Escucha con atención — aquí está el 'por qué' del dueño. Nota sus palabras exactas." rows="3"></textarea>
+      </div>
+
+      <!-- Qué les preocupa -->
+      <div class="field">
+        <label>😟 ¿Qué es lo que más les preocupa ahorita?</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','Flujo de dinero')">💸 Dinero</span>
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','No sé si estoy ganando')">📊 Ganancias</span>
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','Competencia')">⚔️ Competencia</span>
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','Conseguir clientes')">🎯 Clientes</span>
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','Mi equipo / personal')">👥 Personal</span>
+          <span class="giro-tag" onclick="addHistoriaTag('historia_preocupa','El desorden operativo')">⚙️ Operación</span>
+        </div>
+        <textarea id="historia_preocupa" placeholder="Anota textual lo que diga el dueño — estas son las oportunidades de venta." rows="3"></textarea>
+      </div>
+
+      <!-- Visión a futuro -->
+      <div class="field">
+        <label>🚀 ¿Cómo se imaginan el negocio en 1-2 años?</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+          <span class="giro-tag" onclick="setHistoriaChip('historia_vision','Crecer y abrir otra sucursal',this)">Sucursal nueva</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_vision','Mantener y mejorar lo actual',this)">Estabilizar</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_vision','Automatizar y delegar más',this)">Delegar</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_vision','Aumentar ventas considerablemente',this)">Crecer ventas</span>
+        </div>
+        <textarea id="historia_vision" placeholder="Su sueño de negocio. Esto define el tamaño de la propuesta que puedes hacer." rows="2"></textarea>
+      </div>
+
+      <!-- Han intentado algo antes -->
+      <div class="field">
+        <label>¿Han intentado antes resolver estos problemas? ¿Qué pasó?</label>
+        <textarea id="historia_intentos" placeholder="Objeciones futuras pueden venir de malas experiencias previas. Escúchalo bien." rows="2"></textarea>
+      </div>
+
+      <!-- Nivel de apertura al cambio -->
+      <div class="field">
+        <label>🌡️ Apertura al cambio (tu percepción)</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="giro-tag" onclick="setHistoriaChip('historia_apertura','Alta — quiere cambiar ya',this)">🔥 Alta</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_apertura','Media — le interesa pero hay dudas',this)">🤔 Media</span>
+          <span class="giro-tag" onclick="setHistoriaChip('historia_apertura','Baja — hay resistencia al cambio',this)">🧊 Baja</span>
+        </div>
+        <input type="text" id="historia_apertura" style="margin-top:6px;" placeholder="Tu lectura del dueño..." />
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button class="btn btn-primary btn-full" onclick="completarFase1()">✅ Listo — Continuar al diagnóstico</button>
+      </div>
+    </div>
+
+    <!-- Badge fase completada -->
+    <div id="fase1Badge" style="display:none;margin-bottom:14px;">
+      <div style="background:var(--green-l);border:1.5px solid #a8dfc5;border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:18px;">✅</span>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:var(--green);">Fase 1 completada</div>
+            <div style="font-size:11px;color:var(--text3);">Historia del negocio registrada</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="editarFase1()">✏️ Editar</button>
+      </div>
+    </div>
+
     <!-- Progress -->
     <div class="card" id="diagProgressCard" style="display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -668,7 +771,7 @@
     </div>
 
     <!-- Áreas del checklist -->
-    <div id="areasContainer"></div>
+    <div id="areasContainer" style="display:none;"></div>
 
     <!-- Notas generales -->
     <div class="card" id="diagNotasCard" style="display:none;">
@@ -1269,6 +1372,100 @@ const AREAS_CONSULTORIO = [
   }
 ];
 
+// ══════════════════════════════════════════════════════════
+//  FASE 1 — HISTORIA DEL NEGOCIO
+// ══════════════════════════════════════════════════════════
+
+// Estado de la fase 1
+let historiaData = {};
+let fase1Completada = false;
+
+function setHistoriaChip(fieldId, valor, el) {
+  document.getElementById(fieldId).value = valor;
+  // Resaltar chip seleccionado
+  const parent = el.closest('[id]') || el.parentElement;
+  parent.querySelectorAll('.giro-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function addHistoriaTag(fieldId, valor) {
+  const field = document.getElementById(fieldId);
+  const current = field.value.trim();
+  field.value = current ? current + ', ' + valor : valor;
+}
+
+function completarFase1() {
+  // Guardar todos los campos
+  historiaData = {
+    tiempo:    document.getElementById('historia_tiempo').value.trim(),
+    origen:    document.getElementById('historia_origen').value.trim(),
+    socios:    document.getElementById('historia_socios').value.trim(),
+    pasion:    document.getElementById('historia_pasion').value.trim(),
+    preocupa:  document.getElementById('historia_preocupa').value.trim(),
+    vision:    document.getElementById('historia_vision').value.trim(),
+    intentos:  document.getElementById('historia_intentos').value.trim(),
+    apertura:  document.getElementById('historia_apertura').value.trim(),
+  };
+
+  // Ocultar tarjeta, mostrar badge y continuar al checklist
+  document.getElementById('diagHistoriaCard').style.display = 'none';
+  document.getElementById('fase1Badge').style.display = 'block';
+  document.getElementById('diagProgressCard').style.display = 'block';
+  document.getElementById('areasContainer').style.display = 'block';
+  document.getElementById('diagNotasCard').style.display = 'block';
+
+  // Pre-rellenar oportunidades detectadas basadas en preocupaciones
+  preFillOportunidades();
+
+  fase1Completada = true;
+  toast('✅ Fase 1 guardada — continúa con el checklist');
+  window.scrollTo({ top: document.getElementById('diagProgressCard').offsetTop - 80, behavior: 'smooth' });
+}
+
+function editarFase1() {
+  document.getElementById('diagHistoriaCard').style.display = 'block';
+  document.getElementById('fase1Badge').style.display = 'none';
+  window.scrollTo({ top: document.getElementById('diagHistoriaCard').offsetTop - 80, behavior: 'smooth' });
+}
+
+function preFillOportunidades() {
+  const preocupa = historiaData.preocupa.toLowerCase();
+  const sugerencias = [];
+  if (preocupa.includes('dinero') || preocupa.includes('ganan') || preocupa.includes('flujo')) {
+    sugerencias.push('Punto de equilibrio', 'Control de Gastos e Ingresos');
+  }
+  if (preocupa.includes('inventar') || preocupa.includes('desorden') || preocupa.includes('operaci')) {
+    sugerencias.push('Control de inventario', 'Excel / Hojas de control');
+  }
+  if (preocupa.includes('cliente') || preocupa.includes('ventas')) {
+    sugerencias.push('Dashboard de ventas', 'Sistema de costos');
+  }
+  if (preocupa.includes('personal') || preocupa.includes('equipo')) {
+    sugerencias.push('Capacitación de equipo', 'Formularios digitales');
+  }
+  if (sugerencias.length > 0) {
+    const campo = document.getElementById('diagOportunidades');
+    if (!campo.value.trim()) {
+      campo.value = sugerencias.join(', ');
+    }
+  }
+}
+
+// Inyectar historia en el resumen para Claude
+function getHistoriaTexto() {
+  if (!fase1Completada || !Object.keys(historiaData).length) return '';
+  let txt = '\n\n── HISTORIA DEL NEGOCIO ──\n';
+  if (historiaData.tiempo)   txt += `Tiempo operando: ${historiaData.tiempo}\n`;
+  if (historiaData.origen)   txt += `Origen: ${historiaData.origen}\n`;
+  if (historiaData.socios)   txt += `Estructura: ${historiaData.socios}\n`;
+  if (historiaData.pasion)   txt += `Pasión / Motivación: ${historiaData.pasion}\n`;
+  if (historiaData.preocupa) txt += `Principal preocupación: ${historiaData.preocupa}\n`;
+  if (historiaData.vision)   txt += `Visión a futuro: ${historiaData.vision}\n`;
+  if (historiaData.intentos) txt += `Intentos previos: ${historiaData.intentos}\n`;
+  if (historiaData.apertura) txt += `Apertura al cambio: ${historiaData.apertura}\n`;
+  return txt;
+}
+
 // Helper: obtener set de áreas según el giro del prospecto actual
 function getAreasActivas() {
   if (!diagActual) return AREAS;
@@ -1723,30 +1920,55 @@ function seleccionarProspecto() {
     document.getElementById('diagInfoContent').innerHTML =
       `<b>${p.nombre}</b> · ${p.giro}${p.zona?' · '+p.zona:''}${p.dueno?'<br>Dueño: '+p.dueno:''}${p.telefono?'<br>Tel: '+p.telefono:''}`;
     infoBox.style.display = 'block';
-    progressCard.style.display = 'block';
-    notasCard.style.display = 'block';
     document.getElementById('diagSubtitle').textContent = 'Diagnosticando: ' + p.nombre;
+
     // Badge de modo según giro
     const areas = getAreasActivas();
     const esConsultorio = areas === AREAS_CONSULTORIO;
-    let modeEl = document.getElementById('diagModebadge');
+    let modeEl = document.getElementById('diagModebage');
     if (!modeEl) {
       modeEl = document.createElement('div');
       modeEl.id = 'diagModebage';
       modeEl.style.cssText = 'display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.5px;';
       document.getElementById('diagInfoContent').after(modeEl);
     }
-    modeEl.id = 'diagModebage';
     modeEl.style.background = esConsultorio ? 'rgba(42,179,179,0.15)' : 'rgba(201,168,76,0.15)';
     modeEl.style.color = esConsultorio ? '#2ab3b3' : '#C9A84C';
     modeEl.style.border = esConsultorio ? '1px solid rgba(42,179,179,0.4)' : '1px solid rgba(201,168,76,0.4)';
     modeEl.textContent = esConsultorio ? '🏥 Modo Consultorio' : '🏪 Modo General';
-    // Abrir primera área automáticamente
-    toggleArea(areas[0].id);
+
+    // Resetear Fase 1
+    historiaData = {};
+    fase1Completada = false;
+    document.getElementById('diagHistoriaCard').style.display = 'block';
+    document.getElementById('fase1Badge').style.display = 'none';
+
+    // Ocultar checklist hasta que se complete Fase 1
+    progressCard.style.display = 'none';
+    document.getElementById('areasContainer').style.display = 'none';
+    notasCard.style.display = 'none';
+
+    // Limpiar campos Fase 1
+    ['historia_tiempo','historia_origen','historia_socios','historia_pasion',
+     'historia_preocupa','historia_vision','historia_intentos','historia_apertura'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    // Limpiar chips activos
+    document.querySelectorAll('#diagHistoriaCard .giro-tag').forEach(t => t.classList.remove('active'));
+
+    // Scroll suave a la Fase 1
+    setTimeout(() => {
+      window.scrollTo({ top: document.getElementById('diagHistoriaCard').offsetTop - 80, behavior: 'smooth' });
+    }, 100);
+
   } else {
     infoBox.style.display = 'none';
     progressCard.style.display = 'none';
+    document.getElementById('areasContainer').style.display = 'none';
     notasCard.style.display = 'none';
+    document.getElementById('diagHistoriaCard').style.display = 'none';
+    document.getElementById('fase1Badge').style.display = 'none';
     document.getElementById('diagSubtitle').textContent = 'Selecciona un prospecto para diagnosticar';
   }
 }
@@ -1917,7 +2139,7 @@ Modo: ${esConsultorio ? 'Consultorio / Profesional de la Salud' : 'Negocio Gener
 Fecha: ${d.fecha}
 Consultor: ${d.consultor}
 Score General: ${d.scoreGeneral}
-
+${getHistoriaTexto()}
 SCORES POR ÁREA:
 ${scoresLineas}
 
@@ -1932,11 +2154,12 @@ ${d.notas || '(sin notas adicionales)'}
 
 ---
 Por favor, con base en este diagnóstico:
-1. Identifica los 3-5 hallazgos críticos con mayor impacto económico
-2. Cuantifica el impacto estimado en pesos mensuales/anuales
-3. Genera una propuesta de solución con los servicios NSR más apropiados
-4. Sugiere el paquete de precio recomendado (A/$2,500 · B/$3,800 · C/$800 mensual)
-5. Calcula el ROI estimado de la inversión`;
+1. Considera la historia y contexto del negocio para personalizar la propuesta
+2. Identifica los 3-5 hallazgos críticos con mayor impacto económico
+3. Cuantifica el impacto estimado en pesos mensuales/anuales
+4. Genera una propuesta de solución con los servicios NSR más apropiados
+5. Sugiere el paquete de precio recomendado (A/$2,500 · B/$3,800 · C/$800 mensual)
+6. Calcula el ROI estimado de la inversión`;
 
   document.getElementById('textoClaude').textContent = texto;
   document.getElementById('cardClaude').style.display = 'block';
