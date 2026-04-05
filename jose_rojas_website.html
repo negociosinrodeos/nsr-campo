@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>José Alfonso Rojas Vázquez — Operations & Project Manager</title>
+<meta name="description" content="Operations & Project Manager. Especialista en optimización de procesos y automatización. Torreón, Coahuila.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+
+/* ══════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════ */
+:root {
+  --bg: #080c10;
+  --bg2: #0c1218;
+  --surface: #111820;
+  --surface2: #18222e;
+  --border: #1e2d3d;
+  --border2: #263848;
+  --text: #c8d8e8;
+  --muted: #5a7a96;
+  --dim: #3a5570;
+  --orange: #2e7fd4;
+  --orange2: #c8a84b;
+  --gold: #b8982a;
+  --white: #ecf4fc;
+  --navy: #0d1b2a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* NOISE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.5;
+}
+
+/* SCROLL PROGRESS */
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--orange), var(--orange2));
+  z-index: 9998;
+  transition: width 0.05s linear;
+}
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 60px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s, border-color 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(8,12,16,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--orange);
+  animation: blink 2s ease infinite;
+}
+
+@keyframes blink {
+  0%,100%{opacity:1;} 50%{opacity:0.3;}
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s;
+}
+
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-cta {
+  padding: 9px 22px;
+  background: var(--orange);
+  color: white !important;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.2s !important;
+}
+.nav-cta:hover { background: #1a5fa8 !important; transform: translateY(-1px); }
+.nav-cta::after { display: none !important; }
+
+/* hamburger mobile */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--white); border-radius: 2px;
+  transition: all 0.3s;
+}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 100px 80px 60px;
+  position: relative;
+  overflow: hidden;
+  gap: 40px;
+}
+
+/* animated bg grid */
+#hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(46,127,212,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46,127,212,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* blue ambient */
+#hero::after {
+  content: '';
+  position: absolute;
+  top: -200px; right: -100px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(46,127,212,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-left {
+  position: relative; z-index: 2;
+}
+
+.hero-greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.3s forwards;
+}
+
+.hero-greeting-line {
+  width: 36px; height: 2px;
+  background: var(--orange);
+}
+
+.hero-greeting-text {
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--orange);
+}
+
+.hero-hello {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.4s forwards;
+}
+
+.hero-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 7vw, 92px);
+  line-height: 0.92;
+  letter-spacing: 2px;
+  color: var(--white);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.5s forwards;
+}
+
+.hero-name .orange { color: var(--orange); }
+
+.hero-title {
+  font-size: clamp(15px, 2vw, 20px);
+  font-weight: 300;
+  color: var(--orange2);
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.6s forwards;
+}
+
+.hero-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 480px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.7s forwards;
+  text-align: justify;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.8s forwards;
+}
+
+.btn-orange {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: var(--orange);
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px; font-weight: 600;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+}
+.btn-orange:hover { background: #1a5fa8; transform: translateY(-3px); box-shadow: 0 12px 40px rgba(46,127,212,0.3); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  transition: all 0.25s;
+}
+.btn-outline:hover { border-color: var(--orange); color: var(--orange); transform: translateY(-3px); }
+
+.hero-stats {
+  display: flex;
+  gap: 36px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.9s forwards;
+}
+
+.hstat { text-align: center; }
+
+.hstat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  color: var(--orange);
+  line-height: 1;
+  display: block;
+}
+
+.hstat-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  max-width: 80px;
+}
+
+.hstat-sep {
+  width: 1px;
+  background: var(--border2);
+  align-self: stretch;
+}
+
+/* HERO RIGHT — photo */
+.hero-right {
+  position: relative; z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: fadeIn 1s 0.6s forwards;
+}
+
+.photo-container {
+  position: relative;
+  width: 380px;
+  height: 480px;
+}
+
+/* decorative corner lines */
+.photo-corner {
+  position: absolute;
+  width: 60px; height: 60px;
+  border-color: var(--orange);
+  border-style: solid;
+  opacity: 0.5;
+}
+.photo-corner.tl { top: -12px; left: -12px; border-width: 2px 0 0 2px; }
+.photo-corner.tr { top: -12px; right: -12px; border-width: 2px 2px 0 0; }
+.photo-corner.bl { bottom: -12px; left: -12px; border-width: 0 0 2px 2px; }
+.photo-corner.br { bottom: -12px; right: -12px; border-width: 0 2px 2px 0; }
+
+.photo-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #1a2a3a 0%, #0d1825 50%, #111e2d 100%);
+  border: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.photo-frame::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(240,90,32,0.06), transparent);
+}
+
+.photo-initials {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 120px;
+  color: rgba(240,90,32,0.15);
+  letter-spacing: -4px;
+  line-height: 1;
+  user-select: none;
+}
+
+.photo-placeholder-text {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* floating badge */
+.photo-badge {
+  position: absolute;
+  bottom: 32px; right: -24px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.photo-badge-icon { font-size: 24px; }
+
+.photo-badge-text strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+}
+
+.photo-badge-text span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.photo-badge2 {
+  position: absolute;
+  top: 48px; left: -28px;
+  background: var(--orange);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 30px rgba(46,127,212,0.3);
+}
+
+.photo-badge2 strong {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: white;
+  line-height: 1;
+}
+
+.photo-badge2 span { font-size: 11px; color: rgba(255,255,255,0.8); }
+
+/* scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 40px; left: 80px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0;
+  animation: fadeIn 1s 1.2s forwards;
+}
+
+.scroll-hint-line {
+  width: 40px; height: 1px;
+  background: var(--dim);
+}
+
+/* ══════════════════════════════════════════
+   SECTIONS — SHARED
+══════════════════════════════════════════ */
+section {
+  padding: 100px 80px;
+  position: relative;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.section-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--orange);
+}
+
+.section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border2), transparent);
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: 1.5px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.section-title .accent { color: var(--orange); }
+
+.section-sub {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 60px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ══════════════════════════════════════════
+   ABOUT SECTION
+══════════════════════════════════════════ */
+#about { background: var(--bg2); }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-photo-wrap {
+  position: relative;
+}
+
+.about-photo {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #1a2a3a, #0d1825);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: rgba(240,90,32,0.12);
+  letter-spacing: -2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.about-photo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(8,12,16,0.6) 100%);
+}
+
+.about-photo-label {
+  position: absolute;
+  bottom: 24px; left: 24px;
+  right: 24px;
+  background: rgba(8,12,16,0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.about-photo-label strong {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.about-photo-label span {
+  font-size: 12px;
+  color: var(--orange2);
+}
+
+.about-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.about-info-item {
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.about-info-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+
+.about-info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.about-text {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.85;
+  margin-bottom: 32px;
+  text-align: justify;
+}
+
+.about-text p + p { margin-top: 14px; }
+
+.about-text strong { color: var(--white); font-weight: 600; }
+
+/* ══════════════════════════════════════════
+   EXPERIENCE SECTION
+══════════════════════════════════════════ */
+#experiencia { background: var(--bg); }
+
+.exp-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.exp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: start;
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.exp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 0;
+  background: linear-gradient(to bottom, var(--orange), var(--orange2));
+  transition: height 0.4s;
+}
+
+.exp-card:hover {
+  border-color: rgba(46,127,212,0.25);
+  transform: translateX(6px);
+  box-shadow: -6px 0 40px rgba(46,127,212,0.06);
+}
+
+.exp-card:hover::before { height: 100%; }
+
+.exp-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.exp-body {}
+
+.exp-role {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.exp-company {
+  font-size: 14px;
+  color: var(--orange2);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.exp-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+.exp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.exp-tag {
+  font-size: 11px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--dim);
+  font-weight: 500;
+}
+
+.exp-period {
+  text-align: right;
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+.exp-period-text {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  background: rgba(240,90,32,0.1);
+  border: 1px solid rgba(240,90,32,0.2);
+  border-radius: 100px;
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════
+   SKILLS SECTION
+══════════════════════════════════════════ */
+#habilidades { background: var(--bg2); }
+
+.skills-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.skill-block { margin-bottom: 32px; }
+.skill-block:last-child { margin-bottom: 0; }
+
+.skill-block-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--orange);
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.skill-row {
+  margin-bottom: 18px;
+}
+
+.skill-row-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.skill-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skill-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--orange2);
+}
+
+.skill-track {
+  height: 5px;
+  background: var(--surface2);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.skill-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--orange), var(--orange2));
+  width: 0%;
+  transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* right side — soft skills + idiomas */
+.soft-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.soft-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: all 0.25s;
+}
+
+.soft-item:hover {
+  border-color: rgba(240,90,32,0.3);
+  transform: translateY(-3px);
+}
+
+.soft-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.soft-name { font-size: 12px; font-weight: 600; color: var(--text); }
+
+.lang-block { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+
+.lang-block-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--orange);
+  margin-bottom: 16px;
+}
+
+.lang-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 14px;
+}
+.lang-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.lang-flag { font-size: 20px; }
+.lang-name { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.lang-level-badge {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-weight: 600;
+}
+.lang-native { background: rgba(46,200,110,0.1); color: #2ec86e; border: 1px solid rgba(46,200,110,0.2); }
+.lang-b1 { background: rgba(240,160,48,0.1); color: var(--orange2); border: 1px solid rgba(240,160,48,0.2); }
+
+/* ══════════════════════════════════════════
+   LOGROS / NUMBERS
+══════════════════════════════════════════ */
+#logros {
+  background: var(--bg);
+  padding: 80px;
+}
+
+.logros-inner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.logros-inner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--orange2), transparent);
+}
+
+.logros-inner::after {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(240,90,32,0.05) 0%, transparent 70%);
+}
+
+.logros-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 42px;
+  color: var(--white);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.logros-sub {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 50px;
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+.logros-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.logro-item {
+  text-align: center;
+  padding: 32px 20px;
+  border-right: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+
+.logro-item:last-child { border-right: none; }
+
+.logro-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 58px;
+  line-height: 1;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+.logro-num sup { font-size: 24px; vertical-align: super; }
+
+.logro-label {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 120px;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════════════════
+   EDUCACION
+══════════════════════════════════════════ */
+#educacion { background: var(--bg2); }
+
+.edu-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.edu-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 30px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.edu-card:hover {
+  border-color: rgba(240,90,32,0.25);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.edu-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--orange), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+.edu-card:hover::after { transform: scaleX(1); }
+
+.edu-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.edu-degree {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 5px;
+}
+
+.edu-school {
+  font-size: 13px;
+  color: var(--orange2);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.edu-period {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.edu-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 11px;
+  padding: 3px 10px;
+  background: rgba(240,90,32,0.1);
+  border: 1px solid rgba(240,90,32,0.2);
+  border-radius: 100px;
+  color: var(--orange);
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════════
+   CONTACTO
+══════════════════════════════════════════ */
+#contacto {
+  background: var(--bg);
+  text-align: center;
+}
+
+.contact-hero {
+  max-width: 640px;
+  margin: 0 auto 60px;
+}
+
+.contact-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(44px, 7vw, 76px);
+  line-height: 0.95;
+  color: var(--white);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+.contact-headline .orange { color: var(--orange); }
+
+.contact-sub {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto 40px;
+}
+
+.contact-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-decoration: none;
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-card:hover {
+  border-color: var(--orange);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(46,127,212,0.12);
+}
+
+.contact-card-icon {
+  font-size: 28px;
+  width: 56px; height: 56px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--dim);
+  font-weight: 500;
+}
+
+.contact-card-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.contact-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 10px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  padding: 28px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--orange); }
+
+/* ══════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  #hero { grid-template-columns: 1fr; padding: 100px 40px 60px; }
+  .hero-right { display: none; }
+  section { padding: 80px 40px; }
+  #logros { padding: 80px 40px; }
+  footer { padding: 24px 40px; }
+  nav { padding: 0 40px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-photo-wrap { max-width: 320px; }
+  .logros-grid { grid-template-columns: 1fr 1fr; }
+  .logro-item:nth-child(2) { border-right: none; }
+  .skills-layout { grid-template-columns: 1fr; }
+  .contact-cards { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  #hero { padding: 90px 24px 50px; }
+  .hero-stats { gap: 20px; }
+  section { padding: 60px 24px; }
+  #logros { padding: 60px 24px; }
+  .logros-inner { padding: 36px 24px; }
+  .logros-grid { grid-template-columns: 1fr 1fr; }
+  .edu-layout { grid-template-columns: 1fr; }
+  .contact-cards { grid-template-columns: 1fr; max-width: 320px; }
+  footer { padding: 20px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  .footer-links { display: none; }
+  .exp-card { grid-template-columns: auto 1fr; }
+  .exp-period { display: none; }
+  .scroll-hint { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <span>JARV</span>
+    <div class="nav-logo-dot"></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre mí</a></li>
+    <li><a href="#experiencia">Experiencia</a></li>
+    <li><a href="#habilidades">Habilidades</a></li>
+    <li><a href="#logros">Logros</a></li>
+    <li><a href="#educacion">Educación</a></li>
+    <li><a href="#contacto" class="nav-cta">Contactar</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-greeting">
+      <div class="hero-greeting-line"></div>
+      <span class="hero-greeting-text">Operations & Project Manager</span>
+    </div>
+    <p class="hero-hello">Hola, soy</p>
+    <h1 class="hero-name" id="hero-nombre">JOSÉ ALFONSO<br><span class="orange">ROJAS VÁZQUEZ</span></h1>
+    <p class="hero-title" id="hero-titulo">Supervisor de Proyectos · Optimización de Procesos · Automatización</p>
+    <p class="hero-desc" id="hero-desc">Especialista en convertir operaciones caóticas en sistemas eficientes. Con track record en telecomunicaciones (Grupo CARSO/Telmex), hospitalidad y gestión de servicios. Hago que las cosas funcionen — y lo puedo demostrar.</p>
+    <div class="hero-btns">
+      <a href="#contacto" class="btn-orange">📲 Contactar ahora</a>
+      <a href="https://linkedin.com/in/joserojasvazquez/" target="_blank" class="btn-outline" id="hero-linkedin">in LinkedIn</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat">
+        <span class="hstat-num" id="hstat-exp">4+</span>
+        <span class="hstat-label">Años en proyectos</span>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <span class="hstat-num" id="hstat-ind">5</span>
+        <span class="hstat-label">Industrias</span>
+      </div>
+      <div class="hstat-sep"></div>
+      <div class="hstat">
+        <span class="hstat-num" id="hstat-ing">B1</span>
+        <span class="hstat-label">Inglés</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="photo-container">
+      <div class="photo-corner tl"></div>
+      <div class="photo-corner tr"></div>
+      <div class="photo-corner bl"></div>
+      <div class="photo-corner br"></div>
+      <div class="photo-frame">
+        <div class="photo-initials">JR</div>
+        <div class="photo-placeholder-text">Tu foto aquí</div>
+      </div>
+      <div class="photo-badge">
+        <div class="photo-badge-icon">📡</div>
+        <div class="photo-badge-text">
+          <strong>Grupo CARSO</strong>
+          <span>Telmex · FTTH · 4 años</span>
+        </div>
+      </div>
+      <div class="photo-badge2">
+        <strong id="badge-exp">4+</strong>
+        <span>Años de<br>experiencia</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    Scroll para ver más
+  </div>
+</section>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section id="about">
+  <div class="section-label">
+    <span class="section-num">01</span>
+    <div class="section-line"></div>
+  </div>
+  <h2 class="section-title">SOBRE <span class="accent">MÍ</span></h2>
+  <p class="section-sub">Quién soy y qué me hace diferente</p>
+
+  <div class="about-grid">
+    <div class="about-photo-wrap reveal">
+      <div class="about-photo">JR
+        <div class="about-photo-label">
+          <strong id="about-nombre-label">José Alfonso Rojas Vázquez</strong>
+          <span id="about-titulo">Operations & Project Manager · Torreón, Coahuila</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="about-info-grid">
+        <div class="about-info-item">
+          <div class="about-info-label">Nombre</div>
+          <div class="about-info-value" id="about-nombre">José Alfonso Rojas V.</div>
+        </div>
+        <div class="about-info-item">
+          <div class="about-info-label">Ubicación</div>
+          <div class="about-info-value">Torreón, Coahuila</div>
+        </div>
+        <div class="about-info-item">
+          <div class="about-info-label">Teléfono</div>
+          <div class="about-info-value" id="about-tel">871 347 4088</div>
+        </div>
+        <div class="about-info-item">
+          <div class="about-info-label">Email</div>
+          <div class="about-info-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c3d2e2a3d28332e2e3933321c3b313d3530723f3331">[email&#160;protected]</a></div>
+        </div>
+        <div class="about-info-item">
+          <div class="about-info-label">Inglés</div>
+          <div class="about-info-value" id="about-ingles">Nivel B1</div>
+        </div>
+        <div class="about-info-item">
+          <div class="about-info-label">Disponibilidad</div>
+          <div class="about-info-value" style="color:var(--orange)" id="about-disp">Inmediata</div>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <p>Operations Manager con sólida experiencia en <strong>supervisión de proyectos de infraestructura</strong> a gran escala con Grupo CARSO/Telmex. Perfil versátil que combina visión operativa con capacidad técnica en automatización de procesos.</p>
+        <p>He trabajado en 5 industrias distintas — telecomunicaciones, salud, hospitalidad, inmobiliario y consultoría digital — lo que me da una visión única para <strong>identificar ineficiencias y resolverlas rápido</strong>, sin importar el giro del negocio.</p>
+        <p>Domino herramientas como Excel avanzado, Google Sheets con automatización, y desarrollo de soluciones digitales. Mi enfoque siempre es el mismo: <strong>resultados medibles, sin adornos innecesarios.</strong></p>
+      </div>
+
+      <a href="#contacto" class="btn-orange" style="display:inline-flex">📩 Descargar CV completo</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EXPERIENCIA ══════════ -->
+<section id="experiencia">
+  <div class="section-label">
+    <span class="section-num">02</span>
+    <div class="section-line"></div>
+  </div>
+  <h2 class="section-title">EXPERIENCIA <span class="accent">PROFESIONAL</span></h2>
+  <p class="section-sub">5 posiciones en industrias distintas</p>
+
+  <div class="exp-grid" id="exp-container">
+    <div class="exp-card reveal">
+      <div class="exp-icon">📡</div>
+      <div class="exp-body">
+        <div class="exp-role">Supervisor de Proyectos FTTH</div>
+        <div class="exp-company">Enlace Digital — Grupo CARSO / Telmex</div>
+        <div class="exp-desc">Supervisión end-to-end de proyectos de infraestructura de fibra óptica. Coordinación de equipos multidisciplinarios, control de avance físico vs programado, gestión de incidencias y reportes ejecutivos. Implementación de dashboards que redujeron tiempos de reporte en 40%.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Gestión de proyectos</span>
+          <span class="exp-tag">FTTH</span>
+          <span class="exp-tag">Supervisión en campo</span>
+          <span class="exp-tag">Reporteo ejecutivo</span>
+          <span class="exp-tag">Dashboards</span>
+        </div>
+      </div>
+      <div class="exp-period"><span class="exp-period-text">2022 – 2026</span></div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-icon">📲</div>
+      <div class="exp-body">
+        <div class="exp-role">Service Owner</div>
+        <div class="exp-company">Métrica Móvil</div>
+        <div class="exp-desc">Gestión integral de servicios digitales: definición de KPIs, coordinación entre áreas técnicas y comerciales, monitoreo de SLAs y mejora continua de procesos de atención. Metodologías ágiles y gestión orientada a datos.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">KPIs</span>
+          <span class="exp-tag">SLAs</span>
+          <span class="exp-tag">Metodologías ágiles</span>
+          <span class="exp-tag">Gestión de servicios</span>
+        </div>
+      </div>
+      <div class="exp-period"><span class="exp-period-text">Mar – Oct 2024</span></div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-icon">🏥</div>
+      <div class="exp-body">
+        <div class="exp-role">Supervisor de Personal Hospitalario</div>
+        <div class="exp-company">Sanatorio Español</div>
+        <div class="exp-desc">Supervisión de personal en entorno hospitalario de alta exigencia. Gestión de turnos, protocolos de atención al paciente, control de indicadores de servicio y coordinación con áreas médicas. Cero tolerancia a errores operativos.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Supervisión de personal</span>
+          <span class="exp-tag">Protocolos hospitalarios</span>
+          <span class="exp-tag">Alta presión</span>
+          <span class="exp-tag">Gestión de turnos</span>
+        </div>
+      </div>
+      <div class="exp-period"><span class="exp-period-text">Anterior</span></div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-icon">🏨</div>
+      <div class="exp-body">
+        <div class="exp-role">Gerente Nocturno / Supervisor de Recepción</div>
+        <div class="exp-company">Milenium Grupo Hotelero</div>
+        <div class="exp-desc">Gestión de operaciones nocturnas completas: check-ins/outs, supervisión de servicios, resolución de incidencias en tiempo real y reportes de cierre. Autonomía total de decisión durante el turno, garantizando experiencia del huésped.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Hospitalidad</span>
+          <span class="exp-tag">Operaciones hoteleras</span>
+          <span class="exp-tag">Servicio al cliente</span>
+          <span class="exp-tag">Toma de decisiones</span>
+        </div>
+      </div>
+      <div class="exp-period"><span class="exp-period-text">Anterior</span></div>
+    </div>
+
+    <div class="exp-card reveal">
+      <div class="exp-icon">🔧</div>
+      <div class="exp-body">
+        <div class="exp-role">Técnico en Mantenimiento Inmobiliario</div>
+        <div class="exp-company">Argos Inmobiliaria</div>
+        <div class="exp-desc">Diagnóstico y resolución de fallas en instalaciones: eléctrica, plomería, climatización, carpintería y acabados. Steel framing, tablaroca, decoración de interiores. Coordinación de proveedores especializados externos.</div>
+        <div class="exp-tags">
+          <span class="exp-tag">Mantenimiento técnico</span>
+          <span class="exp-tag">Eléctrica</span>
+          <span class="exp-tag">Plomería</span>
+          <span class="exp-tag">Steel framing</span>
+        </div>
+      </div>
+      <div class="exp-period"><span class="exp-period-text">Anterior</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ HABILIDADES ══════════ -->
+<section id="habilidades">
+  <div class="section-label">
+    <span class="section-num">03</span>
+    <div class="section-line"></div>
+  </div>
+  <h2 class="section-title">HABILIDADES <span class="accent">&amp; SKILLS</span></h2>
+  <p class="section-sub">Técnicas, operativas e idiomas</p>
+
+  <div class="skills-layout">
+    <div>
+      <div class="skill-block reveal">
+        <div class="skill-block-title">⚙ Herramientas Técnicas & Digitales</div><div id="skills-tecnicas">
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">Excel Avanzado</span><span class="skill-pct">90%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="90"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">Google Sheets + Apps Script</span><span class="skill-pct">85%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="85"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">HTML / CSS / JavaScript (PWAs)</span><span class="skill-pct">75%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="75"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">IA Aplicada (Claude API / Agentes)</span><span class="skill-pct">68%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="68"></div></div>
+        </div>
+      </div>
+
+      </div><div class="skill-block reveal">
+        <div class="skill-block-title">◈ Gestión & Operaciones</div><div id="skills-gestion">
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">Gestión de Proyectos</span><span class="skill-pct">88%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="88"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">Optimización de Procesos</span><span class="skill-pct">85%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="85"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">Supervisión de Equipos</span><span class="skill-pct">82%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="82"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-row-top"><span class="skill-name">KPIs & Reporteo Ejecutivo</span><span class="skill-pct">80%</span></div>
+          <div class="skill-track"><div class="skill-fill" data-w="80"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="reveal">
+        <div class="skill-block-title" style="font-size:11px;text-transform:uppercase;letter-spacing:2.5px;color:var(--orange);font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)">◉ Habilidades Blandas</div>
+        <div class="soft-grid">
+          <div class="soft-item"><span class="soft-icon">🎯</span><span class="soft-name">Liderazgo</span></div>
+          <div class="soft-item"><span class="soft-icon">🔍</span><span class="soft-name">Análisis crítico</span></div>
+          <div class="soft-item"><span class="soft-icon">⚡</span><span class="soft-name">Resolución rápida</span></div>
+          <div class="soft-item"><span class="soft-icon">🤝</span><span class="soft-name">Trabajo en equipo</span></div>
+          <div class="soft-item"><span class="soft-icon">📢</span><span class="soft-name">Comunicación</span></div>
+          <div class="soft-item"><span class="soft-icon">🔄</span><span class="soft-name">Adaptabilidad</span></div>
+        </div>
+      </div>
+
+      <div class="lang-block reveal" style="margin-top:0">
+        <div class="lang-block-title">🌐 Idiomas</div>
+        <div class="lang-item">
+          <span class="lang-flag">🇲🇽</span>
+          <span class="lang-name">Español</span>
+          <span class="lang-level-badge lang-native">Nativo</span>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇺🇸</span>
+          <span class="lang-name">Inglés</span>
+          <span class="lang-level-badge lang-b1">B1 — Funcional</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LOGROS ══════════ -->
+<section id="logros">
+  <div class="logros-inner reveal">
+    <div class="section-label" style="margin-bottom:12px">
+      <span class="section-num">04</span>
+      <div class="section-line"></div>
+    </div>
+    <h2 class="logros-title">IMPACTO & NÚMEROS</h2>
+    <p class="logros-sub">Resultados concretos, no palabras bonitas</p>
+    <div class="logros-grid" id="logros-container">
+      <div class="logro-item">
+        <div class="logro-num">4<sup>+</sup></div>
+        <div class="logro-label">Años supervisando proyectos FTTH en Grupo CARSO</div>
+      </div>
+      <div class="logro-item">
+        <div class="logro-num">40<sup>%</sup></div>
+        <div class="logro-label">Reducción en tiempos de reporte con dashboards</div>
+      </div>
+      <div class="logro-item">
+        <div class="logro-num">5</div>
+        <div class="logro-label">Industrias distintas con adaptación exitosa</div>
+      </div>
+      <div class="logro-item">
+        <div class="logro-num">0</div>
+        <div class="logro-label">Incidentes sin resolver en turno nocturno hotelero</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EDUCACIÓN ══════════ -->
+<section id="educacion">
+  <div class="section-label">
+    <span class="section-num">05</span>
+    <div class="section-line"></div>
+  </div>
+  <h2 class="section-title">EDUCACIÓN & <span class="accent">FORMACIÓN</span></h2>
+  <p class="section-sub">Académica y desarrollo continuo</p>
+
+  <div class="edu-layout" id="edu-container">
+    <div class="edu-card reveal">
+      <div class="edu-icon">🎓</div>
+      <div>
+        <div class="edu-degree">Lic. en Mercadotecnia</div>
+        <div class="edu-school">Universidad Tecmilenio UTEL</div>
+        <div class="edu-period">2011 – 2015</div>
+        <div class="edu-badge">Carta Pasante</div>
+      </div>
+    </div>
+
+    <div class="edu-card reveal">
+      <div class="edu-icon">⚙️</div>
+      <div>
+        <div class="edu-degree">Ingeniería Mecánica Eléctrica</div>
+        <div class="edu-school">Universidad Autónoma de Coahuila (UAdeC)</div>
+        <div class="edu-period">Conocimientos técnicos aplicados en campo</div>
+        <div class="edu-badge">Formación técnica</div>
+      </div>
+    </div>
+
+    <div class="edu-card reveal">
+      <div class="edu-icon">🤖</div>
+      <div>
+        <div class="edu-degree">Automatización & IA Aplicada</div>
+        <div class="edu-school">Formación autodidacta continua</div>
+        <div class="edu-period">Google Apps Script · Claude API · Agentes IA · PWA Development</div>
+        <div class="edu-badge">En curso</div>
+      </div>
+    </div>
+
+    <div class="edu-card reveal">
+      <div class="edu-icon">📊</div>
+      <div>
+        <div class="edu-degree">Excel Avanzado & Dashboards</div>
+        <div class="edu-school">Certificaciones y práctica aplicada</div>
+        <div class="edu-period">Análisis de datos · Automatización · BI básico</div>
+        <div class="edu-badge">Certificado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACTO ══════════ -->
+<section id="contacto">
+  <div class="section-label">
+    <span class="section-num">06</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="contact-hero reveal">
+    <h2 class="contact-headline">¿HABLAMOS DE<br><span class="orange">OPORTUNIDADES</span>?</h2>
+    <p class="contact-sub">Disponible para posiciones en gestión de operaciones, supervisión de proyectos y optimización de procesos. Abierto a oportunidades en Torreón y modalidad remota o híbrida.</p>
+  </div>
+
+  <div class="contact-cards reveal">
+    <a href="/cdn-cgi/l/email-protection#a8c9dadec9dcc7dadacdc7c6e8cfc5c9c1c486cbc7c5" class="contact-card">
+      <div class="contact-card-icon">✉️</div>
+      <div class="contact-card-label">Email</div>
+      <div class="contact-card-value"><span class="__cf_email__" data-cfemail="7514070314011a0707101a1b351218141c195b161a18">[email&#160;protected]</span></div>
+    </a>
+    <a href="tel:8713474088" class="contact-card" id="contact-tel-link">
+      <div class="contact-card-icon">📱</div>
+      <div class="contact-card-label">Teléfono / WhatsApp</div>
+      <div class="contact-card-value" id="contact-tel">871 347 4088</div>
+    </a>
+    <a href="https://linkedin.com/in/joserojasvazquez/" target="_blank" class="contact-card">
+      <div class="contact-card-icon">💼</div>
+      <div class="contact-card-label">LinkedIn</div>
+      <div class="contact-card-value" id="contact-linkedin">joserojasvazquez</div>
+    </a>
+  </div>
+
+  <div style="text-align:center">
+    <div class="contact-location reveal" id="contact-location">
+      <span>📍</span>
+      Torreón, Coahuila, México · Disponible inmediatamente
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-brand">JARV · 2026</div>
+  <div class="footer-copy">José Alfonso Rojas Vázquez · Operations & Project Manager</div>
+  <div class="footer-links">
+    <a href="#hero">Inicio</a>
+    <a href="#experiencia">Experiencia</a>
+    <a href="/cdn-cgi/l/email-protection#8cedfefaedf8e3fefee9e3e2ccebe1ede5e0a2efe3e1">Contacto</a>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ══════════════════════════════════════════════════════
+//  CONFIGURACIÓN — solo cambia esta URL después de
+//  deployar tu Apps Script
+// ══════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'TU_URL_AQUI'; // <-- pega aquí la URL del deployment
+
+// ── DATOS FALLBACK (se usan si el script no responde)
+const FALLBACK = {
+  perfil: {
+    nombre: 'José Alfonso Rojas Vázquez',
+    titulo: 'Operations & Project Manager',
+    subtitulo: 'Supervisor de Proyectos · Optimización de Procesos · Automatización',
+    descripcion: 'Especialista en convertir operaciones caóticas en sistemas eficientes. Con track record en telecomunicaciones (Grupo CARSO/Telmex), hospitalidad y gestión de servicios. Hago que las cosas funcionen — y lo puedo demostrar.',
+    telefono: '871 347 4088',
+    email: 'arvatorreon@gmail.com',
+    ubicacion: 'Torreón, Coahuila, México',
+    linkedin: 'https://linkedin.com/in/joserojasvazquez/',
+    disponibilidad: 'Inmediata',
+    ingles: 'B1',
+    anios_exp: '4+',
+    industrias: '5'
+  },
+  experiencia: [
+    { icon:'📡', rol:'Supervisor de Proyectos FTTH', empresa:'Enlace Digital — Grupo CARSO / Telmex', periodo:'2022 – 2026', descripcion:'Supervisión end-to-end de proyectos de infraestructura de fibra óptica. Coordinación de equipos multidisciplinarios, control de avance físico vs programado, gestión de incidencias y reportes ejecutivos. Implementación de dashboards que redujeron tiempos de reporte en 40%.', tags:'Gestión de proyectos,FTTH,Supervisión en campo,Reporteo ejecutivo,Dashboards' },
+    { icon:'📲', rol:'Service Owner', empresa:'Métrica Móvil', periodo:'Mar – Oct 2024', descripcion:'Gestión integral de servicios digitales: definición de KPIs, coordinación entre áreas técnicas y comerciales, monitoreo de SLAs y mejora continua de procesos de atención. Metodologías ágiles y gestión orientada a datos.', tags:'KPIs,SLAs,Metodologías ágiles,Gestión de servicios' },
+    { icon:'🏥', rol:'Supervisor de Personal Hospitalario', empresa:'Sanatorio Español', periodo:'Anterior', descripcion:'Supervisión de personal en entorno hospitalario de alta exigencia. Gestión de turnos, protocolos de atención al paciente, control de indicadores de servicio y coordinación con áreas médicas.', tags:'Supervisión de personal,Protocolos hospitalarios,Alta presión,Gestión de turnos' },
+    { icon:'🏨', rol:'Gerente Nocturno / Supervisor de Recepción', empresa:'Milenium Grupo Hotelero', periodo:'Anterior', descripcion:'Gestión de operaciones nocturnas completas: check-ins/outs, supervisión de servicios, resolución de incidencias en tiempo real. Autonomía total de decisión durante el turno.', tags:'Hospitalidad,Operaciones hoteleras,Servicio al cliente,Toma de decisiones' },
+    { icon:'🔧', rol:'Técnico en Mantenimiento Inmobiliario', empresa:'Argos Inmobiliaria', periodo:'Anterior', descripcion:'Diagnóstico y resolución de fallas en instalaciones: eléctrica, plomería, climatización, carpintería y acabados. Steel framing, tablaroca, decoración de interiores.', tags:'Mantenimiento técnico,Eléctrica,Plomería,Steel framing' }
+  ],
+  habilidades: [
+    { nombre:'Excel Avanzado', porcentaje:90, categoria:'tecnica' },
+    { nombre:'Google Sheets + Apps Script', porcentaje:85, categoria:'tecnica' },
+    { nombre:'HTML / CSS / JavaScript (PWAs)', porcentaje:75, categoria:'tecnica' },
+    { nombre:'IA Aplicada (Claude API / Agentes)', porcentaje:68, categoria:'tecnica' },
+    { nombre:'Gestión de Proyectos', porcentaje:88, categoria:'gestion' },
+    { nombre:'Optimización de Procesos', porcentaje:85, categoria:'gestion' },
+    { nombre:'Supervisión de Equipos', porcentaje:82, categoria:'gestion' },
+    { nombre:'KPIs & Reporteo Ejecutivo', porcentaje:80, categoria:'gestion' }
+  ],
+  educacion: [
+    { icono:'🎓', grado:'Lic. en Mercadotecnia', escuela:'Universidad Tecmilenio UTEL', periodo:'2011 – 2015', badge:'Carta Pasante' },
+    { icono:'⚙️', grado:'Ingeniería Mecánica Eléctrica', escuela:'Universidad Autónoma de Coahuila (UAdeC)', periodo:'Conocimientos técnicos aplicados en campo', badge:'Formación técnica' },
+    { icono:'🤖', grado:'Automatización & IA Aplicada', escuela:'Formación autodidacta continua', periodo:'Google Apps Script · Claude API · Agentes IA · PWA Development', badge:'En curso' },
+    { icono:'📊', grado:'Excel Avanzado & Dashboards', escuela:'Certificaciones y práctica aplicada', periodo:'Análisis de datos · Automatización · BI básico', badge:'Certificado' }
+  ],
+  logros: [
+    { numero:'4+', label:'Años supervisando proyectos FTTH en Grupo CARSO' },
+    { numero:'40%', label:'Reducción en tiempos de reporte con dashboards' },
+    { numero:'5', label:'Industrias distintas con adaptación exitosa' },
+    { numero:'0', label:'Incidentes sin resolver en turno nocturno hotelero' }
+  ]
+};
+
+// ══════════════════════════════════════════════════════
+//  MOTOR DE RENDERIZADO DINÁMICO
+// ══════════════════════════════════════════════════════
+function renderSite(d) {
+  const p = d.perfil;
+
+  // ── PERFIL / HERO
+  setText('hero-nombre', p.nombre);
+  setText('hero-titulo', p.subtitulo);
+  setHTML('hero-desc', p.descripcion);
+  setAttr('hero-linkedin', 'href', p.linkedin);
+  setText('hstat-exp', p.anios_exp);
+  setText('hstat-ind', p.industrias);
+  setText('hstat-ing', p.ingles);
+  setText('badge-exp', p.anios_exp);
+
+  // ── ABOUT
+  setText('about-nombre', p.nombre);
+  setText('about-titulo', 'Operations & Project Manager · ' + p.ubicacion);
+  setText('about-tel', p.telefono);
+  setText('about-email', p.email);
+  setAttr('about-email-link', 'href', 'mailto:' + p.email);
+  setText('about-ingles', p.ingles);
+  setText('about-disp', p.disponibilidad);
+  setHTML('about-desc', p.descripcion);
+
+  // ── CONTACTO
+  setText('contact-tel', p.telefono);
+  setAttr('contact-tel-link', 'href', 'tel:' + p.telefono.replace(/\s/g,''));
+  setText('contact-email', p.email);
+  setAttr('contact-email-link', 'href', 'mailto:' + p.email);
+  setAttr('contact-linkedin-link', 'href', p.linkedin);
+  setText('contact-location', '📍 ' + p.ubicacion + ' · Disponible ' + p.disponibilidad.toLowerCase());
+
+  // ── EXPERIENCIA
+  if (d.experiencia && d.experiencia.length) {
+    const container = document.getElementById('exp-container');
+    if (container) {
+      container.innerHTML = d.experiencia.map(exp => {
+        const tags = (exp.tags || '').split(',').map(t =>
+          `<span class="exp-tag">${t.trim()}</span>`
+        ).join('');
+        return `
+          <div class="exp-card reveal">
+            <div class="exp-icon">${exp.icon || '💼'}</div>
+            <div class="exp-body">
+              <div class="exp-role">${exp.rol}</div>
+              <div class="exp-company">${exp.empresa}</div>
+              <div class="exp-desc">${exp.descripcion}</div>
+              <div class="exp-tags">${tags}</div>
+            </div>
+            <div class="exp-period"><span class="exp-period-text">${exp.periodo}</span></div>
+          </div>`;
+      }).join('');
+      // re-observe new cards
+      container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+  }
+
+  // ── HABILIDADES
+  if (d.habilidades && d.habilidades.length) {
+    const tecnicas = d.habilidades.filter(h => h.categoria === 'tecnica');
+    const gestion  = d.habilidades.filter(h => h.categoria === 'gestion');
+    renderSkills('skills-tecnicas', tecnicas);
+    renderSkills('skills-gestion', gestion);
+  }
+
+  // ── EDUCACION
+  if (d.educacion && d.educacion.length) {
+    const container = document.getElementById('edu-container');
+    if (container) {
+      container.innerHTML = d.educacion.map(edu => `
+        <div class="edu-card reveal">
+          <div class="edu-icon">${edu.icono}</div>
+          <div>
+            <div class="edu-degree">${edu.grado}</div>
+            <div class="edu-school">${edu.escuela}</div>
+            <div class="edu-period">${edu.periodo}</div>
+            <div class="edu-badge">${edu.badge}</div>
+          </div>
+        </div>`
+      ).join('');
+      container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    }
+  }
+
+  // ── LOGROS
+  if (d.logros && d.logros.length) {
+    const container = document.getElementById('logros-container');
+    if (container) {
+      container.innerHTML = d.logros.map(l => `
+        <div class="logro-item">
+          <div class="logro-num">${l.numero}</div>
+          <div class="logro-label">${l.label}</div>
+        </div>`
+      ).join('');
+    }
+  }
+
+  // re-trigger reveals
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
+}
+
+function renderSkills(containerId, skills) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = skills.map(s => `
+    <div class="skill-row">
+      <div class="skill-row-top">
+        <span class="skill-name">${s.nombre}</span>
+        <span class="skill-pct">${s.porcentaje}%</span>
+      </div>
+      <div class="skill-track">
+        <div class="skill-fill" data-w="${s.porcentaje}"></div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el && val) el.textContent = val;
+}
+
+function setHTML(id, val) {
+  const el = document.getElementById(id);
+  if (el && val) el.innerHTML = val;
+}
+
+function setAttr(id, attr, val) {
+  const el = document.getElementById(id);
+  if (el && val) el.setAttribute(attr, val);
+}
+
+// ── CARGA: intenta Sheets primero, fallback si falla
+async function loadData() {
+  if (APPS_SCRIPT_URL === 'TU_URL_AQUI') {
+    // Sin URL configurada → usa fallback directo
+    renderSite(FALLBACK);
+    return;
+  }
+  try {
+    const res = await fetch(APPS_SCRIPT_URL);
+    const data = await res.json();
+    renderSite(data);
+  } catch (err) {
+    console.warn('Apps Script no disponible, usando datos locales:', err);
+    renderSite(FALLBACK);
+  }
+}
+
+// Arrancar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', loadData);
+
+</script>
+
+<script>
+// ── Scroll progress
+window.addEventListener('scroll', () => {
+  const s = document.documentElement;
+  const pct = (s.scrollTop / (s.scrollHeight - s.clientHeight)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+
+  // nav scroll class
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', s.scrollTop > 60);
+});
+
+// ── Intersection Observer — reveal + skill bars
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      // stagger siblings
+      const siblings = Array.from(el.parentElement.children);
+      const idx = siblings.indexOf(el);
+      el.style.transitionDelay = (idx * 0.1) + 's';
+      el.classList.add('visible');
+
+      // animate skill fills inside
+      el.querySelectorAll('.skill-fill').forEach(bar => {
+        setTimeout(() => bar.style.width = bar.dataset.w + '%', 200);
+      });
+
+      observer.unobserve(el);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Also animate skill bars when section scrolls into view
+const skillsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+        setTimeout(() => bar.style.width = bar.dataset.w + '%', 300);
+      });
+      skillsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelector('#habilidades') && skillsObserver.observe(document.querySelector('#habilidades'));
+
+// ── Active nav link on scroll
+const sections = documentElement.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    if (window.scrollY >= section.offsetTop - 100) current = section.id;
+  });
+  navLinks.forEach(link => {
+    link.style.color = link.href.includes(current) && current ? 'var(--orange)' : '';
+  });
+});
+
+// ── Hamburger menu
+const hamburger = document.getElementById('hamburger');
+const navLinksEl = document.querySelector('.nav-links');
+
+hamburger.addEventListener('click', () => {
+  const isOpen = navLinksEl.style.display === 'flex';
+  navLinksEl.style.display = isOpen ? 'none' : 'flex';
+  navLinksEl.style.flexDirection = 'column';
+  navLinksEl.style.position = 'fixed';
+  navLinksEl.style.top = '70px';
+  navLinksEl.style.left = '0';
+  navLinksEl.style.right = '0';
+  navLinksEl.style.background = 'rgba(8,12,16,0.97)';
+  navLinksEl.style.backdropFilter = 'blur(20px)';
+  navLinksEl.style.padding = '20px 24px 28px';
+  navLinksEl.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+  navLinksEl.style.gap = '4px';
+  navLinksEl.style.zIndex = '999';
+  // animate hamburger bars
+  const bars = hamburger.querySelectorAll('span');
+  if (!isOpen) {
+    bars[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    bars[1].style.opacity = '0';
+    bars[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+  } else {
+    bars[0].style.transform = '';
+    bars[1].style.opacity = '1';
+    bars[2].style.transform = '';
+  }
+});
+
+// close menu on nav link click
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    navLinksEl.style.display = 'none';
+    const bars = hamburger.querySelectorAll('span');
+    bars[0].style.transform = '';
+    bars[1].style.opacity = '1';
+    bars[2].style.transform = '';
+  });
+});
+</script>
+
+</body>
+</html>
