@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inktrovertida · Studio App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f7f5; --white:#fff; --surface:#f0efec; --border:#e8e6e1; --border2:#d8d5ce;
+  --ink:#111; --ink2:#3a3a3a; --muted:#888680; --tag:#eeece8;
+  --green:#1a7a4a; --green-bg:#edf7f2; --red:#c0392b; --red-bg:#fdf0ee;
+  --blue:#1a4a7a; --blue-bg:#edf2f7;
+  --r:12px; --rs:8px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --shh:0 4px 8px rgba(0,0,0,.08),0 12px 32px rgba(0,0,0,.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',sans-serif;font-size:14px;min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.5px}
+.logo span{color:var(--muted);font-weight:400}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-badge{font-size:11px;background:var(--ink);color:#fff;padding:4px 10px;border-radius:20px;font-weight:500}
+.notif-btn{width:32px;height:32px;border-radius:50%;background:var(--surface);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative}
+.notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:#e74c3c;border-radius:50%;border:2px solid var(--white)}
+
+/* SCREENS */
+.screen{display:none;animation:fadeIn .3s ease}
+.screen.active{display:block}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;padding:6px 0 env(safe-area-inset-bottom,8px);z-index:40}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;cursor:pointer;color:var(--muted);font-size:10px;font-weight:500;transition:color .15s;border:none;background:none;font-family:'Instrument Sans',sans-serif}
+.nav-item.active{color:var(--ink)}
+.nav-icon{font-size:20px;line-height:1}
+.nav-item.active .nav-icon{filter:none}
+
+/* ── CATALOGÓ ── */
+.hero{background:var(--white);padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(26px,7vw,38px);font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:8px}
+.hero-title em{font-style:normal;color:var(--muted)}
+.hero-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.hero-stats{display:flex;gap:20px}
+.hero-stat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.5px}
+.hero-stat-l{font-size:11px;color:var(--muted);margin-top:1px}
+
+.artist-strip{margin:10px 12px 0;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.strip-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px}
+.artist-list{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.artist-list::-webkit-scrollbar{display:none}
+.artist-card{flex-shrink:0;text-align:center;width:72px}
+.artist-avatar{width:48px;height:48px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;font-family:'Syne',sans-serif;color:#fff}
+.artist-name{font-size:11px;color:var(--ink2);font-weight:500}
+.artist-spec{font-size:10px;color:var(--muted);margin-top:1px}
+
+.info-banner{margin:8px 12px 0;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;align-items:flex-start;gap:12px}
+.banner-icon{width:38px;height:38px;min-width:38px;background:var(--surface);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.banner-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.banner-text{font-size:11px;color:var(--muted);line-height:1.5}
+
+.filter-wrap{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:56px;z-index:39}
+.filter-scroll{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.filter-scroll::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1.5px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap;font-family:'Instrument Sans',sans-serif}
+.chip:hover{border-color:var(--ink2);color:var(--ink2)}
+.chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+
+.section-label{padding:16px 20px 10px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.grid{padding:0 12px 100px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(min-width:540px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,border-color .2s;opacity:0;animation:fadeUp .4s ease forwards}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shh);border-color:var(--border2)}
+.card-thumb{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-thumb-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .3s}
+.card:hover .card-thumb-inner{transform:scale(1.04)}
+.card-pill{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
+.pill-pop{background:#111;color:#fff}
+.pill-new{background:var(--green-bg);color:var(--green)}
+.card-body{padding:12px 14px 14px}
+.card-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.2px}
+.card-sub{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:10px}
+.card-footer{display:flex;align-items:flex-end;justify-content:space-between}
+.card-price{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;letter-spacing:-.5px}
+.card-price-lbl{font-size:10px;color:var(--muted);font-weight:400;display:block}
+.card-time{font-size:11px;color:var(--muted);background:var(--surface);padding:3px 8px;border-radius:6px}
+
+/* ── CITAS ── */
+.page-header{background:var(--white);padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.page-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.page-content{padding:16px 12px 100px}
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.form-section-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px;letter-spacing:-.2px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field-label{display:block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.req{color:var(--red)}
+input[type=text],input[type=date],input[type=tel],input[type=email],select,textarea{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);color:var(--ink);font-family:'Instrument Sans',sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .18s,background .18s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--ink);background:var(--white)}
+textarea{resize:none;line-height:1.6}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+select option{background:#fff}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.artist-picker{display:flex;flex-direction:column;gap:8px}
+.artist-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;transition:all .18s}
+.artist-opt:hover{border-color:var(--border2)}
+.artist-opt.selected{border-color:var(--ink);background:var(--white)}
+.artist-opt-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'Syne',sans-serif;color:#fff;font-size:16px}
+.artist-opt-info{flex:1}
+.artist-opt-name{font-size:13px;font-weight:600;color:var(--ink)}
+.artist-opt-spec{font-size:11px;color:var(--muted)}
+.artist-opt-check{width:18px;height:18px;border:2px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.artist-opt.selected .artist-opt-check{background:var(--ink);border-color:var(--ink)}
+.artist-opt-check-dot{width:8px;height:8px;border-radius:50%;background:#fff;display:none}
+.artist-opt.selected .artist-opt-check-dot{display:block}
+
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.slot{padding:10px 6px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rs);text-align:center;font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--ink2)}
+.slot:hover{border-color:var(--border2)}
+.slot.selected{background:var(--ink);border-color:var(--ink);color:#fff}
+.slot.unavailable{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+
+.btn-primary{width:100%;padding:15px;background:var(--ink);color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;transition:opacity .18s;letter-spacing:.3px}
+.btn-primary:hover{opacity:.85}
+.btn-secondary{width:100%;padding:14px;background:var(--surface);color:var(--ink2);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;margin-top:10px}
+
+.alert-box{padding:13px 14px;border-radius:var(--rs);display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;font-size:12px;line-height:1.6}
+.alert-info{background:var(--blue-bg);border:1px solid #b3ccdf;color:var(--blue)}
+.alert-warn{background:#fff8ec;border:1px solid #f5d78e;color:#7a5c00}
+.alert-success{background:var(--green-bg);border:1px solid #b3dfc8;color:var(--green)}
+.alert-icon{font-size:16px;margin-top:1px}
+
+/* Cita confirmada */
+.cita-confirm{text-align:center;padding:32px 20px}
+.confirm-icon{width:72px;height:72px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px}
+.confirm-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px}
+.confirm-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.confirm-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;text-align:left;margin-bottom:16px}
+.confirm-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.confirm-row:last-child{border-bottom:none}
+.confirm-icon-sm{font-size:16px;width:24px}
+.confirm-label{color:var(--muted);flex:1}
+.confirm-val{font-weight:600;color:var(--ink2)}
+
+/* ── CUIDADOS ── */
+.cuidados-tabs{display:flex;gap:0;background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;overflow-x:auto;scrollbar-width:none;position:sticky;top:56px;z-index:38}
+.cuidados-tabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;padding:12px 16px;font-size:13px;font-weight:500;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .18s;font-family:'Instrument Sans',sans-serif;white-space:nowrap}
+.ctab.active{color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
+.cuidado-panel{display:none;padding:16px 12px 100px}
+.cuidado-panel.active{display:block}
+.cuidado-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:10px}
+.cuidado-step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.cuidado-step:last-child{margin-bottom:0}
+.cuidado-num{width:32px;height:32px;min-width:32px;background:var(--ink);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.cuidado-body{}
+.cuidado-step-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px}
+.cuidado-step-text{font-size:12px;color:var(--muted);line-height:1.6}
+.dont-list{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.dont-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--red);background:var(--red-bg);padding:9px 12px;border-radius:var(--rs)}
+.do-item{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--green);background:var(--green-bg);padding:9px 12px;border-radius:var(--rs)}
+.timeline-bar{height:3px;background:var(--border);border-radius:2px;margin:16px 0;position:relative}
+.timeline-fill{height:100%;background:var(--ink);border-radius:2px;width:30%}
+
+/* ── PERFIL ── */
+.profile-header{background:var(--white);padding:28px 20px 20px;border-bottom:1px solid var(--border);text-align:center}
+.profile-av{width:72px;height:72px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:#fff;margin:0 auto 12px}
+.profile-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px}
+.profile-email{font-size:13px;color:var(--muted)}
+.profile-stats{display:flex;justify-content:center;gap:28px;margin-top:16px}
+.pstat-n{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;display:block}
+.pstat-l{font-size:11px;color:var(--muted)}
+.profile-content{padding:16px 12px 100px}
+.list-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden}
+.list-card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:14px 16px 10px;letter-spacing:-.1px}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--border);cursor:pointer;transition:background .15s}
+.list-item:hover{background:var(--surface)}
+.list-item-icon{width:36px;height:36px;border-radius:10px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.list-item-body{flex:1}
+.list-item-title{font-size:13px;font-weight:500;color:var(--ink)}
+.list-item-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.list-item-right{font-size:13px;color:var(--muted)}
+.tattoo-hist{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px}
+.tattoo-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--surface);border-radius:var(--rs)}
+.tattoo-thumb{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tattoo-info-name{font-size:13px;font-weight:600;color:var(--ink)}
+.tattoo-info-date{font-size:11px;color:var(--muted);margin-top:1px}
+.tattoo-price{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-left:auto}
+.badge-status{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
+.badge-done{background:var(--green-bg);color:var(--green)}
+.badge-upcoming{background:var(--blue-bg);color:var(--blue)}
+
+/* NSR */
+.nsr-badge{text-align:center;padding:12px;font-size:10px;color:var(--border2);letter-spacing:1px;text-transform:uppercase}
+
+/* MODAL CATALOGO */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-radius:20px 20px 0 0;z-index:101;transform:translateY(100%);transition:transform .32s cubic-bezier(.34,1.1,.64,1);max-height:92vh;overflow-y:auto}
+.overlay.open .modal{transform:translateY(0)}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:14px auto 0}
+.modal-header{padding:20px 20px 0}
+.modal-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.modal-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.modal-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.tag{padding:4px 10px;background:var(--tag);border-radius:6px;font-size:11px;color:var(--ink2);font-weight:500}
+.modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 20px 20px}
+.modal-stat{background:var(--surface);border-radius:var(--rs);padding:12px;text-align:center}
+.modal-stat-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;display:block}
+.modal-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.modal-section{padding:0 20px 16px}
+.modal-section-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px}
+.include-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);margin-bottom:8px}
+.include-dot{width:20px;height:20px;min-width:20px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green)}
+.modal-cta{padding:0 20px 32px}
+.btn-agendar{width:100%;padding:15px;background:var(--ink);color:#fff;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;letter-spacing:.3px;border:none;border-radius:var(--r);cursor:pointer;transition:opacity .18s}
+.btn-agendar:hover{opacity:.85}
+.btn-wa{width:100%;margin-top:10px;padding:13px;background:#edf7f2;color:var(--green);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;border:none;border-radius:var(--r);cursor:pointer}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Inktrovertida <span>Studio</span></div>
+  <div class="topbar-right">
+    <button class="notif-btn" onclick="showNotif()">🔔<span class="notif-dot"></span></button>
+    <div class="topbar-badge">Torreón</div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN: CATÁLOGO ══════════════ -->
+<div class="screen active" id="screen-catalogo">
+  <div class="hero">
+    <div class="hero-eyebrow">Catálogo de estilos · 2025</div>
+    <div class="hero-title">Arte permanente,<br><em>hecho a tu medida</em></div>
+    <div class="hero-desc">Explora nuestros estilos, revisa precios y agenda tu sesión.</div>
+    <div class="hero-stats">
+      <div><span class="hero-stat-n">6</span><div class="hero-stat-l">Estilos</div></div>
+      <div><span class="hero-stat-n">3</span><div class="hero-stat-l">Artistas</div></div>
+      <div><span class="hero-stat-n">+200</span><div class="hero-stat-l">Piezas</div></div>
+    </div>
+  </div>
+
+  <div class="artist-strip">
+    <div class="strip-title">Nuestros artistas</div>
+    <div class="artist-list">
+      <div class="artist-card"><div class="artist-avatar" style="background:#2d2d2d">S</div><div class="artist-name">Sofía</div><div class="artist-spec">Línea fina</div></div>
+      <div class="artist-card"><div class="artist-avatar" style="background:#4a3728">M</div><div class="artist-name">Marcos</div><div class="artist-spec">Blackwork</div></div>
+      <div class="artist-card"><div class="artist-avatar" style="background:#2d4a3e">V</div><div class="artist-name">Valeria</div><div class="artist-spec">Acuarela</div></div>
+    </div>
+  </div>
+
+  <div class="info-banner" style="margin-bottom:4px">
+    <div class="banner-icon">📋</div>
+    <div><div class="banner-title">Consentimiento digital</div><div class="banner-text">Firma desde tu cel antes de llegar. Sin papeles.</div></div>
+  </div>
+  <div class="info-banner" style="margin-bottom:10px">
+    <div class="banner-icon">💬</div>
+    <div><div class="banner-title">Recordatorios por WhatsApp</div><div class="banner-text">Te avisamos 24h antes con instrucciones de preparación.</div></div>
+  </div>
+
+  <div class="filter-wrap">
+    <div class="filter-scroll">
+      <button class="chip active" onclick="filter('todos',this)">Todos</button>
+      <button class="chip" onclick="filter('fino',this)">Línea fina</button>
+      <button class="chip" onclick="filter('blackwork',this)">Blackwork</button>
+      <button class="chip" onclick="filter('acuarela',this)">Acuarela</button>
+      <button class="chip" onclick="filter('neotradicional',this)">Neotradicional</button>
+      <button class="chip" onclick="filter('lettering',this)">Lettering</button>
+      <button class="chip" onclick="filter('minimalista',this)">Minimalista</button>
+    </div>
+  </div>
+  <div class="section-label">Estilos disponibles</div>
+  <div class="grid" id="grid"></div>
+  <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+</div>
+
+<!-- ══════════════ SCREEN: CITAS ══════════════ -->
+<div class="screen" id="screen-citas">
+  <div class="page-header">
+    <div class="page-title">Agendar cita</div>
+    <div class="page-sub">Reserva tu sesión en pocos pasos. Te pediremos un anticipo para confirmar.</div>
+  </div>
+  <div class="page-content" id="citas-form-wrap">
+
+    <div class="alert-box alert-info">
+      <span class="alert-icon">ℹ️</span>
+      <div>El anticipo del <strong>30%</strong> se cobra al confirmar. Cancelaciones con menos de 48h no son reembolsables.</div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">¿Con quién quieres tatuarte?</div>
+      <div class="artist-picker">
+        <div class="artist-opt" onclick="selectArtist(this,'sofia')">
+          <div class="artist-opt-av" style="background:#2d2d2d">S</div>
+          <div class="artist-opt-info"><div class="artist-opt-name">Sofía</div><div class="artist-opt-spec">Línea fina · Botanicals · Geometría</div></div>
+          <div class="artist-opt-check"><div class="artist-opt-check-dot"></div></div>
+        </div>
+        <div class="artist-opt" onclick="selectArtist(this,'marcos')">
+          <div class="artist-opt-av" style="background:#4a3728">M</div>
+          <div class="artist-opt-info"><div class="artist-opt-name">Marcos</div><div class="artist-opt-spec">Blackwork · Tribal · Ornamental</div></div>
+          <div class="artist-opt-check"><div class="artist-opt-check-dot"></div></div>
+        </div>
+        <div class="artist-opt" onclick="selectArtist(this,'valeria')">
+          <div class="artist-opt-av" style="background:#2d4a3e">V</div>
+          <div class="artist-opt-info"><div class="artist-opt-name">Valeria</div><div class="artist-opt-spec">Acuarela · Neotradicional · Color</div></div>
+          <div class="artist-opt-check"><div class="artist-opt-check-dot"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">Tipo de servicio</div>
+      <div class="field">
+        <label class="field-label">Estilo <span class="req">*</span></label>
+        <select id="c-estilo">
+          <option value="" disabled selected>Selecciona</option>
+          <option>Línea fina</option><option>Blackwork</option><option>Acuarela</option>
+          <option>Neotradicional</option><option>Lettering</option><option>Minimalista</option>
+        </select>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label class="field-label">Zona <span class="req">*</span></label>
+          <input type="text" id="c-zona" placeholder="Ej. antebrazo">
+        </div>
+        <div class="field">
+          <label class="field-label">Tamaño</label>
+          <select id="c-tamano">
+            <option value="" disabled selected>Tamaño</option>
+            <option>Mini (&lt;3cm)</option><option>Pequeño</option>
+            <option>Mediano</option><option>Grande</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Descripción del diseño</label>
+        <textarea id="c-desc" rows="3" placeholder="Cuéntanos qué tienes en mente…"></textarea>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">Fecha y horario</div>
+      <div class="field">
+        <label class="field-label">Fecha preferida <span class="req">*</span></label>
+        <input type="date" id="c-fecha">
+      </div>
+      <div class="field">
+        <label class="field-label">Horario disponible</label>
+        <div class="slot-grid">
+          <div class="slot" onclick="selectSlot(this)">10:00</div>
+          <div class="slot" onclick="selectSlot(this)">11:00</div>
+          <div class="slot unavailable">12:00</div>
+          <div class="slot" onclick="selectSlot(this)">13:00</div>
+          <div class="slot unavailable">14:00</div>
+          <div class="slot" onclick="selectSlot(this)">15:00</div>
+          <div class="slot" onclick="selectSlot(this)">16:00</div>
+          <div class="slot" onclick="selectSlot(this)">17:00</div>
+          <div class="slot unavailable">18:00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-section-title">Tus datos</div>
+      <div class="row-2">
+        <div class="field"><label class="field-label">Nombre <span class="req">*</span></label><input type="text" id="c-nombre" placeholder="Nombre"></div>
+        <div class="field"><label class="field-label">Teléfono <span class="req">*</span></label><input type="tel" id="c-tel" placeholder="614 000 0000"></div>
+      </div>
+      <div class="field"><label class="field-label">Correo</label><input type="email" id="c-email" placeholder="tu@correo.com"></div>
+    </div>
+
+    <button class="btn-primary" onclick="confirmarCita()">Solicitar cita →</button>
+    <button class="btn-secondary" onclick="navTo('catalogo')">← Volver al catálogo</button>
+  </div>
+
+  <!-- CONFIRMACIÓN -->
+  <div class="cita-confirm" id="cita-confirm-wrap" style="display:none">
+    <div class="confirm-icon">✓</div>
+    <div class="confirm-title">¡Cita solicitada!</div>
+    <div class="confirm-sub">Te contactaremos por WhatsApp en las próximas horas para confirmar y coordinar el anticipo.</div>
+    <div class="confirm-card">
+      <div class="confirm-row"><span class="confirm-icon-sm">🎨</span><span class="confirm-label">Estilo</span><span class="confirm-val" id="cc-estilo">—</span></div>
+      <div class="confirm-row"><span class="confirm-icon-sm">👤</span><span class="confirm-label">Artista</span><span class="confirm-val" id="cc-artista">—</span></div>
+      <div class="confirm-row"><span class="confirm-icon-sm">📅</span><span class="confirm-label">Fecha</span><span class="confirm-val" id="cc-fecha">—</span></div>
+      <div class="confirm-row"><span class="confirm-icon-sm">⏰</span><span class="confirm-label">Horario</span><span class="confirm-val" id="cc-hora">—</span></div>
+    </div>
+    <button class="btn-primary" onclick="abrirWA()">💬 Confirmar por WhatsApp</button>
+    <button class="btn-secondary" onclick="resetCitas()">Hacer otra solicitud</button>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN: CONSENTIMIENTO ══════════════ -->
+<div class="screen" id="screen-consentimiento">
+  <div class="page-header">
+    <div class="page-title">Consentimiento</div>
+    <div class="page-sub">Firma tu formulario digital antes de tu sesión. Solo tarda 2 minutos.</div>
+  </div>
+  <div class="page-content">
+    <div class="alert-box alert-success">
+      <span class="alert-icon">🔒</span>
+      <div>Tus datos son confidenciales y solo se usan para gestión interna del estudio.</div>
+    </div>
+    <div class="form-card" style="text-align:center;padding:32px 20px">
+      <div style="font-size:40px;margin-bottom:16px">📋</div>
+      <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px">Formulario de consentimiento</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">Completa tu historial médico, datos personales y firma digital. Disponible 24h antes de tu cita.</div>
+      <button class="btn-primary" onclick="alert('Demo NSR: En producción abre el formulario de consentimiento completo en pantalla completa.')">Completar formulario →</button>
+    </div>
+    <div class="list-card">
+      <div class="list-card-title">¿Qué incluye?</div>
+      <div class="list-item"><div class="list-item-icon">👤</div><div class="list-item-body"><div class="list-item-title">Datos personales</div><div class="list-item-sub">Nombre, fecha de nacimiento, contacto</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item"><div class="list-item-icon">🏥</div><div class="list-item-body"><div class="list-item-title">Historial médico</div><div class="list-item-sub">Condiciones, alergias, medicamentos</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item"><div class="list-item-icon">🎨</div><div class="list-item-body"><div class="list-item-title">Detalles del diseño</div><div class="list-item-sub">Estilo, zona, descripción</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item"><div class="list-item-icon">✍️</div><div class="list-item-body"><div class="list-item-title">Firma digital</div><div class="list-item-sub">Aceptación de términos y condiciones</div></div><div class="list-item-right">→</div></div>
+    </div>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN: CUIDADOS ══════════════ -->
+<div class="screen" id="screen-cuidados">
+  <div class="page-header">
+    <div class="page-title">Cuidados post-tattoo</div>
+    <div class="page-sub">Guía de cuidados según tu estilo de tatuaje.</div>
+  </div>
+  <div class="cuidados-tabs">
+    <button class="ctab active" onclick="showCuidado('general',this)">General</button>
+    <button class="ctab" onclick="showCuidado('color',this)">Con color</button>
+    <button class="ctab" onclick="showCuidado('fino',this)">Línea fina</button>
+    <button class="ctab" onclick="showCuidado('blackwork',this)">Blackwork</button>
+  </div>
+
+  <!-- GENERAL -->
+  <div class="cuidado-panel active" id="cp-general">
+    <div class="alert-box alert-warn">
+      <span class="alert-icon">⚠️</span>
+      <div>Los primeros <strong>7 días</strong> son críticos. Seguir estas instrucciones determina el resultado final de tu tatuaje.</div>
+    </div>
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px">Primeras 24 horas</div>
+      <div class="cuidado-step"><div class="cuidado-num">1</div><div class="cuidado-body"><div class="cuidado-step-title">Mantén el plástico o vendaje</div><div class="cuidado-step-text">El artista habrá cubierto tu tattoo. Déjalo de 2 a 4 horas. No lo retires antes.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">2</div><div class="cuidado-body"><div class="cuidado-step-title">Primer lavado suave</div><div class="cuidado-step-text">Con agua tibia y jabón neutro. Sin frotar, solo palmadas suaves. Seca con papel absorbente limpio.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">3</div><div class="cuidado-body"><div class="cuidado-step-title">Aplica crema cicatrizante</div><div class="cuidado-step-text">Capa muy delgada. Menos es más. Repite 3 veces al día.</div></div></div>
+    </div>
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px">Días 2–7</div>
+      <div class="dont-list">
+        <div class="dont-item">🚫 No rascarse aunque pique mucho</div>
+        <div class="dont-item">🚫 No exponer al sol directo</div>
+        <div class="dont-item">🚫 Sin alberca, mar ni tina</div>
+        <div class="dont-item">🚫 Sin ropa ajustada sobre el tattoo</div>
+        <div class="do-item">✓ Lavar 2 veces al día con jabón neutro</div>
+        <div class="do-item">✓ Aplicar crema hidratante sin fragancia</div>
+        <div class="do-item">✓ Ropa holgada y limpia sobre la zona</div>
+      </div>
+    </div>
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:8px;color:var(--muted);letter-spacing:.5px">Progreso de cicatrización</div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px"><span>Día 1</span><span>Día 7</span><span>Día 30</span></div>
+      <div class="timeline-bar"><div class="timeline-fill"></div></div>
+      <div style="font-size:11px;color:var(--muted);text-align:center">Cicatrización superficial completa ~30 días</div>
+    </div>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+
+  <!-- COLOR -->
+  <div class="cuidado-panel" id="cp-color">
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px">Cuidados especiales para color y acuarela</div>
+      <div class="cuidado-step"><div class="cuidado-num">1</div><div class="cuidado-body"><div class="cuidado-step-title">Protección solar obligatoria</div><div class="cuidado-step-text">Los pigmentos de color se degradan con los UV. SPF 50 mínimo después de cicatrizar.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">2</div><div class="cuidado-body"><div class="cuidado-step-title">Hidratación intensiva</div><div class="cuidado-step-text">Los tatuajes a color necesitan más hidratación. Aplica crema sin fragancia 4 veces al día la primera semana.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">3</div><div class="cuidado-body"><div class="cuidado-step-title">Retoque programado</div><div class="cuidado-step-text">Los colores vivos pueden requerir retoque a los 2–3 meses. Tu artista lo evaluará.</div></div></div>
+      <div class="dont-list" style="margin-top:16px">
+        <div class="dont-item">🚫 Sin sol directo por 30 días mínimo</div>
+        <div class="dont-item">🚫 Sin exfoliantes sobre la zona</div>
+        <div class="do-item">✓ Mantén la piel muy hidratada a largo plazo</div>
+      </div>
+    </div>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+
+  <!-- FINO -->
+  <div class="cuidado-panel" id="cp-fino">
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px">Cuidados para línea fina y micro</div>
+      <div class="alert-box alert-warn" style="margin-bottom:16px">
+        <span class="alert-icon">⚠️</span>
+        <div>La línea fina es la más delicada. Un mal cuidado puede hacer que los trazos <strong>se rompan o difuminen</strong> antes de lo esperado.</div>
+      </div>
+      <div class="cuidado-step"><div class="cuidado-num">1</div><div class="cuidado-body"><div class="cuidado-step-title">Limpieza mínima y cuidadosa</div><div class="cuidado-step-text">Solo agua tibia y jabón neutro. Nada de esponjas ni telas. Solo la palma de la mano.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">2</div><div class="cuidado-body"><div class="cuidado-step-title">Crema en capa muy delgada</div><div class="cuidado-step-text">El exceso de crema en línea fina puede saturar la tinta. Solo una capa translúcida.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">3</div><div class="cuidado-body"><div class="cuidado-step-title">Evita el sudor excesivo</div><div class="cuidado-step-text">Sin ejercicio intenso la primera semana sobre la zona tatuada.</div></div></div>
+    </div>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+
+  <!-- BLACKWORK -->
+  <div class="cuidado-panel" id="cp-blackwork">
+    <div class="cuidado-card">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px">Cuidados para blackwork</div>
+      <div class="cuidado-step"><div class="cuidado-num">1</div><div class="cuidado-body"><div class="cuidado-step-title">Zonas grandes necesitan más tiempo</div><div class="cuidado-step-text">El blackwork con rellenos sólidos grandes puede tardar 2–3 semanas en cicatrizar completamente.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">2</div><div class="cuidado-body"><div class="cuidado-step-title">Peeling normal</div><div class="cuidado-step-text">Es normal que la piel se descame con tinta. No la arranques. Déjala caer sola.</div></div></div>
+      <div class="cuidado-step"><div class="cuidado-num">3</div><div class="cuidado-body"><div class="cuidado-step-title">Revisión de saturación</div><div class="cuidado-step-text">Algunas zonas pueden necesitar refuerzo de tinta. El retoque es gratuito en los primeros 2 meses.</div></div></div>
+      <div class="dont-list" style="margin-top:16px">
+        <div class="do-item">✓ Retoque gratuito incluido a los 2 meses</div>
+        <div class="dont-item">🚫 No expongas al sol hasta cicatrización completa</div>
+      </div>
+    </div>
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+</div>
+
+<!-- ══════════════ SCREEN: PERFIL ══════════════ -->
+<div class="screen" id="screen-perfil">
+  <div class="profile-header">
+    <div class="profile-av" id="perfil-av">A</div>
+    <div class="profile-name" id="perfil-name">Mi perfil</div>
+    <div class="profile-email" id="perfil-email">cliente@inktrovertida.com</div>
+    <div class="profile-stats">
+      <div><span class="pstat-n">2</span><div class="pstat-l">Tatuajes</div></div>
+      <div><span class="pstat-n">1</span><div class="pstat-l">Próxima cita</div></div>
+      <div><span class="pstat-n">⭐ 5</span><div class="pstat-l">Reseña</div></div>
+    </div>
+  </div>
+  <div class="profile-content">
+
+    <div class="list-card">
+      <div class="list-card-title">Próximas citas</div>
+      <div class="list-item">
+        <div class="list-item-icon">📅</div>
+        <div class="list-item-body">
+          <div class="list-item-title">Sesión con Sofía <span class="badge-status badge-upcoming">Confirmada</span></div>
+          <div class="list-item-sub">Línea fina · Antebrazo · 15 Abr, 10:00</div>
+        </div>
+        <div class="list-item-right">→</div>
+      </div>
+    </div>
+
+    <div class="list-card">
+      <div class="list-card-title">Historial de tatuajes</div>
+      <div class="tattoo-hist">
+        <div class="tattoo-item">
+          <div class="tattoo-thumb" style="background:#f5f3ef">
+            <svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="10" stroke="#1a1a1a" stroke-width="0.8" fill="none"/><circle cx="15" cy="15" r="2" fill="#1a1a1a"/></svg>
+          </div>
+          <div><div class="tattoo-info-name">Línea fina — Muñeca</div><div class="tattoo-info-date">Ene 2025 · Sofía</div></div>
+          <span class="tattoo-price" style="margin-left:auto">$900</span>
+        </div>
+        <div class="tattoo-item">
+          <div class="tattoo-thumb" style="background:#f0eeea">
+            <svg width="30" height="30" viewBox="0 0 30 30"><polygon points="15,4 24,20 6,20" stroke="#1a1a1a" stroke-width="1" fill="none"/></svg>
+          </div>
+          <div><div class="tattoo-info-name">Blackwork — Hombro</div><div class="tattoo-info-date">Mar 2024 · Marcos</div></div>
+          <span class="tattoo-price" style="margin-left:auto">$1,400</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="list-card">
+      <div class="list-card-title">Mi cuenta</div>
+      <div class="list-item" onclick="editPerfil()"><div class="list-item-icon">✏️</div><div class="list-item-body"><div class="list-item-title">Editar datos personales</div><div class="list-item-sub">Nombre, teléfono, correo</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item" onclick="alert('Demo: ver consentimientos firmados')"><div class="list-item-icon">📋</div><div class="list-item-body"><div class="list-item-title">Mis consentimientos</div><div class="list-item-sub">2 documentos firmados</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item" onclick="alert('Demo: guías de cuidado personalizadas')"><div class="list-item-icon">💧</div><div class="list-item-body"><div class="list-item-title">Mis guías de cuidado</div><div class="list-item-sub">Instrucciones post-sesión</div></div><div class="list-item-right">→</div></div>
+      <div class="list-item" onclick="abrirWA()"><div class="list-item-icon">💬</div><div class="list-item-body"><div class="list-item-title">Contactar al estudio</div><div class="list-item-sub">WhatsApp directo</div></div><div class="list-item-right">→</div></div>
+    </div>
+
+    <div class="nsr-badge">Demo · Negocio Sin Rodeos</div>
+  </div>
+</div>
+
+<!-- MODAL CATÁLOGO -->
+<div class="overlay" id="overlay" onclick="closeIfBackdrop(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-eyebrow" id="m-eyebrow"></div>
+      <div class="modal-name" id="m-name"></div>
+      <div class="modal-desc" id="m-desc"></div>
+      <div class="modal-tags" id="m-tags"></div>
+    </div>
+    <div class="modal-stats">
+      <div class="modal-stat"><span class="modal-stat-val" id="m-precio"></span><div class="modal-stat-lbl">Desde</div></div>
+      <div class="modal-stat"><span class="modal-stat-val" id="m-tiempo"></span><div class="modal-stat-lbl">Tiempo</div></div>
+      <div class="modal-stat"><span class="modal-stat-val" id="m-sesiones"></span><div class="modal-stat-lbl">Sesiones</div></div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-title">Incluye</div>
+      <div id="m-includes"></div>
+    </div>
+    <div class="modal-cta">
+      <button class="btn-agendar" onclick="closeModal();navTo('citas')">Agendar esta sesión →</button>
+      <button class="btn-wa" onclick="abrirWA()">💬 Preguntar por WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-item active" id="nav-catalogo" onclick="navTo('catalogo')"><span class="nav-icon">🎨</span>Catálogo</button>
+  <button class="nav-item" id="nav-citas" onclick="navTo('citas')"><span class="nav-icon">📅</span>Citas</button>
+  <button class="nav-item" id="nav-consentimiento" onclick="navTo('consentimiento')"><span class="nav-icon">📋</span>Firma</button>
+  <button class="nav-item" id="nav-cuidados" onclick="navTo('cuidados')"><span class="nav-icon">💧</span>Cuidados</button>
+  <button class="nav-item" id="nav-perfil" onclick="navTo('perfil')"><span class="nav-icon">👤</span>Perfil</button>
+</div>
+
+<script>
+// ── DATA ──
+const estilos = [
+  { id:1, cat:'fino', nombre:'Línea Fina', eyebrow:'Delicado · Preciso', desc:'Trazos ultrafinos con agujas especializadas. Ideal para botanicals, retratos miniatura y geometría sacra. El estilo más solicitado en el estudio.', tags:['Flores','Retratos','Geometría','Femme','Micro'], precio:'$800', tiempo:'1–2h', sesiones:'1', pill:'Popular', pillType:'pill-pop', bg:'#f5f3ef', includes:['Boceto digital previo','Consulta de diseño incluida','Guía de cuidados post-tattoo','Retoque gratuito a los 2 meses'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><circle cx="45" cy="45" r="32" stroke="#1a1a1a" stroke-width="0.6"/><circle cx="45" cy="45" r="20" stroke="#1a1a1a" stroke-width="0.4" stroke-dasharray="3 5"/><path d="M45 25 C50 33 56 36 45 45 C34 36 40 33 45 25Z" stroke="#1a1a1a" stroke-width="0.8" fill="none"/><circle cx="45" cy="45" r="2.5" fill="#1a1a1a"/></svg>` },
+  { id:2, cat:'blackwork', nombre:'Blackwork', eyebrow:'Bold · Permanente', desc:'Negro sólido, contraste máximo. Geométrico, tribal, ornamental. Para quienes quieren presencia visual sin concesiones.', tags:['Geométrico','Tribal','Ornamental','Bold'], precio:'$1,200', tiempo:'2–4h', sesiones:'1–2', pill:null, pillType:'', bg:'#f0eeea', includes:['Diseño personalizado en sesión','2 revisiones de boceto','Guía de cuidados post-tattoo','Retoque gratuito a los 2 meses'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><polygon points="45,14 72,58 18,58" stroke="#1a1a1a" stroke-width="1.5" fill="none"/><circle cx="45" cy="14" r="3" fill="#1a1a1a"/><circle cx="72" cy="58" r="3" fill="#1a1a1a"/><circle cx="18" cy="58" r="3" fill="#1a1a1a"/><line x1="18" y1="58" x2="72" y2="58" stroke="#1a1a1a" stroke-width="1.5"/></svg>` },
+  { id:3, cat:'acuarela', nombre:'Acuarela', eyebrow:'Color · Expresivo', desc:'Pigmentos vivos, bordes orgánicos, sin contorno rígido. Cada pieza es única. Requiere exposición solar mínima para conservar colores.', tags:['Color','Orgánico','Abstracto','Único'], precio:'$1,500', tiempo:'3–5h', sesiones:'2', pill:'Destacado', pillType:'pill-new', bg:'#eef4f0', includes:['Paleta de colores personalizada','Referencias visuales previas','Guía especial de cuidado de color','2 sesiones de acabado incluidas'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><ellipse cx="40" cy="48" rx="20" ry="15" fill="#d4e8d4" opacity="0.7"/><ellipse cx="52" cy="40" rx="16" ry="13" fill="#fde8cc" opacity="0.6"/><ellipse cx="45" cy="50" rx="13" ry="10" fill="#cce0f0" opacity="0.6"/></svg>` },
+  { id:4, cat:'neotradicional', nombre:'Neotradicional', eyebrow:'Clásico · Reinventado', desc:'Contornos fuertes, rellenos saturados, sombreado moderno. La estética vintage con técnica contemporánea.', tags:['Colores','Vintage','Animales','Flores'], precio:'$1,800', tiempo:'4–6h', sesiones:'2–3', pill:null, pillType:'', bg:'#f5f0e8', includes:['Boceto completo antes de tatuaje','Revisión de colores previa','Guía de cuidados post-tattoo','Retoque de color incluido'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><path d="M45 18 L56 34 L72 36 L60 48 L63 64 L45 56 L27 64 L30 48 L18 36 L34 34 Z" stroke="#1a1a1a" stroke-width="1.5" fill="none"/><circle cx="45" cy="18" r="2" fill="#888"/></svg>` },
+  { id:5, cat:'lettering', nombre:'Lettering', eyebrow:'Tipografía · A mano', desc:'Frases, palabras, iniciales. Script fluido, gótico denso o sans minimalista. La letra perfecta no existe — hasta que te la tatuamos.', tags:['Frases','Script','Gótico','Iniciales'], precio:'$600', tiempo:'1–2h', sesiones:'1', pill:null, pillType:'', bg:'#f2f0f5', includes:['Prueba de tipografía previa','Posicionamiento exacto','Guía de cuidados post-tattoo','Retoque gratuito'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><text x="16" y="44" font-family="Georgia,serif" font-size="26" fill="#1a1a1a" font-style="italic" opacity="0.85">ink.</text><text x="20" y="62" font-family="Georgia,serif" font-size="15" fill="#888" font-style="italic">forever</text></svg>` },
+  { id:6, cat:'minimalista', nombre:'Minimalista', eyebrow:'Simple · Intencional', desc:'Un trazo con significado vale más que cien líneas sin él. Perfecto para primer tatuaje o quien ya sabe lo que quiere.', tags:['Simple','Elegante','Primer tattoo'], precio:'$400', tiempo:'30–60min', sesiones:'1', pill:'Ideal para iniciar', pillType:'pill-new', bg:'#f7f7f5', includes:['Consulta exprés incluida','Múltiples opciones de boceto','Guía de cuidados post-tattoo','Retoque gratuito'], svg:`<svg width="90" height="90" viewBox="0 0 90 90" fill="none"><line x1="22" y1="45" x2="68" y2="45" stroke="#1a1a1a" stroke-width="1.2"/><circle cx="45" cy="45" r="8" stroke="#1a1a1a" stroke-width="1.2" fill="none"/><circle cx="45" cy="45" r="2" fill="#1a1a1a"/></svg>` }
+];
+
+// ── NAVIGATION ──
+function navTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ── CATÁLOGO ──
+function renderGrid(filtro) {
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  const lista = filtro === 'todos' ? estilos : estilos.filter(e => e.cat === filtro);
+  lista.forEach((e, i) => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.style.animationDelay = (0.05 + i * 0.06) + 's';
+    c.innerHTML = `
+      <div class="card-thumb" style="background:${e.bg}">
+        <div class="card-thumb-inner">${e.svg}</div>
+        ${e.pill ? `<div class="card-pill ${e.pillType}">${e.pill}</div>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${e.nombre}</div>
+        <div class="card-sub">${e.desc.substring(0,52)}…</div>
+        <div class="card-footer">
+          <div class="card-price">${e.precio}<span class="card-price-lbl">desde</span></div>
+          <div class="card-time">⏱ ${e.tiempo}</div>
+        </div>
+      </div>`;
+    c.addEventListener('click', () => openModal(e));
+    g.appendChild(c);
+  });
+}
+function filter(cat, btn) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(cat);
+}
+function openModal(e) {
+  document.getElementById('m-eyebrow').textContent = e.eyebrow;
+  document.getElementById('m-name').textContent = e.nombre;
+  document.getElementById('m-desc').textContent = e.desc;
+  document.getElementById('m-precio').textContent = e.precio;
+  document.getElementById('m-tiempo').textContent = e.tiempo;
+  document.getElementById('m-sesiones').textContent = e.sesiones;
+  document.getElementById('m-tags').innerHTML = e.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('m-includes').innerHTML = e.includes.map(i=>`<div class="include-item"><div class="include-dot">✓</div><span>${i}</span></div>`).join('');
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeIfBackdrop(e) { if(e.target===document.getElementById('overlay')) closeModal(); }
+function closeModal() { document.getElementById('overlay').classList.remove('open'); document.body.style.overflow=''; }
+
+// ── CITAS ──
+let selectedArtist = '';
+let selectedSlot = '';
+function selectArtist(el, name) {
+  document.querySelectorAll('.artist-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedArtist = name;
+}
+function selectSlot(el) {
+  document.querySelectorAll('.slot:not(.unavailable)').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot = el.textContent;
+}
+function confirmarCita() {
+  const estilo = document.getElementById('c-estilo').value;
+  const fecha = document.getElementById('c-fecha').value;
+  const nombre = document.getElementById('c-nombre').value;
+  if(!estilo || !fecha || !nombre || !selectedArtist || !selectedSlot) {
+    alert('Por favor completa artista, estilo, fecha, horario y tu nombre.');
+    return;
+  }
+  const artistaNames = { sofia:'Sofía', marcos:'Marcos', valeria:'Valeria' };
+  document.getElementById('cc-estilo').textContent = estilo;
+  document.getElementById('cc-artista').textContent = artistaNames[selectedArtist];
+  document.getElementById('cc-fecha').textContent = fecha;
+  document.getElementById('cc-hora').textContent = selectedSlot;
+  document.getElementById('citas-form-wrap').style.display = 'none';
+  document.getElementById('cita-confirm-wrap').style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function resetCitas() {
+  document.getElementById('citas-form-wrap').style.display = 'block';
+  document.getElementById('cita-confirm-wrap').style.display = 'none';
+  selectedArtist = ''; selectedSlot = '';
+  document.querySelectorAll('.artist-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+}
+
+// ── CUIDADOS ──
+function showCuidado(tab, btn) {
+  document.querySelectorAll('.cuidado-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+  document.getElementById('cp-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── PERFIL ──
+function editPerfil() {
+  const nombre = prompt('¿Cuál es tu nombre?', 'Ana García');
+  if(nombre) {
+    document.getElementById('perfil-name').textContent = nombre;
+    document.getElementById('perfil-av').textContent = nombre.charAt(0).toUpperCase();
+    document.getElementById('perfil-email').textContent = nombre.toLowerCase().replace(' ','') + '@email.com';
+  }
+}
+
+// ── UTILS ──
+function abrirWA() {
+  alert('📲 Demo NSR: en producción abre WhatsApp con mensaje y folio precargado al número del estudio.');
+}
+function showNotif() {
+  alert('🔔 Recordatorio: Tu cita con Sofía es el 15 de Abril a las 10:00 AM.\n\nRecuerda hidratarte bien el día anterior y no rasurar la zona el mismo día.');
+}
+
+renderGrid('todos');
+</script>
+</body>
+</html>
