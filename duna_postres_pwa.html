@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DUNA Postrería - Sistema de Gestión de Producción">
+    <title>DUNA Postrería</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dorado: #D4AF8F;
+            --chocolate: #3D2817;
+            --chocolate-claro: #5C3D28;
+            --fondo: #2A1F1A;
+            --texto: #F5F1E8;
+            --acento: #E8D5C4;
+            --rojo: #C1493F;
+            --verde: #6BA55F;
+            --gris-oscuro: #4A3730;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, var(--fondo) 0%, #1F1512 100%);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* HEADER */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .header {
+            background: linear-gradient(to bottom, var(--chocolate) 0%, var(--chocolate-claro) 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--dorado);
+            box-shadow: 0 8px 32px rgba(212, 175, 143, 0.15);
+        }
+
+        .logo-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--dorado);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitulo {
+            font-size: 13px;
+            color: var(--acento);
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* CONTENEDOR PRINCIPAL */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.activo {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TARJETAS Y CAJAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .card {
+            background: linear-gradient(135deg, var(--chocolate) 0%, var(--gris-oscuro) 100%);
+            border: 1px solid var(--dorado);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 36px rgba(212, 175, 143, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--dorado);
+            padding-bottom: 10px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* INPUTS Y SELECTS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: var(--dorado);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--dorado);
+            border-radius: 6px;
+            color: var(--texto);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 12px rgba(212, 175, 143, 0.3);
+            border-color: var(--dorado);
+        }
+
+        input::placeholder {
+            color: rgba(245, 241, 232, 0.5);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* BOTONES */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--dorado) 0%, #C99970 100%);
+            color: var(--chocolate);
+            box-shadow: 0 4px 15px rgba(212, 175, 143, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 143, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--dorado);
+            border: 2px solid var(--dorado);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(212, 175, 143, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde) 0%, #5A9050 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--rojo) 0%, #A03632 100%);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* GRID Y LAYOUTS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* DASHBOARD WIDGETS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .widget {
+            background: linear-gradient(135deg, var(--dorado) 0%, #C99970 100%);
+            color: var(--chocolate);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(212, 175, 143, 0.2);
+        }
+
+        .widget-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .widget-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TABLAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: var(--dorado);
+            color: var(--chocolate);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(212, 175, 143, 0.2);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(212, 175, 143, 0.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TABS NAVEGACIÓN (Abajo) */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .nav-tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: linear-gradient(to top, var(--chocolate) 0%, var(--gris-oscuro) 100%);
+            border-top: 3px solid var(--dorado);
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--acento);
+            border: none;
+            background: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            color: var(--dorado);
+        }
+
+        .nav-tab.activo {
+            color: var(--dorado);
+            border-top: 3px solid var(--dorado);
+            background: rgba(212, 175, 143, 0.1);
+        }
+
+        .nav-emoji {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .container {
+            padding-bottom: 100px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* RESULTADO DE CÁLCULO */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .resultado {
+            background: linear-gradient(135deg, rgba(107, 165, 95, 0.2) 0%, rgba(92, 80, 128, 0.2) 100%);
+            border-left: 4px solid var(--verde);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .resultado.mostrar {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .resultado-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(212, 175, 143, 0.1);
+        }
+
+        .resultado-row:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-label {
+            color: var(--dorado);
+            font-weight: 600;
+        }
+
+        .resultado-valor {
+            color: var(--texto);
+            font-weight: 500;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* ALERTAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert.mostrar {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(107, 165, 95, 0.2);
+            border-left: 4px solid var(--verde);
+            color: var(--verde);
+        }
+
+        .alert-warning {
+            background: rgba(193, 73, 63, 0.2);
+            border-left: 4px solid var(--rojo);
+            color: var(--rojo);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* CARGA */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .spinner {
+            border: 3px solid rgba(212, 175, 143, 0.1);
+            border-top: 3px solid var(--dorado);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* RESPONSIVE */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px;
+            }
+
+            .logo-header {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo-header">🍰 DUNA POSTRERÍA</div>
+        <div class="subtitulo">SISTEMA DE GESTIÓN</div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container">
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 1: DASHBOARD -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-dashboard" class="tab-content activo">
+            <div class="card">
+                <div class="card-title">📊 Dashboard</div>
+                <div class="grid-3">
+                    <div class="widget">
+                        <div class="widget-label">Ventas Este Mes</div>
+                        <div class="widget-value" id="ventas-mes">$0</div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-label">Margen Promedio</div>
+                        <div class="widget-value" id="margen-promedio">0%</div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-label">Stock Crítico</div>
+                        <div class="widget-value" id="stock-critico">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 Por Cobrar</div>
+                <div class="widget">
+                    <div class="widget-label">Cuentas Pendientes</div>
+                    <div class="widget-value" id="por-cobrar">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 2: PRODUCCIÓN -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-produccion" class="tab-content">
+            <div class="card">
+                <div class="card-title">🍰 Calculadora de Producción</div>
+
+                <div class="form-group">
+                    <label>¿Qué postre vamos a hacer?</label>
+                    <select id="postre-select" onchange="actualizarPresentaciones()">
+                        <option value="">-- Selecciona --</option>
+                        <option value="tiramisu">Tiramisú</option>
+                        <option value="payOreo">Pay de Oreo</option>
+                        <option value="payLotus">Pay de Lotus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Cómo quieres calcular?</label>
+                    <select id="modo-calculo" onchange="cambiarModoCalculo()">
+                        <option value="personas">Por personas</option>
+                        <option value="molde-estandar">Por molde estándar</option>
+                        <option value="molde-custom">Por molde personalizado</option>
+                    </select>
+                </div>
+
+                <!-- MODO: POR PERSONAS -->
+                <div id="seccion-personas" style="display: none;">
+                    <div class="form-group">
+                        <label>¿Para cuántas personas?</label>
+                        <select id="personas">
+                            <option value="">-- Selecciona --</option>
+                            <option value="1">1 (Porción Individual)</option>
+                            <option value="3.5">3-4 (Mediano)</option>
+                            <option value="7">6-8 (Familiar)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Cuántas de estas porciones?</label>
+                        <input type="number" id="cantidad-personas" min="1" value="1" placeholder="Ej: 2">
+                    </div>
+                </div>
+
+                <!-- MODO: POR MOLDE ESTÁNDAR -->
+                <div id="seccion-molde-estandar" style="display: none;">
+                    <div class="form-group">
+                        <label>Elige el molde estándar</label>
+                        <select id="molde-estandar">
+                            <option value="">-- Selecciona --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- MODO: POR MOLDE PERSONALIZADO -->
+                <div id="seccion-molde-custom" style="display: none;">
+                    <div class="form-group">
+                        <label>¿Qué forma?</label>
+                        <select id="forma-molde" onchange="cambiarFormaCustom()">
+                            <option value="rectangular">Rectangular</option>
+                            <option value="redondo">Redondo</option>
+                        </select>
+                    </div>
+
+                    <div id="dimensiones-rectangular" style="display: none;">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Largo (cm)</label>
+                                <input type="number" id="largo" min="1" placeholder="Ej: 40">
+                            </div>
+                            <div class="form-group">
+                                <label>Ancho (cm)</label>
+                                <input type="number" id="ancho" min="1" placeholder="Ej: 15">
+                            </div>
+                            <div class="form-group">
+                                <label>Alto (cm)</label>
+                                <input type="number" id="alto" min="1" placeholder="Ej: 6">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dimensiones-redondo" style="display: none;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Diámetro (cm)</label>
+                                <input type="number" id="diametro" min="1" placeholder="Ej: 24">
+                            </div>
+                            <div class="form-group">
+                                <label>Alto (cm)</label>
+                                <input type="number" id="alto-redondo" min="1" placeholder="Ej: 6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block" onclick="calcularProduccion()">🧮 Calcular</button>
+
+                <!-- RESULTADO -->
+                <div id="resultado-produccion" class="resultado">
+                    <div class="resultado-row">
+                        <span class="resultado-label">📊 Volumen:</span>
+                        <span class="resultado-valor" id="res-volumen">0 cm³</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">⚖️ Gramos necesarios:</span>
+                        <span class="resultado-valor" id="res-gramos">0 g</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">🍰 Porciones:</span>
+                        <span class="resultado-valor" id="res-porciones">0</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">💰 Costo de producción:</span>
+                        <span class="resultado-valor" id="res-costo">$0</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">💵 Precio sugerido (40%):</span>
+                        <span class="resultado-valor" id="res-precio">$0</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-success btn-block" id="btn-registrar" style="display: none; margin-top: 15px;" onclick="registrarProduccion()">✅ Registrar Producción</button>
+            </div>
+
+            <!-- INGREDIENTES NECESARIOS -->
+            <div class="card" id="card-ingredientes" style="display: none;">
+                <div class="card-title">📋 Ingredientes Necesarios</div>
+                <table id="tabla-ingredientes">
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Cantidad</th>
+                            <th>Costo Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ingredientes"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 3: INVENTARIO -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-inventario" class="tab-content">
+            <div class="card">
+                <div class="card-title">📦 Gestión de Inventario</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Stock</th>
+                            <th>Unidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Mínimo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-inventario"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 4: VENTAS -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-ventas" class="tab-content">
+            <div class="card">
+                <div class="card-title">💰 Registrar Venta</div>
+
+                <div class="form-group">
+                    <label>Postre</label>
+                    <select id="venta-postre">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Tiramisú">Tiramisú</option>
+                        <option value="Pay de Oreo">Pay de Oreo</option>
+                        <option value="Pay de Lotus">Pay de Lotus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Presentación</label>
+                    <select id="venta-presentacion">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Porción">Porción Individual</option>
+                        <option value="Mediano">Mediano</option>
+                        <option value="Familiar">Familiar</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" id="venta-cantidad" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio Unitario</label>
+                        <input type="number" id="venta-precio" min="0" step="0.01" placeholder="$0.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="venta-cliente" placeholder="Ej: Biela Café">
+                </div>
+
+                <div class="form-group">
+                    <label>¿Pagado?</label>
+                    <select id="venta-pagado">
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="venta-notas" placeholder="Detalles adicionales..." rows="3"></textarea>
+                </div>
+
+                <button class="btn btn-primary btn-block" onclick="registrarVenta()">💾 Registrar Venta</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Historial de Ventas</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Postre</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Cliente</th>
+                            <th>Pagado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-ventas"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN TABS (ABAJO) -->
+    <div class="nav-tabs">
+        <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
+            <span class="nav-emoji">📊</span>
+            Dashboard
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('produccion')">
+            <span class="nav-emoji">🍰</span>
+            Producción
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('inventario')">
+            <span class="nav-emoji">📦</span>
+            Inventario
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('ventas')">
+            <span class="nav-emoji">💰</span>
+            Ventas
+        </button>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // VARIABLES GLOBALES
+        // ═══════════════════════════════════════════════════════════
+
+        let datosRecetas = {};
+        let datosInventario = [];
+        let datosVentas = [];
+        let datosConfig = {};
+        let calculoActual = null;
+
+        // ═══════════════════════════════════════════════════════════
+        // INICIALIZACIÓN
+        // ═══════════════════════════════════════════════════════════
+
+        document.addEventListener('DOMContentLoaded', cargarDatos);
+
+        async function cargarDatos() {
+            try {
+                // Aquí iría la URL del Apps Script deployado
+                // Por ahora usamos datos de ejemplo
+                inicializarDatosEjemplo();
+                actualizarDashboard();
+                cargarInventario();
+                cargarVentas();
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+            }
+        }
+
+        function inicializarDatosEjemplo() {
+            // Estructura de ejemplo - se reemplazará con datos de Sheets
+            datosConfig = {
+                densidades: {
+                    tiramisu: 0.25,
+                    payOreo: 0.35,
+                    payLotus: 0.32
+                }
+            };
+
+            datosRecetas = {
+                tiramisu: [
+                    { ingrediente: "Soletas", cantidad: 200, unidad: "g", precioUnitario: 0.20 },
+                    { ingrediente: "Mascarpone", cantidad: 260, unidad: "g", precioUnitario: 1.00 },
+                    { ingrediente: "Crema para batir Lyncott", cantidad: 385, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Azúcar", cantidad: 62, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Vainilla", cantidad: 2.5, unidad: "tapita", precioUnitario: 0.05 },
+                    { ingrediente: "Café soluble Jacobs", cantidad: 2.5, unidad: "cda", precioUnitario: 1.00 },
+                    { ingrediente: "Cocoa", cantidad: 2, unidad: "cda", precioUnitario: 1.00 }
+                ],
+                payOreo: [
+                    { ingrediente: "Galleta María", cantidad: 130, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Galleta Oreo", cantidad: 18, unidad: "u", precioUnitario: 6.00 },
+                    { ingrediente: "Mantequilla", cantidad: 73, unidad: "g", precioUnitario: 0.15 },
+                    { ingrediente: "Harina", cantidad: 22, unidad: "g", precioUnitario: 0.60 },
+                    { ingrediente: "Queso Crema Philadelphia", cantidad: 660, unidad: "g", precioUnitario: 0.70 },
+                    { ingrediente: "Azúcar", cantidad: 150, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Sal", cantidad: 0.25, unidad: "cda", precioUnitario: 0.12 },
+                    { ingrediente: "Fécula de maíz", cantidad: 22, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Crema ácida", cantidad: 88, unidad: "g", precioUnitario: 0.30 },
+                    { ingrediente: "Limón", cantidad: 0.5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Huevos", cantidad: 5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Oreos troceadas", cantidad: 12, unidad: "u", precioUnitario: 6.00 },
+                    { ingrediente: "Chispas chocolate blanco", cantidad: 300, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Crema para batir Lyncott", cantidad: 100, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Oreos polvo", cantidad: 6, unidad: "u", precioUnitario: 6.00 }
+                ],
+                payLotus: [
+                    { ingrediente: "Galleta María", cantidad: 220, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Mantequilla", cantidad: 73, unidad: "g", precioUnitario: 0.15 },
+                    { ingrediente: "Harina", cantidad: 22, unidad: "g", precioUnitario: 0.60 },
+                    { ingrediente: "Queso Crema Philadelphia", cantidad: 660, unidad: "g", precioUnitario: 0.70 },
+                    { ingrediente: "Azúcar", cantidad: 175, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Sal", cantidad: 0.25, unidad: "cda", precioUnitario: 0.12 },
+                    { ingrediente: "Fécula de maíz", cantidad: 22, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Crema ácida", cantidad: 88, unidad: "g", precioUnitario: 0.30 },
+                    { ingrediente: "Limón", cantidad: 0.5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Huevos", cantidad: 5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Crema Lotus", cantidad: 240, unidad: "ml", precioUnitario: 25.00 },
+                    { ingrediente: "Aceite de coco", cantidad: 15, unidad: "ml", precioUnitario: 12.00 },
+                    { ingrediente: "Galletas Lotus", cantidad: 4, unidad: "u", precioUnitario: 7.00 }
+                ]
+            };
+
+            datosInventario = [
+                { ingrediente: "Soletas", stock: 1000, unidad: "g", precioUnitario: 0.20, minimo: 200, estado: "✅ OK" },
+                { ingrediente: "Mascarpone", stock: 2600, unidad: "g", precioUnitario: 1.00, minimo: 500, estado: "✅ OK" },
+                { ingrediente: "Crema para batir Lyncott", stock: 3000, unidad: "g", precioUnitario: 2.00, minimo: 1000, estado: "✅ OK" },
+                { ingrediente: "Azúcar", stock: 5000, unidad: "g", precioUnitario: 0.50, minimo: 1000, estado: "✅ OK" },
+            ];
+
+            datosVentas = [
+                { fecha: "2026-04-15", postre: "Tiramisú", presentacion: "Familiar", cantidad: 1, total: 210, cliente: "Biela Café", pagado: "No" },
+                { fecha: "2026-04-14", postre: "Pay de Lotus", presentacion: "Mediano", cantidad: 2, total: 320, cliente: "Evento", pagado: "Sí" },
+            ];
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // NAVEGACIÓN TABS
+        // ═══════════════════════════════════════════════════════════
+
+        function cambiarTab(tab) {
+            // Ocultar todos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('activo'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('activo'));
+
+            // Mostrar seleccionado
+            document.getElementById('tab-' + tab).classList.add('activo');
+            event.target.closest('.nav-tab').classList.add('activo');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PRODUCCIÓN - MODOS DE CÁLCULO
+        // ═══════════════════════════════════════════════════════════
+
+        function cambiarModoCalculo() {
+            const modo = document.getElementById('modo-calculo').value;
+            
+            document.getElementById('seccion-personas').style.display = modo === 'personas' ? 'block' : 'none';
+            document.getElementById('seccion-molde-estandar').style.display = modo === 'molde-estandar' ? 'block' : 'none';
+            document.getElementById('seccion-molde-custom').style.display = modo === 'molde-custom' ? 'block' : 'none';
+        }
+
+        function cambiarFormaCustom() {
+            const forma = document.getElementById('forma-molde').value;
+            document.getElementById('dimensiones-rectangular').style.display = forma === 'rectangular' ? 'block' : 'none';
+            document.getElementById('dimensiones-redondo').style.display = forma === 'redondo' ? 'block' : 'none';
+        }
+
+        function actualizarPresentaciones() {
+            const postre = document.getElementById('postre-select').value;
+            const selectPresentaciones = document.getElementById('molde-estandar');
+            selectPresentaciones.innerHTML = '<option value="">-- Selecciona --</option>';
+
+            if (postre === 'tiramisu') {
+                selectPresentaciones.innerHTML += `
+                    <option value="individual">Porción Individual (10x7x5)</option>
+                    <option value="mediano">Mediano (20x15x6)</option>
+                    <option value="familiar">Familiar (40x10x6)</option>
+                `;
+            } else if (postre === 'payOreo' || postre === 'payLotus') {
+                selectPresentaciones.innerHTML += `
+                    <option value="individual">Porción Individual (10 cm diámetro)</option>
+                    <option value="mediano">Mediano (20 cm diámetro)</option>
+                    <option value="familiar">Familiar (24 cm diámetro)</option>
+                `;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CÁLCULO DE PRODUCCIÓN
+        // ═══════════════════════════════════════════════════════════
+
+        function calcularProduccion() {
+            const postre = document.getElementById('postre-select').value;
+            const modo = document.getElementById('modo-calculo').value;
+
+            if (!postre) {
+                alert("⚠️ Selecciona un postre primero");
+                return;
+            }
+
+            let volumen = 0, gramos = 0;
+
+            if (modo === 'personas') {
+                const personas = parseFloat(document.getElementById('personas').value);
+                const cantidad = parseInt(document.getElementById('cantidad-personas').value) || 1;
+
+                if (!personas) {
+                    alert("⚠️ Selecciona cuántas personas");
+                    return;
+                }
+
+                const gramosBase = {
+                    tiramisu: 75,
+                    payOreo: 150,
+                    payLotus: 160
+                };
+
+                gramos = (gramosBase[postre] * personas * cantidad) * 1.05; // +5% merma
+
+            } else if (modo === 'molde-estandar') {
+                const presentacion = document.getElementById('molde-estandar').value;
+                if (!presentacion) {
+                    alert("⚠️ Selecciona un molde estándar");
+                    return;
+                }
+
+                const moldes = {
+                    tiramisu: {
+                        individual: { volumen: 350 },
+                        mediano: { volumen: 1800 },
+                        familiar: { volumen: 2400 }
+                    },
+                    payOreo: {
+                        individual: { volumen: 393 },
+                        mediano: { volumen: 1885 },
+                        familiar: { volumen: 2714 }
+                    },
+                    payLotus: {
+                        individual: { volumen: 393 },
+                        mediano: { volumen: 1885 },
+                        familiar: { volumen: 2714 }
+                    }
+                };
+
+                volumen = moldes[postre][presentacion].volumen;
+                gramos = volumen * datosConfig.densidades[postre] * 1.05;
+
+            } else if (modo === 'molde-custom') {
+                const forma = document.getElementById('forma-molde').value;
+
+                if (forma === 'rectangular') {
+                    const largo = parseFloat(document.getElementById('largo').value);
+                    const ancho = parseFloat(document.getElementById('ancho').value);
+                    const alto = parseFloat(document.getElementById('alto').value);
+
+                    if (!largo || !ancho || !alto) {
+                        alert("⚠️ Completa todas las dimensiones");
+                        return;
+                    }
+
+                    volumen = largo * ancho * alto;
+
+                } else if (forma === 'redondo') {
+                    const diametro = parseFloat(document.getElementById('diametro').value);
+                    const alto = parseFloat(document.getElementById('alto-redondo').value);
+
+                    if (!diametro || !alto) {
+                        alert("⚠️ Completa diámetro y alto");
+                        return;
+                    }
+
+                    const radio = diametro / 2;
+                    volumen = Math.PI * radio * radio * alto;
+                }
+
+                gramos = volumen * datosConfig.densidades[postre] * 1.05;
+            }
+
+            const porciones = Math.round(gramos / 75);
+            const costo = calcularCostoProduccion(postre, gramos);
+            const precio = costo * 1.4; // Margen 40%
+
+            // Mostrar resultado
+            document.getElementById('res-volumen').textContent = volumen.toFixed(0) + " cm³";
+            document.getElementById('res-gramos').textContent = gramos.toFixed(0) + " g";
+            document.getElementById('res-porciones').textContent = porciones;
+            document.getElementById('res-costo').textContent = "$" + costo.toFixed(2);
+            document.getElementById('res-precio').textContent = "$" + precio.toFixed(2);
+
+            document.getElementById('resultado-produccion').classList.add('mostrar');
+            document.getElementById('btn-registrar').style.display = 'block';
+
+            // Mostrar ingredientes escalados
+            mostrarIngredientesEscalados(postre, gramos, costo);
+
+            // Guardar para registro
+            calculoActual = { postre, gramos, porciones, costo, precio };
+        }
+
+        function calcularCostoProduccion(postre, gramos) {
+            let costo = 0;
+
+            if (datosRecetas[postre]) {
+                const factor = gramos / 600; // 600g es la referencia
+
+                datosRecetas[postre].forEach(ing => {
+                    const cantidadEscalada = ing.cantidad * factor;
+                    costo += cantidadEscalada * ing.precioUnitario;
+                });
+            }
+
+            return costo;
+        }
+
+        function mostrarIngredientesEscalados(postre, gramos, costo) {
+            const factor = gramos / 600;
+            const tbody = document.getElementById('tbody-ingredientes');
+            tbody.innerHTML = '';
+
+            if (datosRecetas[postre]) {
+                datosRecetas[postre].forEach(ing => {
+                    const cantidadEscalada = ing.cantidad * factor;
+                    const subtotal = cantidadEscalada * ing.precioUnitario;
+
+                    const row = `
+                        <tr>
+                            <td>${ing.ingrediente}</td>
+                            <td>${cantidadEscalada.toFixed(2)} ${ing.unidad}</td>
+                            <td>$${ing.precioUnitario.toFixed(2)}</td>
+                            <td>$${subtotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                document.getElementById('card-ingredientes').style.display = 'block';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // REGISTROS
+        // ═══════════════════════════════════════════════════════════
+
+        function registrarProduccion() {
+            if (!calculoActual) return;
+
+            const produccion = {
+                fecha: new Date().toLocaleDateString('es-MX'),
+                postre: calculoActual.postre,
+                gramos: calculoActual.gramos,
+                porciones: calculoActual.porciones,
+                costo: calculoActual.costo
+            };
+
+            console.log("Producción registrada:", produccion);
+            alert("✅ Producción registrada correctamente");
+
+            // Limpiar
+            document.getElementById('resultado-produccion').classList.remove('mostrar');
+            document.getElementById('postre-select').value = '';
+            document.getElementById('modo-calculo').value = 'personas';
+            cambiarModoCalculo();
+        }
+
+        function registrarVenta() {
+            const venta = {
+                fecha: new Date().toLocaleDateString('es-MX'),
+                postre: document.getElementById('venta-postre').value,
+                presentacion: document.getElementById('venta-presentacion').value,
+                cantidad: parseInt(document.getElementById('venta-cantidad').value),
+                precioUnitario: parseFloat(document.getElementById('venta-precio').value),
+                total: parseInt(document.getElementById('venta-cantidad').value) * parseFloat(document.getElementById('venta-precio').value),
+                cliente: document.getElementById('venta-cliente').value,
+                pagado: document.getElementById('venta-pagado').value,
+                notas: document.getElementById('venta-notas').value
+            };
+
+            if (!venta.postre || !venta.presentacion || !venta.precioUnitario) {
+                alert("⚠️ Completa todos los campos requeridos");
+                return;
+            }
+
+            datosVentas.push(venta);
+            console.log("Venta registrada:", venta);
+            alert("✅ Venta registrada correctamente");
+
+            // Limpiar formulario
+            document.getElementById('venta-postre').value = '';
+            document.getElementById('venta-presentacion').value = '';
+            document.getElementById('venta-cantidad').value = '1';
+            document.getElementById('venta-precio').value = '';
+            document.getElementById('venta-cliente').value = '';
+            document.getElementById('venta-pagado').value = 'No';
+            document.getElementById('venta-notas').value = '';
+
+            cargarVentas();
+            actualizarDashboard();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CARGA DE TABLAS
+        // ═══════════════════════════════════════════════════════════
+
+        function cargarInventario() {
+            const tbody = document.getElementById('tabla-inventario');
+            tbody.innerHTML = '';
+
+            datosInventario.forEach(ing => {
+                const row = `
+                    <tr>
+                        <td>${ing.ingrediente}</td>
+                        <td>${ing.stock}</td>
+                        <td>${ing.unidad}</td>
+                        <td>$${ing.precioUnitario.toFixed(2)}</td>
+                        <td>${ing.minimo}</td>
+                        <td>${ing.estado}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function cargarVentas() {
+            const tbody = document.getElementById('tabla-ventas');
+            tbody.innerHTML = '';
+
+            datosVentas.forEach(venta => {
+                const row = `
+                    <tr>
+                        <td>${venta.fecha}</td>
+                        <td>${venta.postre}</td>
+                        <td>${venta.cantidad}</td>
+                        <td>$${venta.total.toFixed(2)}</td>
+                        <td>${venta.cliente}</td>
+                        <td>${venta.pagado}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function actualizarDashboard() {
+            const totalVentas = datosVentas.reduce((sum, v) => sum + (v.total || 0), 0);
+            const ventasPendientes = datosVentas.filter(v => v.pagado !== 'Sí').reduce((sum, v) => sum + (v.total || 0), 0);
+
+            document.getElementById('ventas-mes').textContent = '$' + totalVentas.toFixed(2);
+            document.getElementById('por-cobrar').textContent = '$' + ventasPendientes.toFixed(2);
+            document.getElementById('margen-promedio').textContent = '40%';
+            document.getElementById('stock-critico').textContent = '0';
+        }
+
+        // Iniciar cambiarModoCalculo al cargar
+        cambiarModoCalculo();
+    </script>
+</body>
+</html>
