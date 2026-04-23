@@ -456,6 +456,16 @@
         <div class="subtitulo">SISTEMA DE GESTIÓN</div>
     </div>
 
+    <!-- ALERTAS DE CONEXIÓN -->
+    <div id="alert-conexion" class="alert alert-success" style="margin:10px 20px 0; border-radius:6px;">✅ Conectado a Google Sheets</div>
+    <div id="alert-conexion-error" class="alert alert-warning" style="margin:10px 20px 0; border-radius:6px;">⚠️ Sin conexión a Sheets — usando datos locales</div>
+
+    <!-- SPINNER GLOBAL -->
+    <div id="spinner-global" style="display:none; padding: 20px 0;">
+        <div class="spinner"></div>
+        <p style="text-align:center; color:var(--dorado); font-size:13px; margin-top:-5px;">Cargando desde Google Sheets...</p>
+    </div>
+
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="container">
         <!-- ═══════════════════════════════════════════════════════════ -->
@@ -463,7 +473,10 @@
         <!-- ═══════════════════════════════════════════════════════════ -->
         <div id="tab-dashboard" class="tab-content activo">
             <div class="card">
-                <div class="card-title">📊 Dashboard</div>
+                <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>📊 Dashboard</span>
+                    <button class="btn btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="cargarDatos()">🔄 Actualizar</button>
+                </div>
                 <div class="grid-3">
                     <div class="widget">
                         <div class="widget-label">Ventas Este Mes</div>
@@ -765,19 +778,59 @@
         // INICIALIZACIÓN
         // ═══════════════════════════════════════════════════════════
 
+        const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwQUkDW7xvJDNYyGbwiXlP6WGgIVQF-_rUE5erhdGaOzVaW6JSDGF_g2UtyNj5z-CG3/exec";
+
         document.addEventListener('DOMContentLoaded', cargarDatos);
 
-        async function cargarDatos() {
+        async function cargarDatosDesdeSheets() {
             try {
-                // Aquí iría la URL del Apps Script deployado
-                // Por ahora usamos datos de ejemplo
+                mostrarSpinner(true);
+
+                const [recetas, inventario, config, ventas] = await Promise.all([
+                    fetch(URL_APPS_SCRIPT + '?action=recetas').then(r => { if (!r.ok) throw new Error('recetas'); return r.json(); }),
+                    fetch(URL_APPS_SCRIPT + '?action=inventario').then(r => { if (!r.ok) throw new Error('inventario'); return r.json(); }),
+                    fetch(URL_APPS_SCRIPT + '?action=config').then(r => { if (!r.ok) throw new Error('config'); return r.json(); }),
+                    fetch(URL_APPS_SCRIPT + '?action=ventas').then(r => { if (!r.ok) throw new Error('ventas'); return r.json(); })
+                ]);
+
+                datosRecetas = recetas;
+                datosInventario = inventario;
+                datosConfig = config;
+                datosVentas = ventas;
+
+                mostrarSpinner(false);
+                mostrarAlerta('alert-conexion', true, '✅ Conectado a Google Sheets');
+                setTimeout(() => mostrarAlerta('alert-conexion', false), 3000);
+
+                actualizarDashboard();
+                cargarInventario();
+                cargarVentas();
+
+            } catch (error) {
+                console.warn("Error cargando desde Sheets, usando datos de ejemplo:", error);
+                mostrarSpinner(false);
+                mostrarAlerta('alert-conexion-error', true, '⚠️ Sin conexión a Sheets — usando datos locales');
                 inicializarDatosEjemplo();
                 actualizarDashboard();
                 cargarInventario();
                 cargarVentas();
-            } catch (error) {
-                console.error("Error cargando datos:", error);
             }
+        }
+
+        async function cargarDatos() {
+            await cargarDatosDesdeSheets();
+        }
+
+        function mostrarSpinner(mostrar) {
+            const spinner = document.getElementById('spinner-global');
+            if (spinner) spinner.style.display = mostrar ? 'block' : 'none';
+        }
+
+        function mostrarAlerta(id, mostrar, mensaje) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (mostrar && mensaje) el.textContent = mensaje;
+            el.classList.toggle('mostrar', mostrar);
         }
 
         function inicializarDatosEjemplo() {
@@ -1055,10 +1108,11 @@
         // REGISTROS
         // ═══════════════════════════════════════════════════════════
 
-        function registrarProduccion() {
+        async function registrarProduccion() {
             if (!calculoActual) return;
 
             const produccion = {
+                action: 'registrarProduccion',
                 fecha: new Date().toLocaleDateString('es-MX'),
                 postre: calculoActual.postre,
                 gramos: calculoActual.gramos,
@@ -1066,24 +1120,44 @@
                 costo: calculoActual.costo
             };
 
-            console.log("Producción registrada:", produccion);
-            alert("✅ Producción registrada correctamente");
+            try {
+                const resp = await fetch(URL_APPS_SCRIPT, {
+                    method: 'POST',
+                    body: JSON.stringify(produccion)
+                });
+                const result = await resp.json();
+                if (result.status === 'ok') {
+                    alert("✅ Producción registrada en Google Sheets");
+                } else {
+                    alert("✅ Producción registrada (local)");
+                }
+            } catch (e) {
+                console.warn("No se pudo guardar en Sheets:", e);
+                alert("✅ Producción registrada (local)");
+            }
 
             // Limpiar
             document.getElementById('resultado-produccion').classList.remove('mostrar');
+            document.getElementById('btn-registrar').style.display = 'none';
+            document.getElementById('card-ingredientes').style.display = 'none';
             document.getElementById('postre-select').value = '';
             document.getElementById('modo-calculo').value = 'personas';
             cambiarModoCalculo();
+            calculoActual = null;
         }
 
-        function registrarVenta() {
+        async function registrarVenta() {
+            const cantidad = parseInt(document.getElementById('venta-cantidad').value);
+            const precioUnitario = parseFloat(document.getElementById('venta-precio').value);
+
             const venta = {
+                action: 'registrarVenta',
                 fecha: new Date().toLocaleDateString('es-MX'),
                 postre: document.getElementById('venta-postre').value,
                 presentacion: document.getElementById('venta-presentacion').value,
-                cantidad: parseInt(document.getElementById('venta-cantidad').value),
-                precioUnitario: parseFloat(document.getElementById('venta-precio').value),
-                total: parseInt(document.getElementById('venta-cantidad').value) * parseFloat(document.getElementById('venta-precio').value),
+                cantidad: cantidad,
+                precioUnitario: precioUnitario,
+                total: cantidad * precioUnitario,
                 cliente: document.getElementById('venta-cliente').value,
                 pagado: document.getElementById('venta-pagado').value,
                 notas: document.getElementById('venta-notas').value
@@ -1094,9 +1168,23 @@
                 return;
             }
 
-            datosVentas.push(venta);
-            console.log("Venta registrada:", venta);
-            alert("✅ Venta registrada correctamente");
+            try {
+                const resp = await fetch(URL_APPS_SCRIPT, {
+                    method: 'POST',
+                    body: JSON.stringify(venta)
+                });
+                const result = await resp.json();
+                if (result.status === 'ok') {
+                    alert("✅ Venta registrada en Google Sheets");
+                } else {
+                    datosVentas.push(venta);
+                    alert("✅ Venta registrada (local)");
+                }
+            } catch (e) {
+                console.warn("No se pudo guardar en Sheets:", e);
+                datosVentas.push(venta);
+                alert("✅ Venta registrada (local)");
+            }
 
             // Limpiar formulario
             document.getElementById('venta-postre').value = '';
@@ -1106,6 +1194,12 @@
             document.getElementById('venta-cliente').value = '';
             document.getElementById('venta-pagado').value = 'No';
             document.getElementById('venta-notas').value = '';
+
+            // Recargar ventas desde Sheets
+            try {
+                const ventas = await fetch(URL_APPS_SCRIPT + '?action=ventas').then(r => r.json());
+                datosVentas = ventas;
+            } catch (e) { /* usa datos locales */ }
 
             cargarVentas();
             actualizarDashboard();
