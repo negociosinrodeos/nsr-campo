@@ -474,10 +474,15 @@
            CHATBOT DUNA
         ═══════════════════════════════════════════════════ */
         #tab-chat {
-            display: flex;
+            display: none;
             flex-direction: column;
             height: calc(100vh - 130px);
             padding: 0;
+            margin: -20px;
+        }
+
+        #tab-chat.activo {
+            display: flex !important;
         }
 
         .chat-header {
@@ -721,6 +726,19 @@
             white-space: normal;
         }
 
+
+        .consig-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+        .consig-item { background:var(--hueso); border:1.5px solid var(--borde); border-radius:12px; padding:12px; text-align:center; }
+        .consig-item label { display:block; font-size:11px; color:var(--texto-suave); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+        .consig-item input[type=number] { width:70px; text-align:center; font-size:20px; font-weight:700; padding:6px 8px; border-radius:8px; border:1.5px solid var(--borde); background:white; color:var(--terracota); }
+        .consig-precio { font-size:11px; color:var(--texto-suave); margin-top:4px; }
+        .consig-resumen { background:linear-gradient(135deg,var(--durazno) 0%,var(--arena) 100%); border-radius:14px; padding:16px; margin-top:12px; border:1px solid var(--borde); display:none; }
+        .consig-resumen-title { font-family:'Playfair Display',serif; font-size:15px; color:var(--terracota); margin-bottom:10px; font-weight:700; }
+        .consig-linea { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px solid rgba(61,46,34,.08); color:var(--texto); }
+        .consig-linea:last-child { border-bottom:none; }
+        .consig-total { display:flex; justify-content:space-between; font-size:17px; font-weight:700; padding:10px 0 4px; color:var(--terracota); }
+        .periodo-label { font-size:12px; color:var(--texto-suave); margin-bottom:12px; }
+
     </style>
 </head>
 <body>
@@ -930,6 +948,48 @@
         <!-- TAB 4: VENTAS -->
         <!-- ═══════════════════════════════════════════════════════════ -->
         <div id="tab-ventas" class="tab-content">
+
+            <div class="card">
+                <div class="card-title">🏪 Ventas Biela Café</div>
+                <p class="periodo-label">¿Cuántas porciones vendió Biela este período? Calcula lo que te debe pagar.</p>
+                <div class="consig-grid">
+                    <div class="consig-item">
+                        <label>🍰 Tiramisú</label>
+                        <input type="number" id="biela-tiramisu" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>🍪 Pay Oreo</label>
+                        <input type="number" id="biela-oreo" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>🥮 Pay Lotus</label>
+                        <input type="number" id="biela-lotus" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>📅 Período</label>
+                        <input type="text" id="biela-periodo" placeholder="Ej: 1-15 Abr"
+                            style="width:100%;font-size:13px;font-weight:500;text-align:center;color:var(--texto);" oninput="calcularBiela()">
+                        <div class="consig-precio">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="consig-resumen" id="biela-resumen">
+                    <div class="consig-resumen-title">💰 Resumen de cobro</div>
+                    <div id="biela-lineas"></div>
+                    <div class="consig-total">
+                        <span>Total a cobrar</span>
+                        <span id="biela-total-label">$0</span>
+                    </div>
+                </div>
+                <div id="biela-alert" class="alert" style="margin-top:10px;"></div>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button class="btn btn-secondary" style="flex:1" onclick="limpiarBiela()">🔄 Limpiar</button>
+                    <button class="btn btn-primary" style="flex:2" onclick="registrarCobroBiela()">💾 Registrar cobro</button>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-title">💰 Registrar Venta</div>
 
@@ -1003,9 +1063,6 @@
                 </table></div>
             </div>
         </div>
-    </div>
-
-    <!-- NAVEGACIÓN TABS (ABAJO) -->
 
         <!-- ═══════════════ TAB CHATBOT ═══════════════ -->
         <div id="tab-chat" class="tab-content">
@@ -1059,6 +1116,8 @@
             </div>
 
         </div>
+
+    </div><!-- /container -->
 
     <div class="nav-tabs">
         <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
@@ -1597,63 +1656,44 @@
 
         // ── System prompt con contexto de DUNA ─────────────────────────────
         function buildSystemPrompt() {
-            // Incluir inventario actual si ya cargó
-            let invResumen = '';
-            if (datosInventario && datosInventario.length) {
-                const criticos = datosInventario.filter(i => String(i.estado).includes('CRÍTICO'));
+            var invResumen = '';
+            if (typeof datosInventario !== 'undefined' && datosInventario && datosInventario.length) {
+                var criticos = datosInventario.filter(function(i){ return String(i.estado).includes('CRITICO') || String(i.estado).includes('CRÍTICO'); });
                 if (criticos.length) {
-                    invResumen = '\n\nINVENTARIO CRÍTICO ACTUAL (stock bajo):\n' +
-                        criticos.map(i => `- ${i.ingrediente}: ${i.stock} ${i.unidad}`).join('\n');
+                    invResumen = '\nINVENTARIO CRITICO (stock bajo):\n' +
+                        criticos.map(function(i){ return '- ' + i.ingrediente + ': ' + i.stock + ' ' + i.unidad; }).join('\n');
                 }
             }
-
-            return `Eres el asistente de repostería de DUNA Repostería, negocio de postres artesanales en Torreón, México.
-Hablas en español mexicano, tono amable y directo, con un toque cálido.
-
-POSTRES DEL PORTAFOLIO:
-1. Tiramisú — molde rectangular 40×10×6 cm, 8 porciones, densidad 0.25 g/cm³
-   Ingredientes base (8 porciones): Soletas 200g, Mascarpone 260g, Crema Lyncott 385g, Azúcar 62g, Vainilla 2.5 tapitas, Café Jacobs 2.5 cdas, Cocoa 2 cdas
-   Precios unitarios: Soletas $0.20/g, Mascarpone $1.00/g, Lyncott $2.00/g, Azúcar $0.50/g
-
-2. Pay Oreo — molde redondo 24cm diám × 6cm alto, 8 porciones, densidad 0.35 g/cm³
-   Ingredientes base: G.María 130g, G.Oreo 18u, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azúcar 150g, Sal 0.25cda, Fécula 22g, Crema ácida 88g, Limón 0.5u, Huevos 5u, Oreo troceada 12u, Chispas choco blanco 300g, Lyncott 100g, Oreo polvo 6u
-
-3. Pay Lotus — molde redondo 24cm diám × 6cm alto, 8 porciones, densidad 0.32 g/cm³
-   Ingredientes base: G.María 220g, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azúcar 175g, Sal 0.25cda, Fécula 22g, Crema ácida 88g, Limón 0.5u, Huevos 5u, Crema Lotus 240ml, Aceite coco 15ml, Galletas Lotus 4u
-
-PRESENTACIONES Y PRECIOS SUGERIDOS:
-- Individual: Tiramisú $50, Pay Oreo $55, Pay Lotus $60
-- Mediano: Tiramisú $135, Pay Oreo $150, Pay Lotus $160
-- Familiar: Tiramisú $250, Pay Oreo $280, Pay Lotus $300
-
-FÓRMULAS DE ESCALA:
-- Volumen rectangular = largo × ancho × alto (cm³)
-- Volumen cilíndrico = π × radio² × alto (cm³)
-- Gramos necesarios = volumen × densidad
-- Factor de escala = gramos_nuevo / gramos_base (base = 600g para todos)
-- Todos los ingredientes se multiplican por el factor de escala
-- Siempre redondea a 2 decimales y menciona unidades
-
-SUSTITUCIONES COMUNES ACEPTABLES:
-- Mascarpone → Mezcla 3:1 de Philadelphia + crema ácida (resultado menos cremoso)
-- Crema Lyncott → Crema para batir genérica con 35%+ grasa
-- Soletas → Pan de caja sin orilla secado al horno (sabor más neutro)
-- Crema Lotus → Nutella (cambia sabor, margen mejor: $0.28/g vs $0.45/g)
-- Huevos → 3 cdas de aquafaba por huevo (para veganos, textura diferente)
-- Philadelphia → Queso crema genérico de buena calidad
-
-MÁRGENES Y COSTOS:
-- Tiramisú: costo ~$265 MXN por familiar, margen 42% — el más rentable ⭐
-- Pay Oreo: costo ~$410 MXN por familiar, margen 40%
-- Pay Lotus: costo ~$389 MXN por familiar, margen 38% (Lotus cara, buscar distribuidor)
-${invResumen}
-
-COMPORTAMIENTO:
-- Si te piden escalar una receta, muestra SIEMPRE una tabla con: Ingrediente | Cantidad original | Cantidad nueva | Unidad
-- Calcula el costo estimado del batch escalado cuando sea relevante
-- Si falta un ingrediente del inventario crítico, ofrece la sustitución más económica
-- Sé conciso en móvil: máximo 3-4 párrafos o una tabla clara
-- Si la pregunta no es de repostería/DUNA, redirige amablemente al tema`;
+            return 'Eres el asistente de reposteria de DUNA Reposteria, negocio de postres artesanales en Torreon, Mexico. ' +
+                'Hablas en espanol mexicano, tono amable y directo.\n\n' +
+                'POSTRES DEL PORTAFOLIO:\n' +
+                '1. Tiramisu - molde rectangular 40x10x6 cm, 8 porciones, densidad 0.25 g/cm3\n' +
+                '   Ingredientes base: Soletas 200g, Mascarpone 260g, Crema Lyncott 385g, Azucar 62g, Vainilla 2.5 tapitas, Cafe Jacobs 2.5 cdas, Cocoa 2 cdas\n' +
+                '   Precios: Soletas $0.20/g, Mascarpone $1.00/g, Lyncott $2.00/g, Azucar $0.50/g\n\n' +
+                '2. Pay Oreo - molde redondo 24cm diam x 6cm alto, 8 porciones, densidad 0.35 g/cm3\n' +
+                '   Ingredientes: G.Maria 130g, G.Oreo 18u, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azucar 150g, Sal 0.25cda, Fecula 22g, Crema acida 88g, Limon 0.5u, Huevos 5u, Oreo troceada 12u, Chispas choco blanco 300g, Lyncott 100g\n\n' +
+                '3. Pay Lotus - molde redondo 24cm diam x 6cm alto, 8 porciones, densidad 0.32 g/cm3\n' +
+                '   Ingredientes: G.Maria 220g, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azucar 175g, Sal 0.25cda, Fecula 22g, Crema acida 88g, Limon 0.5u, Huevos 5u, Crema Lotus 240ml, Aceite coco 15ml, Galletas Lotus 4u\n\n' +
+                'PRECIOS PUBLICOS: Individual $50-60 | Mediano $135-160 | Familiar $250-300\n\n' +
+                'CONSIGNACION BIELA CAFE:\n' +
+                '- Precio negociado: $70 MXN por porcion de CUALQUIER postre (Tiramisu, Pay Oreo, Pay Lotus)\n' +
+                '- Biela vende al publico a su precio; DUNA cobra $70 fijos por porcion vendida\n' +
+                '- Margen real por porcion: Tiramisu ~$37 (costo $33), Pay Oreo ~$19 (costo $51), Pay Lotus ~$21 (costo $49)\n\n' +
+                'FORMULAS DE ESCALA:\n' +
+                '- Volumen rectangular = largo x ancho x alto (cm3)\n' +
+                '- Volumen cilindrico = PI x radio^2 x alto (cm3)\n' +
+                '- Gramos = volumen x densidad | Factor = gramos_nuevo / 600\n' +
+                '- Multiplica todos los ingredientes por el factor, redondea a 2 decimales\n\n' +
+                'SUSTITUCIONES:\n' +
+                '- Mascarpone => 3:1 Philadelphia + crema acida\n' +
+                '- Lyncott => crema para batir generica 35%+ grasa\n' +
+                '- Crema Lotus => Nutella (margen mejor, sabor diferente)\n' +
+                '- Huevos => 3 cdas aquafaba por huevo (vegano)\n\n' +
+                'MARGENES FAMILIAR: Tiramisu $265 costo/42% margen | Pay Oreo $410/40% | Pay Lotus $389/38%\n\n' +
+                'REGLAS: Si piden escalar, SIEMPRE muestra tabla Ingrediente|Original|Nuevo|Unidad. ' +
+                'Calcula costo estimado. Maximo 4 parrafos o 1 tabla. ' +
+                'Si el ingrediente esta en inventario critico, sugiere sustitucion economica.\n' +
+                invResumen;
         }
 
         // ── Enviar mensaje ──────────────────────────────────────────────────
@@ -1848,6 +1888,73 @@ COMPORTAMIENTO:
         window.addEventListener('load', () => {
             initChat();
         });
+
+
+        // ═══════════════════════════════════════
+        // BIELA CONSIGNACIÓN — $70 por porción
+        // ═══════════════════════════════════════
+        var PRECIO_BIELA = 70;
+
+        function calcularBiela() {
+            var t = parseInt(document.getElementById('biela-tiramisu').value) || 0;
+            var o = parseInt(document.getElementById('biela-oreo').value)     || 0;
+            var l = parseInt(document.getElementById('biela-lotus').value)    || 0;
+            if (t === 0 && o === 0 && l === 0) {
+                document.getElementById('biela-resumen').style.display = 'none';
+                return;
+            }
+            var lineas = '';
+            var total  = 0;
+            if (t > 0) { var s=t*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Tiramisú &times; '+t+' porciones</span><span>$'+s+'</span></div>'; }
+            if (o > 0) { var s=o*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Pay Oreo &times; '+o+' porciones</span><span>$'+s+'</span></div>'; }
+            if (l > 0) { var s=l*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Pay Lotus &times; '+l+' porciones</span><span>$'+s+'</span></div>'; }
+            document.getElementById('biela-lineas').innerHTML        = lineas;
+            document.getElementById('biela-total-label').textContent = '$' + total + ' MXN';
+            document.getElementById('biela-resumen').style.display   = 'block';
+        }
+
+        function limpiarBiela() {
+            ['biela-tiramisu','biela-oreo','biela-lotus'].forEach(function(id){ document.getElementById(id).value='0'; });
+            document.getElementById('biela-periodo').value          = '';
+            document.getElementById('biela-resumen').style.display  = 'none';
+        }
+
+        async function registrarCobroBiela() {
+            var t      = parseInt(document.getElementById('biela-tiramisu').value) || 0;
+            var o      = parseInt(document.getElementById('biela-oreo').value)     || 0;
+            var l      = parseInt(document.getElementById('biela-lotus').value)    || 0;
+            var periodo = document.getElementById('biela-periodo').value.trim()   || 'Sin especificar';
+            var total   = (t + o + l) * PRECIO_BIELA;
+
+            if (t === 0 && o === 0 && l === 0) {
+                mostrarAlerta('biela-alert', 'warning', 'Ingresa al menos una porcion vendida.');
+                return;
+            }
+
+            var fecha = new Date().toLocaleDateString('es-MX', {year:'numeric',month:'2-digit',day:'2-digit'});
+            var payload = {
+                accion: 'registrarVenta', fecha: fecha,
+                postre: 'Consignacion Biela', presentacion: 'Multiple',
+                cantidad: t+o+l,
+                precioUnitario: PRECIO_BIELA,
+                total: total,
+                cliente: 'Biela Cafe', pagado: 'No',
+                notas: 'Periodo: '+periodo+' | Tiramisu:'+t+' PayOreo:'+o+' PayLotus:'+l
+            };
+
+            datosVentas.unshift({fecha:fecha, postre:'Consignacion Biela', presentacion:'Multiple', cantidad:t+o+l, total:total, cliente:'Biela Cafe', pagado:'No'});
+            cargarVentas();
+            actualizarDashboard();
+            mostrarAlerta('biela-alert', 'success', 'Guardando...');
+
+            try {
+                await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+                mostrarAlerta('biela-alert', 'success', 'Cobro registrado — Total: $' + total + ' MXN');
+                limpiarBiela();
+            } catch(err) {
+                mostrarAlerta('biela-alert', 'warning', 'Sin conexion — guardado local.');
+            }
+        }
 
     </script>
 </body>
