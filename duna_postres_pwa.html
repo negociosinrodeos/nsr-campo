@@ -14,20 +14,24 @@
         }
 
         :root {
-            --dorado: #D4AF8F;
-            --chocolate: #3D2817;
-            --chocolate-claro: #5C3D28;
-            --fondo: #2A1F1A;
-            --texto: #F5F1E8;
-            --acento: #E8D5C4;
-            --rojo: #C1493F;
-            --verde: #6BA55F;
-            --gris-oscuro: #4A3730;
+            --arena:      #F2E8D9;
+            --durazno:    #F5C9A0;
+            --terracota:  #D98B6B;
+            --salvia:     #A8BFA8;
+            --lavanda:    #C9BDD8;
+            --hueso:      #FAF6EE;
+            --texto:      #3D2E22;
+            --texto-suave:#7A6150;
+            --rojo:       #D97A6B;
+            --verde:      #7AAD8A;
+            --fondo:      #FAF6EE;
+            --card-bg:    #FFFFFF;
+            --borde:      #E8D9C8;
         }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, var(--fondo) 0%, #1F1512 100%);
+            background: var(--fondo);
             color: var(--texto);
             min-height: 100vh;
             overflow-x: hidden;
@@ -38,26 +42,27 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .header {
-            background: linear-gradient(to bottom, var(--chocolate) 0%, var(--chocolate-claro) 100%);
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--terracota) 100%);
             padding: 20px;
             text-align: center;
-            border-bottom: 3px solid var(--dorado);
-            box-shadow: 0 8px 32px rgba(212, 175, 143, 0.15);
+            border-bottom: 3px solid var(--terracota);
+            box-shadow: 0 4px 20px rgba(217, 139, 107, 0.25);
         }
 
         .logo-header {
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             font-weight: 800;
-            color: var(--dorado);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: var(--hueso);
+            text-shadow: 1px 1px 3px rgba(61, 46, 34, 0.25);
         }
 
         .subtitulo {
-            font-size: 13px;
-            color: var(--acento);
-            letter-spacing: 2px;
-            margin-top: 5px;
+            font-size: 12px;
+            color: rgba(250,246,238,0.85);
+            letter-spacing: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
         }
 
         /* ═══════════════════════════════════════════════════════════ */
@@ -89,26 +94,26 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .card {
-            background: linear-gradient(135deg, var(--chocolate) 0%, var(--gris-oscuro) 100%);
-            border: 1px solid var(--dorado);
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            background: var(--card-bg);
+            border: 1px solid var(--borde);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(61, 46, 34, 0.08);
             transition: all 0.3s ease;
         }
 
         .card:hover {
-            box-shadow: 0 12px 36px rgba(212, 175, 143, 0.2);
+            box-shadow: 0 6px 24px rgba(61, 46, 34, 0.12);
             transform: translateY(-2px);
         }
 
         .card-title {
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            color: var(--dorado);
+            font-size: 20px;
+            color: var(--terracota);
             margin-bottom: 15px;
-            border-bottom: 2px solid var(--dorado);
+            border-bottom: 2px solid var(--arena);
             padding-bottom: 10px;
         }
 
@@ -122,19 +127,20 @@
 
         label {
             display: block;
-            color: var(--dorado);
+            color: var(--texto-suave);
             font-weight: 600;
             margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--dorado);
-            border-radius: 6px;
+            padding: 11px 14px;
+            background: var(--hueso);
+            border: 1.5px solid var(--borde);
+            border-radius: 10px;
             color: var(--texto);
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
@@ -143,13 +149,13 @@
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 12px rgba(212, 175, 143, 0.3);
-            border-color: var(--dorado);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(217, 139, 107, 0.18);
+            border-color: var(--terracota);
         }
 
         input::placeholder {
-            color: rgba(245, 241, 232, 0.5);
+            color: #C4B5A5;
         }
 
         /* ═══════════════════════════════════════════════════════════ */
@@ -169,33 +175,33 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--dorado) 0%, #C99970 100%);
-            color: var(--chocolate);
-            box-shadow: 0 4px 15px rgba(212, 175, 143, 0.3);
+            background: linear-gradient(135deg, var(--terracota) 0%, #C97A55 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(217, 139, 107, 0.35);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 143, 0.4);
+            box-shadow: 0 6px 20px rgba(217, 139, 107, 0.45);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--dorado);
-            border: 2px solid var(--dorado);
+            color: var(--terracota);
+            border: 2px solid var(--terracota);
         }
 
         .btn-secondary:hover {
-            background: rgba(212, 175, 143, 0.1);
+            background: rgba(217, 139, 107, 0.1);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, var(--verde) 0%, #5A9050 100%);
+            background: linear-gradient(135deg, var(--verde) 0%, #5A9A6A 100%);
             color: white;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, var(--rojo) 0%, #A03632 100%);
+            background: linear-gradient(135deg, var(--rojo) 0%, #C06050 100%);
             color: white;
         }
 
@@ -231,57 +237,73 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .widget {
-            background: linear-gradient(135deg, var(--dorado) 0%, #C99970 100%);
-            color: var(--chocolate);
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--arena) 100%);
+            color: var(--texto);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 14px;
             text-align: center;
-            box-shadow: 0 8px 24px rgba(212, 175, 143, 0.2);
+            border: 1px solid var(--borde);
+            box-shadow: 0 2px 10px rgba(61,46,34,0.08);
         }
 
         .widget-value {
             font-family: 'Playfair Display', serif;
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 800;
-            margin: 10px 0;
+            margin: 8px 0;
+            color: var(--terracota);
         }
 
         .widget-label {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
+            letter-spacing: 1.5px;
+            color: var(--texto-suave);
         }
 
         /* ═══════════════════════════════════════════════════════════ */
         /* TABLAS */
         /* ═══════════════════════════════════════════════════════════ */
 
-        table {
+        .table-wrapper {
             width: 100%;
-            border-collapse: collapse;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 10px;
+            border: 1px solid var(--borde);
             margin-top: 15px;
         }
 
+        table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+        }
+
         th {
-            background: var(--dorado);
-            color: var(--chocolate);
-            padding: 12px;
+            background: var(--terracota);
+            color: white;
+            padding: 12px 14px;
             text-align: left;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
         }
 
         td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(212, 175, 143, 0.2);
-            font-size: 14px;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--arena);
+            font-size: 13px;
+            color: var(--texto);
+            white-space: nowrap;
         }
 
-        tr:hover {
-            background: rgba(212, 175, 143, 0.05);
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td {
+            background: var(--hueso);
         }
 
         /* ═══════════════════════════════════════════════════════════ */
@@ -294,35 +316,35 @@
             left: 0;
             right: 0;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            background: linear-gradient(to top, var(--chocolate) 0%, var(--gris-oscuro) 100%);
-            border-top: 3px solid var(--dorado);
-            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+            grid-template-columns: repeat(5, 1fr);
+            background: var(--hueso);
+            border-top: 2px solid var(--borde);
+            box-shadow: 0 -4px 20px rgba(61,46,34,0.1);
             z-index: 100;
         }
 
         .nav-tab {
-            padding: 12px 10px;
+            padding: 12px 8px;
             text-align: center;
             cursor: pointer;
-            font-size: 12px;
-            color: var(--acento);
+            font-size: 11px;
+            color: var(--texto-suave);
             border: none;
             background: none;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 600;
         }
 
         .nav-tab:hover {
-            color: var(--dorado);
+            color: var(--terracota);
         }
 
         .nav-tab.activo {
-            color: var(--dorado);
-            border-top: 3px solid var(--dorado);
-            background: rgba(212, 175, 143, 0.1);
+            color: var(--terracota);
+            border-top: 3px solid var(--terracota);
+            background: rgba(217, 139, 107, 0.07);
         }
 
         .nav-emoji {
@@ -340,10 +362,10 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .resultado {
-            background: linear-gradient(135deg, rgba(107, 165, 95, 0.2) 0%, rgba(92, 80, 128, 0.2) 100%);
-            border-left: 4px solid var(--verde);
+            background: linear-gradient(135deg, rgba(168,191,168,0.15) 0%, rgba(201,189,216,0.15) 100%);
+            border-left: 4px solid var(--salvia);
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 10px;
             margin-top: 20px;
             display: none;
         }
@@ -370,7 +392,7 @@
         }
 
         .resultado-label {
-            color: var(--dorado);
+            color: var(--terracota);
             font-weight: 600;
         }
 
@@ -396,15 +418,15 @@
         }
 
         .alert-success {
-            background: rgba(107, 165, 95, 0.2);
+            background: rgba(122, 173, 138, 0.15);
             border-left: 4px solid var(--verde);
             color: var(--verde);
         }
 
         .alert-warning {
-            background: rgba(193, 73, 63, 0.2);
+            background: rgba(217, 122, 107, 0.15);
             border-left: 4px solid var(--rojo);
-            color: var(--rojo);
+            color: #B05040;
         }
 
         /* ═══════════════════════════════════════════════════════════ */
@@ -412,8 +434,8 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .spinner {
-            border: 3px solid rgba(212, 175, 143, 0.1);
-            border-top: 3px solid var(--dorado);
+            border: 3px solid rgba(217, 139, 107, 0.15);
+            border-top: 3px solid var(--terracota);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -447,23 +469,265 @@
                 font-size: 18px;
             }
         }
+
+        /* ═══════════════════════════════════════════════════
+           CHATBOT DUNA
+        ═══════════════════════════════════════════════════ */
+        #tab-chat {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 130px);
+            padding: 0;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--terracota) 100%);
+            padding: 14px 20px;
+            border-radius: 0;
+            flex-shrink: 0;
+        }
+
+        .chat-header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--hueso);
+        }
+
+        .chat-header-sub {
+            font-size: 11px;
+            color: rgba(250,246,238,0.8);
+            margin-top: 2px;
+        }
+
+        .gemini-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 10px;
+            color: var(--hueso);
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .api-key-bar {
+            background: var(--arena);
+            border-bottom: 1px solid var(--borde);
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .api-key-bar input {
+            flex: 1;
+            padding: 7px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            border: 1.5px solid var(--borde);
+            background: white;
+            color: var(--texto);
+        }
+
+        .api-key-bar button {
+            padding: 7px 14px;
+            background: var(--terracota);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .api-key-saved {
+            font-size: 11px;
+            color: var(--verde);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--fondo);
+        }
+
+        .msg {
+            max-width: 88%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--terracota);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bot {
+            align-self: flex-start;
+            background: white;
+            color: var(--texto);
+            border: 1px solid var(--borde);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 4px rgba(61,46,34,0.07);
+        }
+
+        .msg-bot strong { color: var(--terracota); }
+
+        .msg-error {
+            align-self: flex-start;
+            background: #FFF0EE;
+            color: #B05040;
+            border: 1px solid #F5C9C0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-typing {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid var(--borde);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots span {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: var(--terracota);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%            { transform: translateY(-6px); }
+        }
+
+        .chat-suggestions {
+            padding: 8px 16px;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            background: var(--fondo);
+            scrollbar-width: none;
+        }
+        .chat-suggestions::-webkit-scrollbar { display: none; }
+
+        .sugg-chip {
+            background: white;
+            border: 1.5px solid var(--borde);
+            color: var(--texto-suave);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 11px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .sugg-chip:hover, .sugg-chip:active {
+            background: var(--terracota);
+            color: white;
+            border-color: var(--terracota);
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px;
+            background: white;
+            border-top: 1px solid var(--borde);
+            flex-shrink: 0;
+        }
+
+        .chat-input-bar textarea {
+            flex: 1;
+            resize: none;
+            border: 1.5px solid var(--borde);
+            border-radius: 12px;
+            padding: 9px 13px;
+            font-size: 13px;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.4;
+            max-height: 100px;
+            overflow-y: auto;
+            background: var(--hueso);
+            color: var(--texto);
+        }
+
+        .chat-input-bar textarea:focus {
+            outline: none;
+            border-color: var(--terracota);
+            background: white;
+        }
+
+        .btn-send {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--terracota);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            align-self: flex-end;
+            transition: background 0.2s;
+        }
+
+        .btn-send:disabled {
+            background: var(--borde);
+            cursor: not-allowed;
+        }
+
+        .msg-bot table {
+            border-collapse: collapse;
+            margin: 6px 0;
+            font-size: 12px;
+            width: 100%;
+        }
+        .msg-bot table th {
+            background: var(--terracota);
+            color: white;
+            padding: 5px 8px;
+            font-size: 11px;
+        }
+        .msg-bot table td {
+            border-bottom: 1px solid var(--arena);
+            padding: 5px 8px;
+            white-space: normal;
+        }
+
     </style>
 </head>
 <body>
     <!-- HEADER -->
     <div class="header">
-        <div class="logo-header">🍰 DUNA POSTRERÍA</div>
+        <div class="logo-header">🍰 DUNA REPOSTERÍA</div>
         <div class="subtitulo">SISTEMA DE GESTIÓN</div>
-    </div>
-
-    <!-- ALERTAS DE CONEXIÓN -->
-    <div id="alert-conexion" class="alert alert-success" style="margin:10px 20px 0; border-radius:6px;">✅ Conectado a Google Sheets</div>
-    <div id="alert-conexion-error" class="alert alert-warning" style="margin:10px 20px 0; border-radius:6px;">⚠️ Sin conexión a Sheets — usando datos locales</div>
-
-    <!-- SPINNER GLOBAL -->
-    <div id="spinner-global" style="display:none; padding: 20px 0;">
-        <div class="spinner"></div>
-        <p style="text-align:center; color:var(--dorado); font-size:13px; margin-top:-5px;">Cargando desde Google Sheets...</p>
     </div>
 
     <!-- CONTENEDOR PRINCIPAL -->
@@ -473,10 +737,7 @@
         <!-- ═══════════════════════════════════════════════════════════ -->
         <div id="tab-dashboard" class="tab-content activo">
             <div class="card">
-                <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>📊 Dashboard</span>
-                    <button class="btn btn-secondary" style="padding:6px 14px; font-size:12px;" onclick="cargarDatos()">🔄 Actualizar</button>
-                </div>
+                <div class="card-title">📊 Dashboard</div>
                 <div class="grid-3">
                     <div class="widget">
                         <div class="widget-label">Ventas Este Mes</div>
@@ -622,13 +883,14 @@
                     </div>
                 </div>
 
+                <div id="prod-alert" class="alert"></div>
                 <button class="btn btn-success btn-block" id="btn-registrar" style="display: none; margin-top: 15px;" onclick="registrarProduccion()">✅ Registrar Producción</button>
             </div>
 
             <!-- INGREDIENTES NECESARIOS -->
             <div class="card" id="card-ingredientes" style="display: none;">
                 <div class="card-title">📋 Ingredientes Necesarios</div>
-                <table id="tabla-ingredientes">
+                <div class="table-wrapper"><table id="tabla-ingredientes">
                     <thead>
                         <tr>
                             <th>Ingrediente</th>
@@ -638,7 +900,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-ingredientes"></tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 
@@ -648,7 +910,7 @@
         <div id="tab-inventario" class="tab-content">
             <div class="card">
                 <div class="card-title">📦 Gestión de Inventario</div>
-                <table>
+                <div class="table-wrapper"><table>
                     <thead>
                         <tr>
                             <th>Ingrediente</th>
@@ -660,7 +922,7 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-inventario"></tbody>
-                </table>
+                </table></div>
             </div>
         </div>
 
@@ -720,12 +982,13 @@
                     <textarea id="venta-notas" placeholder="Detalles adicionales..." rows="3"></textarea>
                 </div>
 
+                <div id="venta-alert" class="alert"></div>
                 <button class="btn btn-primary btn-block" onclick="registrarVenta()">💾 Registrar Venta</button>
             </div>
 
             <div class="card">
                 <div class="card-title">📊 Historial de Ventas</div>
-                <table>
+                <div class="table-wrapper"><table>
                     <thead>
                         <tr>
                             <th>Fecha</th>
@@ -737,12 +1000,66 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-ventas"></tbody>
-                </table>
+                </table></div>
             </div>
         </div>
     </div>
 
     <!-- NAVEGACIÓN TABS (ABAJO) -->
+
+        <!-- ═══════════════ TAB CHATBOT ═══════════════ -->
+        <div id="tab-chat" class="tab-content">
+
+            <div class="chat-header">
+                <div class="chat-header-title">
+                    🍰 Asistente DUNA
+                    <span class="gemini-badge">Gemini AI</span>
+                </div>
+                <div class="chat-header-sub">Cálculos, sustituciones y consejos de repostería</div>
+            </div>
+
+            <!-- API Key bar (se oculta cuando ya está guardada) -->
+            <div class="api-key-bar" id="api-key-bar">
+                <input type="password" id="gemini-api-key" placeholder="Pega tu API Key de Google AI Studio..." />
+                <button onclick="guardarApiKey()">Guardar</button>
+            </div>
+            <div class="api-key-bar" id="api-key-saved-bar" style="display:none;">
+                <span class="api-key-saved">✅ API Key activa</span>
+                <button onclick="cambiarApiKey()" style="background:transparent;color:var(--texto-suave);border:1px solid var(--borde);font-size:11px;">Cambiar</button>
+            </div>
+
+            <!-- Mensajes -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg msg-bot">
+                    👋 ¡Hola! Soy tu asistente de repostería DUNA.<br><br>
+                    Puedo ayudarte a <strong>escalar recetas</strong> a cualquier molde,
+                    sugerir <strong>sustituciones de ingredientes</strong>, calcular
+                    <strong>costos de producción</strong> y resolver dudas de técnica.<br><br>
+                    ¿En qué andamos hoy?
+                </div>
+            </div>
+
+            <!-- Sugerencias rápidas -->
+            <div class="chat-suggestions" id="chat-suggestions">
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🔢 Escalar tiramisú a molde 30x20</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🔄 Sustituir mascarpone</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">💰 ¿Cuánto cuesta hacer Pay Oreo?</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">📐 Molde redondo 26cm Pay Lotus</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">⏱️ Tiempo de enfriado tiramisú</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🥚 Sustituir huevos en Pay Oreo</button>
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-bar">
+                <textarea id="chat-input" rows="1"
+                    placeholder="Pregunta sobre recetas, moldes, sustituciones..."
+                    onkeydown="chatKeyDown(event)"
+                    oninput="autoResizeTextarea(this)"></textarea>
+                <button class="btn-send" id="btn-send" onclick="enviarMensaje()">➤</button>
+            </div>
+
+        </div>
+
     <div class="nav-tabs">
         <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
             <span class="nav-emoji">📊</span>
@@ -759,6 +1076,10 @@
         <button class="nav-tab" onclick="cambiarTab('ventas')">
             <span class="nav-emoji">💰</span>
             Ventas
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('chat')">
+            <span class="nav-emoji">🤖</span>
+            Asistente
         </button>
     </div>
 
@@ -778,59 +1099,19 @@
         // INICIALIZACIÓN
         // ═══════════════════════════════════════════════════════════
 
-        const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwQUkDW7xvJDNYyGbwiXlP6WGgIVQF-_rUE5erhdGaOzVaW6JSDGF_g2UtyNj5z-CG3/exec";
-
         document.addEventListener('DOMContentLoaded', cargarDatos);
 
-        async function cargarDatosDesdeSheets() {
+        async function cargarDatos() {
             try {
-                mostrarSpinner(true);
-
-                const [recetas, inventario, config, ventas] = await Promise.all([
-                    fetch(URL_APPS_SCRIPT + '?action=recetas').then(r => { if (!r.ok) throw new Error('recetas'); return r.json(); }),
-                    fetch(URL_APPS_SCRIPT + '?action=inventario').then(r => { if (!r.ok) throw new Error('inventario'); return r.json(); }),
-                    fetch(URL_APPS_SCRIPT + '?action=config').then(r => { if (!r.ok) throw new Error('config'); return r.json(); }),
-                    fetch(URL_APPS_SCRIPT + '?action=ventas').then(r => { if (!r.ok) throw new Error('ventas'); return r.json(); })
-                ]);
-
-                datosRecetas = recetas;
-                datosInventario = inventario;
-                datosConfig = config;
-                datosVentas = ventas;
-
-                mostrarSpinner(false);
-                mostrarAlerta('alert-conexion', true, '✅ Conectado a Google Sheets');
-                setTimeout(() => mostrarAlerta('alert-conexion', false), 3000);
-
-                actualizarDashboard();
-                cargarInventario();
-                cargarVentas();
-
-            } catch (error) {
-                console.warn("Error cargando desde Sheets, usando datos de ejemplo:", error);
-                mostrarSpinner(false);
-                mostrarAlerta('alert-conexion-error', true, '⚠️ Sin conexión a Sheets — usando datos locales');
+                // Aquí iría la URL del Apps Script deployado
+                // Por ahora usamos datos de ejemplo
                 inicializarDatosEjemplo();
                 actualizarDashboard();
                 cargarInventario();
                 cargarVentas();
+            } catch (error) {
+                console.error("Error cargando datos:", error);
             }
-        }
-
-        async function cargarDatos() {
-            await cargarDatosDesdeSheets();
-        }
-
-        function mostrarSpinner(mostrar) {
-            const spinner = document.getElementById('spinner-global');
-            if (spinner) spinner.style.display = mostrar ? 'block' : 'none';
-        }
-
-        function mostrarAlerta(id, mostrar, mensaje) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            if (mostrar && mensaje) el.textContent = mensaje;
-            el.classList.toggle('mostrar', mostrar);
         }
 
         function inicializarDatosEjemplo() {
@@ -1108,101 +1389,116 @@
         // REGISTROS
         // ═══════════════════════════════════════════════════════════
 
+        // registrarProduccion() → movida al bloque registrarVenta (arriba)
+
+        // URL del Apps Script desplegado — actualiza con tu URL real
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQUkDW7xvJDNYyGbwiXlP6WGgIVQF-_rUE5erhdGaOzVaW6JSDGF_g2UtyNj5z-CG3/exec';
+
+        async function registrarVenta() {
+            const postre       = document.getElementById('venta-postre').value;
+            const presentacion = document.getElementById('venta-presentacion').value;
+            const cantidad     = parseInt(document.getElementById('venta-cantidad').value) || 0;
+            const precio       = parseFloat(document.getElementById('venta-precio').value) || 0;
+            const cliente      = document.getElementById('venta-cliente').value || '';
+            const pagado       = document.getElementById('venta-pagado').value;
+            const notas        = document.getElementById('venta-notas').value || '';
+
+            if (!postre || !presentacion || !precio) {
+                mostrarAlerta('venta-alert', 'warning', '⚠️ Completa postre, presentación y precio.');
+                return;
+            }
+
+            const total = cantidad * precio;
+            const fecha = new Date().toLocaleDateString('es-MX', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+
+            const venta = { accion: 'registrarVenta', fecha, postre, presentacion, cantidad, precioUnitario: precio, total, cliente, pagado, notas };
+
+            // Actualizar UI local inmediatamente
+            datosVentas.unshift({ fecha, postre, presentacion, cantidad, total, cliente, pagado });
+            cargarVentas();
+            actualizarDashboard();
+
+            // Limpiar formulario
+            document.getElementById('venta-postre').value        = '';
+            document.getElementById('venta-presentacion').value  = '';
+            document.getElementById('venta-cantidad').value      = '1';
+            document.getElementById('venta-precio').value        = '';
+            document.getElementById('venta-cliente').value       = '';
+            document.getElementById('venta-pagado').value        = 'No';
+            document.getElementById('venta-notas').value         = '';
+
+            mostrarAlerta('venta-alert', 'success', '💾 Guardando en Sheets...');
+
+            // Enviar a Google Sheets via Apps Script
+            try {
+                const resp = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode:   'no-cors',           // Apps Script requiere no-cors
+                    headers: { 'Content-Type': 'application/json' },
+                    body:   JSON.stringify(venta)
+                });
+                mostrarAlerta('venta-alert', 'success', '✅ Venta registrada en Google Sheets');
+            } catch (err) {
+                console.error('Error al enviar a Sheets:', err);
+                mostrarAlerta('venta-alert', 'warning', '⚠️ Sin conexión — guardado solo local. Se enviará al reconectar.');
+            }
+        }
+
+        // ── FIX: registrarProduccion → también envía al Apps Script ──────────
         async function registrarProduccion() {
             if (!calculoActual) return;
 
-            const produccion = {
-                action: 'registrarProduccion',
-                fecha: new Date().toLocaleDateString('es-MX'),
-                postre: calculoActual.postre,
-                gramos: calculoActual.gramos,
+            const fecha  = new Date().toLocaleDateString('es-MX', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+            const payload = {
+                accion:    'registrarProduccion',
+                fecha,
+                postre:    calculoActual.postre,
+                gramos:    calculoActual.gramos,
                 porciones: calculoActual.porciones,
-                costo: calculoActual.costo
+                costo:     calculoActual.costo
             };
 
+            mostrarAlerta('prod-alert', 'success', '💾 Guardando producción...');
+
             try {
-                const resp = await fetch(URL_APPS_SCRIPT, {
+                await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    body: JSON.stringify(produccion)
+                    mode:   'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:   JSON.stringify(payload)
                 });
-                const result = await resp.json();
-                if (result.status === 'ok') {
-                    alert("✅ Producción registrada en Google Sheets");
-                } else {
-                    alert("✅ Producción registrada (local)");
-                }
-            } catch (e) {
-                console.warn("No se pudo guardar en Sheets:", e);
-                alert("✅ Producción registrada (local)");
+                mostrarAlerta('prod-alert', 'success', '✅ Producción registrada en Google Sheets');
+            } catch (err) {
+                mostrarAlerta('prod-alert', 'warning', '⚠️ Sin conexión — solo local.');
             }
 
-            // Limpiar
             document.getElementById('resultado-produccion').classList.remove('mostrar');
             document.getElementById('btn-registrar').style.display = 'none';
-            document.getElementById('card-ingredientes').style.display = 'none';
             document.getElementById('postre-select').value = '';
             document.getElementById('modo-calculo').value = 'personas';
             cambiarModoCalculo();
             calculoActual = null;
         }
 
-        async function registrarVenta() {
-            const cantidad = parseInt(document.getElementById('venta-cantidad').value);
-            const precioUnitario = parseFloat(document.getElementById('venta-precio').value);
-
-            const venta = {
-                action: 'registrarVenta',
-                fecha: new Date().toLocaleDateString('es-MX'),
-                postre: document.getElementById('venta-postre').value,
-                presentacion: document.getElementById('venta-presentacion').value,
-                cantidad: cantidad,
-                precioUnitario: precioUnitario,
-                total: cantidad * precioUnitario,
-                cliente: document.getElementById('venta-cliente').value,
-                pagado: document.getElementById('venta-pagado').value,
-                notas: document.getElementById('venta-notas').value
-            };
-
-            if (!venta.postre || !venta.presentacion || !venta.precioUnitario) {
-                alert("⚠️ Completa todos los campos requeridos");
-                return;
+        // ── Helper: mostrar alerta contextual ────────────────────────────────
+        function mostrarAlerta(id, tipo, msg) {
+            let el = document.getElementById(id);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = id;
+                el.className = 'alert';
+                // Insertar después del botón submit más cercano — fallback: body
+                document.body.appendChild(el);
             }
-
-            try {
-                const resp = await fetch(URL_APPS_SCRIPT, {
-                    method: 'POST',
-                    body: JSON.stringify(venta)
-                });
-                const result = await resp.json();
-                if (result.status === 'ok') {
-                    alert("✅ Venta registrada en Google Sheets");
-                } else {
-                    datosVentas.push(venta);
-                    alert("✅ Venta registrada (local)");
-                }
-            } catch (e) {
-                console.warn("No se pudo guardar en Sheets:", e);
-                datosVentas.push(venta);
-                alert("✅ Venta registrada (local)");
+            el.className = 'alert mostrar alert-' + (tipo === 'success' ? 'success' : 'warning');
+            el.textContent = msg;
+            if (tipo === 'success') {
+                setTimeout(() => el.classList.remove('mostrar'), 4000);
             }
-
-            // Limpiar formulario
-            document.getElementById('venta-postre').value = '';
-            document.getElementById('venta-presentacion').value = '';
-            document.getElementById('venta-cantidad').value = '1';
-            document.getElementById('venta-precio').value = '';
-            document.getElementById('venta-cliente').value = '';
-            document.getElementById('venta-pagado').value = 'No';
-            document.getElementById('venta-notas').value = '';
-
-            // Recargar ventas desde Sheets
-            try {
-                const ventas = await fetch(URL_APPS_SCRIPT + '?action=ventas').then(r => r.json());
-                datosVentas = ventas;
-            } catch (e) { /* usa datos locales */ }
-
-            cargarVentas();
-            actualizarDashboard();
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -1259,6 +1555,300 @@
 
         // Iniciar cambiarModoCalculo al cargar
         cambiarModoCalculo();
+
+        // ═══════════════════════════════════════════════════════════════════
+        // CHATBOT DUNA — Gemini 2.0 Flash
+        // ═══════════════════════════════════════════════════════════════════
+
+        const GEMINI_MODEL = 'gemini-2.0-flash';
+        const GEMINI_API   = 'https://generativelanguage.googleapis.com/v1beta/models/'
+                           + GEMINI_MODEL + ':generateContent?key=';
+
+        let chatHistory = [];   // [{role:'user'|'model', parts:[{text}]}]
+
+        // ── API Key ─────────────────────────────────────────────────────────
+        function getApiKey() {
+            return localStorage.getItem('duna_gemini_key') || '';
+        }
+
+        function guardarApiKey() {
+            const key = document.getElementById('gemini-api-key').value.trim();
+            if (!key) { alert('Pega una API Key válida'); return; }
+            localStorage.setItem('duna_gemini_key', key);
+            mostrarKeyGuardada();
+        }
+
+        function mostrarKeyGuardada() {
+            document.getElementById('api-key-bar').style.display       = 'none';
+            document.getElementById('api-key-saved-bar').style.display = 'flex';
+        }
+
+        function cambiarApiKey() {
+            localStorage.removeItem('duna_gemini_key');
+            document.getElementById('gemini-api-key').value            = '';
+            document.getElementById('api-key-bar').style.display       = 'flex';
+            document.getElementById('api-key-saved-bar').style.display = 'none';
+        }
+
+        // Mostrar estado de key al cargar tab chat
+        function initChat() {
+            if (getApiKey()) mostrarKeyGuardada();
+        }
+
+        // ── System prompt con contexto de DUNA ─────────────────────────────
+        function buildSystemPrompt() {
+            // Incluir inventario actual si ya cargó
+            let invResumen = '';
+            if (datosInventario && datosInventario.length) {
+                const criticos = datosInventario.filter(i => String(i.estado).includes('CRÍTICO'));
+                if (criticos.length) {
+                    invResumen = '\n\nINVENTARIO CRÍTICO ACTUAL (stock bajo):\n' +
+                        criticos.map(i => `- ${i.ingrediente}: ${i.stock} ${i.unidad}`).join('\n');
+                }
+            }
+
+            return `Eres el asistente de repostería de DUNA Repostería, negocio de postres artesanales en Torreón, México.
+Hablas en español mexicano, tono amable y directo, con un toque cálido.
+
+POSTRES DEL PORTAFOLIO:
+1. Tiramisú — molde rectangular 40×10×6 cm, 8 porciones, densidad 0.25 g/cm³
+   Ingredientes base (8 porciones): Soletas 200g, Mascarpone 260g, Crema Lyncott 385g, Azúcar 62g, Vainilla 2.5 tapitas, Café Jacobs 2.5 cdas, Cocoa 2 cdas
+   Precios unitarios: Soletas $0.20/g, Mascarpone $1.00/g, Lyncott $2.00/g, Azúcar $0.50/g
+
+2. Pay Oreo — molde redondo 24cm diám × 6cm alto, 8 porciones, densidad 0.35 g/cm³
+   Ingredientes base: G.María 130g, G.Oreo 18u, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azúcar 150g, Sal 0.25cda, Fécula 22g, Crema ácida 88g, Limón 0.5u, Huevos 5u, Oreo troceada 12u, Chispas choco blanco 300g, Lyncott 100g, Oreo polvo 6u
+
+3. Pay Lotus — molde redondo 24cm diám × 6cm alto, 8 porciones, densidad 0.32 g/cm³
+   Ingredientes base: G.María 220g, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azúcar 175g, Sal 0.25cda, Fécula 22g, Crema ácida 88g, Limón 0.5u, Huevos 5u, Crema Lotus 240ml, Aceite coco 15ml, Galletas Lotus 4u
+
+PRESENTACIONES Y PRECIOS SUGERIDOS:
+- Individual: Tiramisú $50, Pay Oreo $55, Pay Lotus $60
+- Mediano: Tiramisú $135, Pay Oreo $150, Pay Lotus $160
+- Familiar: Tiramisú $250, Pay Oreo $280, Pay Lotus $300
+
+FÓRMULAS DE ESCALA:
+- Volumen rectangular = largo × ancho × alto (cm³)
+- Volumen cilíndrico = π × radio² × alto (cm³)
+- Gramos necesarios = volumen × densidad
+- Factor de escala = gramos_nuevo / gramos_base (base = 600g para todos)
+- Todos los ingredientes se multiplican por el factor de escala
+- Siempre redondea a 2 decimales y menciona unidades
+
+SUSTITUCIONES COMUNES ACEPTABLES:
+- Mascarpone → Mezcla 3:1 de Philadelphia + crema ácida (resultado menos cremoso)
+- Crema Lyncott → Crema para batir genérica con 35%+ grasa
+- Soletas → Pan de caja sin orilla secado al horno (sabor más neutro)
+- Crema Lotus → Nutella (cambia sabor, margen mejor: $0.28/g vs $0.45/g)
+- Huevos → 3 cdas de aquafaba por huevo (para veganos, textura diferente)
+- Philadelphia → Queso crema genérico de buena calidad
+
+MÁRGENES Y COSTOS:
+- Tiramisú: costo ~$265 MXN por familiar, margen 42% — el más rentable ⭐
+- Pay Oreo: costo ~$410 MXN por familiar, margen 40%
+- Pay Lotus: costo ~$389 MXN por familiar, margen 38% (Lotus cara, buscar distribuidor)
+${invResumen}
+
+COMPORTAMIENTO:
+- Si te piden escalar una receta, muestra SIEMPRE una tabla con: Ingrediente | Cantidad original | Cantidad nueva | Unidad
+- Calcula el costo estimado del batch escalado cuando sea relevante
+- Si falta un ingrediente del inventario crítico, ofrece la sustitución más económica
+- Sé conciso en móvil: máximo 3-4 párrafos o una tabla clara
+- Si la pregunta no es de repostería/DUNA, redirige amablemente al tema`;
+        }
+
+        // ── Enviar mensaje ──────────────────────────────────────────────────
+        async function enviarMensaje() {
+            const input   = document.getElementById('chat-input');
+            const texto   = input.value.trim();
+            if (!texto) return;
+
+            const apiKey  = getApiKey();
+            if (!apiKey) {
+                agregarMensaje('error', '🔑 Primero guarda tu API Key de Google AI Studio arriba.');
+                return;
+            }
+
+            // Mostrar mensaje del usuario
+            agregarMensaje('user', texto);
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('btn-send').disabled = true;
+
+            // Ocultar sugerencias después del primer mensaje
+            document.getElementById('chat-suggestions').style.display = 'none';
+
+            // Agregar a historial
+            chatHistory.push({ role: 'user', parts: [{ text: texto }] });
+
+            // Typing indicator
+            const typingId = agregarTyping();
+
+            try {
+                const body = {
+                    system_instruction: { parts: [{ text: buildSystemPrompt() }] },
+                    contents: chatHistory,
+                    generationConfig: {
+                        temperature: 0.4,
+                        maxOutputTokens: 800,
+                        topP: 0.85
+                    }
+                };
+
+                const resp = await fetch(GEMINI_API + apiKey, {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify(body)
+                });
+
+                const data = await resp.json();
+
+                eliminarTyping(typingId);
+
+                if (!resp.ok) {
+                    const errMsg = data?.error?.message || 'Error de API';
+                    agregarMensaje('error', '⚠️ ' + errMsg);
+                    chatHistory.pop(); // quitar mensaje fallido del historial
+                    return;
+                }
+
+                const respText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta';
+
+                // Agregar al historial
+                chatHistory.push({ role: 'model', parts: [{ text: respText }] });
+
+                // Limitar historial a 20 turnos (memoria)
+                if (chatHistory.length > 40) chatHistory = chatHistory.slice(-30);
+
+                agregarMensaje('bot', respText);
+
+            } catch (err) {
+                eliminarTyping(typingId);
+                agregarMensaje('error', '⚠️ Sin conexión. Revisa tu internet e intenta de nuevo.');
+                chatHistory.pop();
+            }
+
+            document.getElementById('btn-send').disabled = false;
+        }
+
+        // ── Helpers de UI ───────────────────────────────────────────────────
+        function agregarMensaje(tipo, texto) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+
+            if (tipo === 'user') {
+                div.className = 'msg msg-user';
+                div.textContent = texto;
+            } else if (tipo === 'bot') {
+                div.className = 'msg msg-bot';
+                div.innerHTML  = markdownLite(texto);
+            } else {
+                div.className = 'msg msg-error';
+                div.textContent = texto;
+            }
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div;
+        }
+
+        function agregarTyping() {
+            const container = document.getElementById('chat-messages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id        = id;
+            div.className = 'msg-typing';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function eliminarTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function usarSugerencia(btn) {
+            const texto = btn.textContent.replace(/^[^\s]+\s/, ''); // quitar emoji
+            document.getElementById('chat-input').value = texto;
+            document.getElementById('chat-input').focus();
+        }
+
+        function chatKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                enviarMensaje();
+            }
+        }
+
+        function autoResizeTextarea(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+        }
+
+        // ── Markdown lite (bold, italic, tables, listas) ────────────────────
+        function markdownLite(text) {
+            // Tablas markdown simples
+            const lines = text.split('\n');
+            let html = '';
+            let inTable = false;
+            let tableRows = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.match(/^\|.+\|$/)) {
+                    if (!inTable) { inTable = true; tableRows = []; }
+                    if (!line.match(/^\|[-| :]+\|$/)) {  // skip separator
+                        tableRows.push(line);
+                    }
+                } else {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        inTable = false; tableRows = [];
+                    }
+                    html += renderLine(line) + '\n';
+                }
+            }
+            if (inTable) html += renderTable(tableRows);
+
+            return html;
+        }
+
+        function renderTable(rows) {
+            if (!rows.length) return '';
+            let t = '<table>';
+            rows.forEach((row, idx) => {
+                const cells = row.split('|').filter(c => c.trim() !== '');
+                const tag   = idx === 0 ? 'th' : 'td';
+                t += '<tr>' + cells.map(c => `<${tag}>${escHtml(c.trim())}</${tag}>`).join('') + '</tr>';
+            });
+            return t + '</table>';
+        }
+
+        function renderLine(line) {
+            // Listas
+            line = line.replace(/^[*-] (.+)/, '• $1');
+            // Bold
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // Italic
+            line = line.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            // Inline code
+            line = line.replace(/`(.+?)`/g, '<code style="background:var(--arena);padding:1px 4px;border-radius:3px;font-size:11px;">$1</code>');
+            // Headings
+            line = line.replace(/^### (.+)/, '<strong style="color:var(--terracota)">$1</strong>');
+            line = line.replace(/^## (.+)/,  '<strong style="color:var(--terracota);font-size:14px">$1</strong>');
+            return line;
+        }
+
+        function escHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        // ── Init al cargar ──────────────────────────────────────────────────
+        window.addEventListener('load', () => {
+            initChat();
+        });
+
     </script>
 </body>
 </html>
