@@ -1725,7 +1725,7 @@
 
             try {
                 const body = {
-                    system_instruction: { parts: [{ text: buildSystemPrompt() }] },
+                    systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
                     contents: chatHistory,
                     generationConfig: {
                         temperature: 0.4,
