@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DUNA Postrería - Sistema de Gestión de Producción">
+    <title>DUNA Postrería</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --arena:      #F2E8D9;
+            --durazno:    #F5C9A0;
+            --terracota:  #D98B6B;
+            --salvia:     #A8BFA8;
+            --lavanda:    #C9BDD8;
+            --hueso:      #FAF6EE;
+            --texto:      #3D2E22;
+            --texto-suave:#7A6150;
+            --rojo:       #D97A6B;
+            --verde:      #7AAD8A;
+            --fondo:      #FAF6EE;
+            --card-bg:    #FFFFFF;
+            --borde:      #E8D9C8;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* HEADER */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .header {
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--terracota) 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--terracota);
+            box-shadow: 0 4px 20px rgba(217, 139, 107, 0.25);
+        }
+
+        .logo-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--hueso);
+            text-shadow: 1px 1px 3px rgba(61, 46, 34, 0.25);
+        }
+
+        .subtitulo {
+            font-size: 12px;
+            color: rgba(250,246,238,0.85);
+            letter-spacing: 3px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* CONTENEDOR PRINCIPAL */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.activo {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TARJETAS Y CAJAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--borde);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(61, 46, 34, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 24px rgba(61, 46, 34, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            color: var(--terracota);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--arena);
+            padding-bottom: 10px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* INPUTS Y SELECTS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: var(--texto-suave);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--hueso);
+            border: 1.5px solid var(--borde);
+            border-radius: 10px;
+            color: var(--texto);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(217, 139, 107, 0.18);
+            border-color: var(--terracota);
+        }
+
+        input::placeholder {
+            color: #C4B5A5;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* BOTONES */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--terracota) 0%, #C97A55 100%);
+            color: white;
+            box-shadow: 0 4px 14px rgba(217, 139, 107, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(217, 139, 107, 0.45);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--terracota);
+            border: 2px solid var(--terracota);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(217, 139, 107, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--verde) 0%, #5A9A6A 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--rojo) 0%, #C06050 100%);
+            color: white;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* GRID Y LAYOUTS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* DASHBOARD WIDGETS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .widget {
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--arena) 100%);
+            color: var(--texto);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid var(--borde);
+            box-shadow: 0 2px 10px rgba(61,46,34,0.08);
+        }
+
+        .widget-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            font-weight: 800;
+            margin: 8px 0;
+            color: var(--terracota);
+        }
+
+        .widget-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--texto-suave);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TABLAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 10px;
+            border: 1px solid var(--borde);
+            margin-top: 15px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--terracota);
+            color: white;
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--arena);
+            font-size: 13px;
+            color: var(--texto);
+            white-space: nowrap;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td {
+            background: var(--hueso);
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* TABS NAVEGACIÓN (Abajo) */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .nav-tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: var(--hueso);
+            border-top: 2px solid var(--borde);
+            box-shadow: 0 -4px 20px rgba(61,46,34,0.1);
+            z-index: 100;
+        }
+
+        .nav-tab {
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--texto-suave);
+            border: none;
+            background: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .nav-tab:hover {
+            color: var(--terracota);
+        }
+
+        .nav-tab.activo {
+            color: var(--terracota);
+            border-top: 3px solid var(--terracota);
+            background: rgba(217, 139, 107, 0.07);
+        }
+
+        .nav-emoji {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .container {
+            padding-bottom: 100px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* RESULTADO DE CÁLCULO */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .resultado {
+            background: linear-gradient(135deg, rgba(168,191,168,0.15) 0%, rgba(201,189,216,0.15) 100%);
+            border-left: 4px solid var(--salvia);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .resultado.mostrar {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .resultado-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(212, 175, 143, 0.1);
+        }
+
+        .resultado-row:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-label {
+            color: var(--terracota);
+            font-weight: 600;
+        }
+
+        .resultado-valor {
+            color: var(--texto);
+            font-weight: 500;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* ALERTAS */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert.mostrar {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(122, 173, 138, 0.15);
+            border-left: 4px solid var(--verde);
+            color: var(--verde);
+        }
+
+        .alert-warning {
+            background: rgba(217, 122, 107, 0.15);
+            border-left: 4px solid var(--rojo);
+            color: #B05040;
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* CARGA */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        .spinner {
+            border: 3px solid rgba(217, 139, 107, 0.15);
+            border-top: 3px solid var(--terracota);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ═══════════════════════════════════════════════════════════ */
+        /* RESPONSIVE */
+        /* ═══════════════════════════════════════════════════════════ */
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px;
+            }
+
+            .logo-header {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════
+           CHATBOT DUNA
+        ═══════════════════════════════════════════════════ */
+        #tab-chat {
+            display: none;
+            flex-direction: column;
+            height: calc(100vh - 130px);
+            padding: 0;
+            margin: -20px;
+        }
+
+        #tab-chat.activo {
+            display: flex !important;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--terracota) 100%);
+            padding: 14px 20px;
+            border-radius: 0;
+            flex-shrink: 0;
+        }
+
+        .chat-header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--hueso);
+        }
+
+        .chat-header-sub {
+            font-size: 11px;
+            color: rgba(250,246,238,0.8);
+            margin-top: 2px;
+        }
+
+        .gemini-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 10px;
+            color: var(--hueso);
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .api-key-bar {
+            background: var(--arena);
+            border-bottom: 1px solid var(--borde);
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .api-key-bar input {
+            flex: 1;
+            padding: 7px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            border: 1.5px solid var(--borde);
+            background: white;
+            color: var(--texto);
+        }
+
+        .api-key-bar button {
+            padding: 7px 14px;
+            background: var(--terracota);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .api-key-saved {
+            font-size: 11px;
+            color: var(--verde);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--fondo);
+        }
+
+        .msg {
+            max-width: 88%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.55;
+            word-break: break-word;
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--terracota);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bot {
+            align-self: flex-start;
+            background: white;
+            color: var(--texto);
+            border: 1px solid var(--borde);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 4px rgba(61,46,34,0.07);
+        }
+
+        .msg-bot strong { color: var(--terracota); }
+
+        .msg-error {
+            align-self: flex-start;
+            background: #FFF0EE;
+            color: #B05040;
+            border: 1px solid #F5C9C0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-typing {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid var(--borde);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots span {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background: var(--terracota);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%            { transform: translateY(-6px); }
+        }
+
+        .chat-suggestions {
+            padding: 8px 16px;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            background: var(--fondo);
+            scrollbar-width: none;
+        }
+        .chat-suggestions::-webkit-scrollbar { display: none; }
+
+        .sugg-chip {
+            background: white;
+            border: 1.5px solid var(--borde);
+            color: var(--texto-suave);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 11px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .sugg-chip:hover, .sugg-chip:active {
+            background: var(--terracota);
+            color: white;
+            border-color: var(--terracota);
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 14px;
+            background: white;
+            border-top: 1px solid var(--borde);
+            flex-shrink: 0;
+        }
+
+        .chat-input-bar textarea {
+            flex: 1;
+            resize: none;
+            border: 1.5px solid var(--borde);
+            border-radius: 12px;
+            padding: 9px 13px;
+            font-size: 13px;
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.4;
+            max-height: 100px;
+            overflow-y: auto;
+            background: var(--hueso);
+            color: var(--texto);
+        }
+
+        .chat-input-bar textarea:focus {
+            outline: none;
+            border-color: var(--terracota);
+            background: white;
+        }
+
+        .btn-send {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--terracota);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            align-self: flex-end;
+            transition: background 0.2s;
+        }
+
+        .btn-send:disabled {
+            background: var(--borde);
+            cursor: not-allowed;
+        }
+
+        .msg-bot table {
+            border-collapse: collapse;
+            margin: 6px 0;
+            font-size: 12px;
+            width: 100%;
+        }
+        .msg-bot table th {
+            background: var(--terracota);
+            color: white;
+            padding: 5px 8px;
+            font-size: 11px;
+        }
+        .msg-bot table td {
+            border-bottom: 1px solid var(--arena);
+            padding: 5px 8px;
+            white-space: normal;
+        }
+
+
+        .consig-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+        .consig-item { background:var(--hueso); border:1.5px solid var(--borde); border-radius:12px; padding:12px; text-align:center; }
+        .consig-item label { display:block; font-size:11px; color:var(--texto-suave); margin-bottom:6px; text-transform:uppercase; letter-spacing:.5px; }
+        .consig-item input[type=number] { width:70px; text-align:center; font-size:20px; font-weight:700; padding:6px 8px; border-radius:8px; border:1.5px solid var(--borde); background:white; color:var(--terracota); }
+        .consig-precio { font-size:11px; color:var(--texto-suave); margin-top:4px; }
+        .consig-resumen { background:linear-gradient(135deg,var(--durazno) 0%,var(--arena) 100%); border-radius:14px; padding:16px; margin-top:12px; border:1px solid var(--borde); display:none; }
+        .consig-resumen-title { font-family:'Playfair Display',serif; font-size:15px; color:var(--terracota); margin-bottom:10px; font-weight:700; }
+        .consig-linea { display:flex; justify-content:space-between; font-size:13px; padding:5px 0; border-bottom:1px solid rgba(61,46,34,.08); color:var(--texto); }
+        .consig-linea:last-child { border-bottom:none; }
+        .consig-total { display:flex; justify-content:space-between; font-size:17px; font-weight:700; padding:10px 0 4px; color:var(--terracota); }
+        .periodo-label { font-size:12px; color:var(--texto-suave); margin-bottom:12px; }
+
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo-header">🍰 DUNA REPOSTERÍA</div>
+        <div class="subtitulo">SISTEMA DE GESTIÓN</div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container">
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 1: DASHBOARD -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-dashboard" class="tab-content activo">
+            <div class="card">
+                <div class="card-title">📊 Dashboard</div>
+                <div class="grid-3">
+                    <div class="widget">
+                        <div class="widget-label">Ventas Este Mes</div>
+                        <div class="widget-value" id="ventas-mes">$0</div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-label">Margen Promedio</div>
+                        <div class="widget-value" id="margen-promedio">0%</div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-label">Stock Crítico</div>
+                        <div class="widget-value" id="stock-critico">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 Por Cobrar</div>
+                <div class="widget">
+                    <div class="widget-label">Cuentas Pendientes</div>
+                    <div class="widget-value" id="por-cobrar">$0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 2: PRODUCCIÓN -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-produccion" class="tab-content">
+            <div class="card">
+                <div class="card-title">🍰 Calculadora de Producción</div>
+
+                <div class="form-group">
+                    <label>¿Qué postre vamos a hacer?</label>
+                    <select id="postre-select" onchange="actualizarPresentaciones()">
+                        <option value="">-- Selecciona --</option>
+                        <option value="tiramisu">Tiramisú</option>
+                        <option value="payOreo">Pay de Oreo</option>
+                        <option value="payLotus">Pay de Lotus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>¿Cómo quieres calcular?</label>
+                    <select id="modo-calculo" onchange="cambiarModoCalculo()">
+                        <option value="personas">Por personas</option>
+                        <option value="molde-estandar">Por molde estándar</option>
+                        <option value="molde-custom">Por molde personalizado</option>
+                    </select>
+                </div>
+
+                <!-- MODO: POR PERSONAS -->
+                <div id="seccion-personas" style="display: none;">
+                    <div class="form-group">
+                        <label>¿Para cuántas personas?</label>
+                        <select id="personas">
+                            <option value="">-- Selecciona --</option>
+                            <option value="1">1 (Porción Individual)</option>
+                            <option value="3.5">3-4 (Mediano)</option>
+                            <option value="7">6-8 (Familiar)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Cuántas de estas porciones?</label>
+                        <input type="number" id="cantidad-personas" min="1" value="1" placeholder="Ej: 2">
+                    </div>
+                </div>
+
+                <!-- MODO: POR MOLDE ESTÁNDAR -->
+                <div id="seccion-molde-estandar" style="display: none;">
+                    <div class="form-group">
+                        <label>Elige el molde estándar</label>
+                        <select id="molde-estandar">
+                            <option value="">-- Selecciona --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- MODO: POR MOLDE PERSONALIZADO -->
+                <div id="seccion-molde-custom" style="display: none;">
+                    <div class="form-group">
+                        <label>¿Qué forma?</label>
+                        <select id="forma-molde" onchange="cambiarFormaCustom()">
+                            <option value="rectangular">Rectangular</option>
+                            <option value="redondo">Redondo</option>
+                        </select>
+                    </div>
+
+                    <div id="dimensiones-rectangular" style="display: none;">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Largo (cm)</label>
+                                <input type="number" id="largo" min="1" placeholder="Ej: 40">
+                            </div>
+                            <div class="form-group">
+                                <label>Ancho (cm)</label>
+                                <input type="number" id="ancho" min="1" placeholder="Ej: 15">
+                            </div>
+                            <div class="form-group">
+                                <label>Alto (cm)</label>
+                                <input type="number" id="alto" min="1" placeholder="Ej: 6">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="dimensiones-redondo" style="display: none;">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Diámetro (cm)</label>
+                                <input type="number" id="diametro" min="1" placeholder="Ej: 24">
+                            </div>
+                            <div class="form-group">
+                                <label>Alto (cm)</label>
+                                <input type="number" id="alto-redondo" min="1" placeholder="Ej: 6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-block" onclick="calcularProduccion()">🧮 Calcular</button>
+
+                <!-- RESULTADO -->
+                <div id="resultado-produccion" class="resultado">
+                    <div class="resultado-row">
+                        <span class="resultado-label">📊 Volumen:</span>
+                        <span class="resultado-valor" id="res-volumen">0 cm³</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">⚖️ Gramos necesarios:</span>
+                        <span class="resultado-valor" id="res-gramos">0 g</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">🍰 Porciones:</span>
+                        <span class="resultado-valor" id="res-porciones">0</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">💰 Costo de producción:</span>
+                        <span class="resultado-valor" id="res-costo">$0</span>
+                    </div>
+                    <div class="resultado-row">
+                        <span class="resultado-label">💵 Precio sugerido (40%):</span>
+                        <span class="resultado-valor" id="res-precio">$0</span>
+                    </div>
+                </div>
+
+                <div id="prod-alert" class="alert"></div>
+                <button class="btn btn-success btn-block" id="btn-registrar" style="display: none; margin-top: 15px;" onclick="registrarProduccion()">✅ Registrar Producción</button>
+            </div>
+
+            <!-- INGREDIENTES NECESARIOS -->
+            <div class="card" id="card-ingredientes" style="display: none;">
+                <div class="card-title">📋 Ingredientes Necesarios</div>
+                <div class="table-wrapper"><table id="tabla-ingredientes">
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Cantidad</th>
+                            <th>Costo Unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ingredientes"></tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 3: INVENTARIO -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-inventario" class="tab-content">
+            <div class="card">
+                <div class="card-title">📦 Gestión de Inventario</div>
+                <div class="table-wrapper"><table>
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th>Stock</th>
+                            <th>Unidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Mínimo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-inventario"></tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TAB 4: VENTAS -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="tab-ventas" class="tab-content">
+
+            <div class="card">
+                <div class="card-title">🏪 Ventas Biela Café</div>
+                <p class="periodo-label">¿Cuántas porciones vendió Biela este período? Calcula lo que te debe pagar.</p>
+                <div class="consig-grid">
+                    <div class="consig-item">
+                        <label>🍰 Tiramisú</label>
+                        <input type="number" id="biela-tiramisu" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>🍪 Pay Oreo</label>
+                        <input type="number" id="biela-oreo" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>🥮 Pay Lotus</label>
+                        <input type="number" id="biela-lotus" min="0" value="0" oninput="calcularBiela()">
+                        <div class="consig-precio">$70 por porción</div>
+                    </div>
+                    <div class="consig-item">
+                        <label>📅 Período</label>
+                        <input type="text" id="biela-periodo" placeholder="Ej: 1-15 Abr"
+                            style="width:100%;font-size:13px;font-weight:500;text-align:center;color:var(--texto);" oninput="calcularBiela()">
+                        <div class="consig-precio">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="consig-resumen" id="biela-resumen">
+                    <div class="consig-resumen-title">💰 Resumen de cobro</div>
+                    <div id="biela-lineas"></div>
+                    <div class="consig-total">
+                        <span>Total a cobrar</span>
+                        <span id="biela-total-label">$0</span>
+                    </div>
+                </div>
+                <div id="biela-alert" class="alert" style="margin-top:10px;"></div>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button class="btn btn-secondary" style="flex:1" onclick="limpiarBiela()">🔄 Limpiar</button>
+                    <button class="btn btn-primary" style="flex:2" onclick="registrarCobroBiela()">💾 Registrar cobro</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💰 Registrar Venta</div>
+
+                <div class="form-group">
+                    <label>Postre</label>
+                    <select id="venta-postre">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Tiramisú">Tiramisú</option>
+                        <option value="Pay de Oreo">Pay de Oreo</option>
+                        <option value="Pay de Lotus">Pay de Lotus</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Presentación</label>
+                    <select id="venta-presentacion">
+                        <option value="">-- Selecciona --</option>
+                        <option value="Porción">Porción Individual</option>
+                        <option value="Mediano">Mediano</option>
+                        <option value="Familiar">Familiar</option>
+                    </select>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" id="venta-cantidad" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio Unitario</label>
+                        <input type="number" id="venta-precio" min="0" step="0.01" placeholder="$0.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="venta-cliente" placeholder="Ej: Biela Café">
+                </div>
+
+                <div class="form-group">
+                    <label>¿Pagado?</label>
+                    <select id="venta-pagado">
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Notas</label>
+                    <textarea id="venta-notas" placeholder="Detalles adicionales..." rows="3"></textarea>
+                </div>
+
+                <div id="venta-alert" class="alert"></div>
+                <button class="btn btn-primary btn-block" onclick="registrarVenta()">💾 Registrar Venta</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Historial de Ventas</div>
+                <div class="table-wrapper"><table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Postre</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th>Cliente</th>
+                            <th>Pagado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-ventas"></tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ TAB CHATBOT ═══════════════ -->
+        <div id="tab-chat" class="tab-content">
+
+            <div class="chat-header">
+                <div class="chat-header-title">
+                    🍰 Asistente DUNA
+                    <span class="gemini-badge">Gemini AI</span>
+                </div>
+                <div class="chat-header-sub">Cálculos, sustituciones y consejos de repostería</div>
+            </div>
+
+            <!-- API Key bar (se oculta cuando ya está guardada) -->
+            <div class="api-key-bar" id="api-key-bar">
+                <input type="password" id="gemini-api-key" placeholder="Pega tu API Key de Google AI Studio..." />
+                <button onclick="guardarApiKey()">Guardar</button>
+            </div>
+            <div class="api-key-bar" id="api-key-saved-bar" style="display:none;">
+                <span class="api-key-saved">✅ API Key activa</span>
+                <button onclick="cambiarApiKey()" style="background:transparent;color:var(--texto-suave);border:1px solid var(--borde);font-size:11px;">Cambiar</button>
+            </div>
+
+            <!-- Mensajes -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="msg msg-bot">
+                    👋 ¡Hola! Soy tu asistente de repostería DUNA.<br><br>
+                    Puedo ayudarte a <strong>escalar recetas</strong> a cualquier molde,
+                    sugerir <strong>sustituciones de ingredientes</strong>, calcular
+                    <strong>costos de producción</strong> y resolver dudas de técnica.<br><br>
+                    ¿En qué andamos hoy?
+                </div>
+            </div>
+
+            <!-- Sugerencias rápidas -->
+            <div class="chat-suggestions" id="chat-suggestions">
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🔢 Escalar tiramisú a molde 30x20</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🔄 Sustituir mascarpone</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">💰 ¿Cuánto cuesta hacer Pay Oreo?</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">📐 Molde redondo 26cm Pay Lotus</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">⏱️ Tiempo de enfriado tiramisú</button>
+                <button class="sugg-chip" onclick="usarSugerencia(this)">🥚 Sustituir huevos en Pay Oreo</button>
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-bar">
+                <textarea id="chat-input" rows="1"
+                    placeholder="Pregunta sobre recetas, moldes, sustituciones..."
+                    onkeydown="chatKeyDown(event)"
+                    oninput="autoResizeTextarea(this)"></textarea>
+                <button class="btn-send" id="btn-send" onclick="enviarMensaje()">➤</button>
+            </div>
+
+        </div>
+
+    </div><!-- /container -->
+
+    <div class="nav-tabs">
+        <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
+            <span class="nav-emoji">📊</span>
+            Dashboard
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('produccion')">
+            <span class="nav-emoji">🍰</span>
+            Producción
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('inventario')">
+            <span class="nav-emoji">📦</span>
+            Inventario
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('ventas')">
+            <span class="nav-emoji">💰</span>
+            Ventas
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('chat')">
+            <span class="nav-emoji">🤖</span>
+            Asistente
+        </button>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // ═══════════════════════════════════════════════════════════
+        // VARIABLES GLOBALES
+        // ═══════════════════════════════════════════════════════════
+
+        let datosRecetas = {};
+        let datosInventario = [];
+        let datosVentas = [];
+        let datosConfig = {};
+        let calculoActual = null;
+
+        // ═══════════════════════════════════════════════════════════
+        // INICIALIZACIÓN
+        // ═══════════════════════════════════════════════════════════
+
+        document.addEventListener('DOMContentLoaded', cargarDatos);
+
+        async function cargarDatos() {
+            try {
+                // Aquí iría la URL del Apps Script deployado
+                // Por ahora usamos datos de ejemplo
+                inicializarDatosEjemplo();
+                actualizarDashboard();
+                cargarInventario();
+                cargarVentas();
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+            }
+        }
+
+        function inicializarDatosEjemplo() {
+            // Estructura de ejemplo - se reemplazará con datos de Sheets
+            datosConfig = {
+                densidades: {
+                    tiramisu: 0.25,
+                    payOreo: 0.35,
+                    payLotus: 0.32
+                }
+            };
+
+            datosRecetas = {
+                tiramisu: [
+                    { ingrediente: "Soletas", cantidad: 200, unidad: "g", precioUnitario: 0.20 },
+                    { ingrediente: "Mascarpone", cantidad: 260, unidad: "g", precioUnitario: 1.00 },
+                    { ingrediente: "Crema para batir Lyncott", cantidad: 385, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Azúcar", cantidad: 62, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Vainilla", cantidad: 2.5, unidad: "tapita", precioUnitario: 0.05 },
+                    { ingrediente: "Café soluble Jacobs", cantidad: 2.5, unidad: "cda", precioUnitario: 1.00 },
+                    { ingrediente: "Cocoa", cantidad: 2, unidad: "cda", precioUnitario: 1.00 }
+                ],
+                payOreo: [
+                    { ingrediente: "Galleta María", cantidad: 130, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Galleta Oreo", cantidad: 18, unidad: "u", precioUnitario: 6.00 },
+                    { ingrediente: "Mantequilla", cantidad: 73, unidad: "g", precioUnitario: 0.15 },
+                    { ingrediente: "Harina", cantidad: 22, unidad: "g", precioUnitario: 0.60 },
+                    { ingrediente: "Queso Crema Philadelphia", cantidad: 660, unidad: "g", precioUnitario: 0.70 },
+                    { ingrediente: "Azúcar", cantidad: 150, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Sal", cantidad: 0.25, unidad: "cda", precioUnitario: 0.12 },
+                    { ingrediente: "Fécula de maíz", cantidad: 22, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Crema ácida", cantidad: 88, unidad: "g", precioUnitario: 0.30 },
+                    { ingrediente: "Limón", cantidad: 0.5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Huevos", cantidad: 5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Oreos troceadas", cantidad: 12, unidad: "u", precioUnitario: 6.00 },
+                    { ingrediente: "Chispas chocolate blanco", cantidad: 300, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Crema para batir Lyncott", cantidad: 100, unidad: "g", precioUnitario: 2.00 },
+                    { ingrediente: "Oreos polvo", cantidad: 6, unidad: "u", precioUnitario: 6.00 }
+                ],
+                payLotus: [
+                    { ingrediente: "Galleta María", cantidad: 220, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Mantequilla", cantidad: 73, unidad: "g", precioUnitario: 0.15 },
+                    { ingrediente: "Harina", cantidad: 22, unidad: "g", precioUnitario: 0.60 },
+                    { ingrediente: "Queso Crema Philadelphia", cantidad: 660, unidad: "g", precioUnitario: 0.70 },
+                    { ingrediente: "Azúcar", cantidad: 175, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Sal", cantidad: 0.25, unidad: "cda", precioUnitario: 0.12 },
+                    { ingrediente: "Fécula de maíz", cantidad: 22, unidad: "g", precioUnitario: 0.50 },
+                    { ingrediente: "Crema ácida", cantidad: 88, unidad: "g", precioUnitario: 0.30 },
+                    { ingrediente: "Limón", cantidad: 0.5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Huevos", cantidad: 5, unidad: "u", precioUnitario: 4.00 },
+                    { ingrediente: "Crema Lotus", cantidad: 240, unidad: "ml", precioUnitario: 25.00 },
+                    { ingrediente: "Aceite de coco", cantidad: 15, unidad: "ml", precioUnitario: 12.00 },
+                    { ingrediente: "Galletas Lotus", cantidad: 4, unidad: "u", precioUnitario: 7.00 }
+                ]
+            };
+
+            datosInventario = [
+                { ingrediente: "Soletas", stock: 1000, unidad: "g", precioUnitario: 0.20, minimo: 200, estado: "✅ OK" },
+                { ingrediente: "Mascarpone", stock: 2600, unidad: "g", precioUnitario: 1.00, minimo: 500, estado: "✅ OK" },
+                { ingrediente: "Crema para batir Lyncott", stock: 3000, unidad: "g", precioUnitario: 2.00, minimo: 1000, estado: "✅ OK" },
+                { ingrediente: "Azúcar", stock: 5000, unidad: "g", precioUnitario: 0.50, minimo: 1000, estado: "✅ OK" },
+            ];
+
+            datosVentas = [
+                { fecha: "2026-04-15", postre: "Tiramisú", presentacion: "Familiar", cantidad: 1, total: 210, cliente: "Biela Café", pagado: "No" },
+                { fecha: "2026-04-14", postre: "Pay de Lotus", presentacion: "Mediano", cantidad: 2, total: 320, cliente: "Evento", pagado: "Sí" },
+            ];
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // NAVEGACIÓN TABS
+        // ═══════════════════════════════════════════════════════════
+
+        function cambiarTab(tab) {
+            // Ocultar todos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('activo'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('activo'));
+
+            // Mostrar seleccionado
+            document.getElementById('tab-' + tab).classList.add('activo');
+            event.target.closest('.nav-tab').classList.add('activo');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PRODUCCIÓN - MODOS DE CÁLCULO
+        // ═══════════════════════════════════════════════════════════
+
+        function cambiarModoCalculo() {
+            const modo = document.getElementById('modo-calculo').value;
+            
+            document.getElementById('seccion-personas').style.display = modo === 'personas' ? 'block' : 'none';
+            document.getElementById('seccion-molde-estandar').style.display = modo === 'molde-estandar' ? 'block' : 'none';
+            document.getElementById('seccion-molde-custom').style.display = modo === 'molde-custom' ? 'block' : 'none';
+        }
+
+        function cambiarFormaCustom() {
+            const forma = document.getElementById('forma-molde').value;
+            document.getElementById('dimensiones-rectangular').style.display = forma === 'rectangular' ? 'block' : 'none';
+            document.getElementById('dimensiones-redondo').style.display = forma === 'redondo' ? 'block' : 'none';
+        }
+
+        function actualizarPresentaciones() {
+            const postre = document.getElementById('postre-select').value;
+            const selectPresentaciones = document.getElementById('molde-estandar');
+            selectPresentaciones.innerHTML = '<option value="">-- Selecciona --</option>';
+
+            if (postre === 'tiramisu') {
+                selectPresentaciones.innerHTML += `
+                    <option value="individual">Porción Individual (10x7x5)</option>
+                    <option value="mediano">Mediano (20x15x6)</option>
+                    <option value="familiar">Familiar (40x10x6)</option>
+                `;
+            } else if (postre === 'payOreo' || postre === 'payLotus') {
+                selectPresentaciones.innerHTML += `
+                    <option value="individual">Porción Individual (10 cm diámetro)</option>
+                    <option value="mediano">Mediano (20 cm diámetro)</option>
+                    <option value="familiar">Familiar (24 cm diámetro)</option>
+                `;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CÁLCULO DE PRODUCCIÓN
+        // ═══════════════════════════════════════════════════════════
+
+        function calcularProduccion() {
+            const postre = document.getElementById('postre-select').value;
+            const modo = document.getElementById('modo-calculo').value;
+
+            if (!postre) {
+                alert("⚠️ Selecciona un postre primero");
+                return;
+            }
+
+            let volumen = 0, gramos = 0;
+
+            if (modo === 'personas') {
+                const personas = parseFloat(document.getElementById('personas').value);
+                const cantidad = parseInt(document.getElementById('cantidad-personas').value) || 1;
+
+                if (!personas) {
+                    alert("⚠️ Selecciona cuántas personas");
+                    return;
+                }
+
+                const gramosBase = {
+                    tiramisu: 75,
+                    payOreo: 150,
+                    payLotus: 160
+                };
+
+                gramos = (gramosBase[postre] * personas * cantidad) * 1.05; // +5% merma
+
+            } else if (modo === 'molde-estandar') {
+                const presentacion = document.getElementById('molde-estandar').value;
+                if (!presentacion) {
+                    alert("⚠️ Selecciona un molde estándar");
+                    return;
+                }
+
+                const moldes = {
+                    tiramisu: {
+                        individual: { volumen: 350 },
+                        mediano: { volumen: 1800 },
+                        familiar: { volumen: 2400 }
+                    },
+                    payOreo: {
+                        individual: { volumen: 393 },
+                        mediano: { volumen: 1885 },
+                        familiar: { volumen: 2714 }
+                    },
+                    payLotus: {
+                        individual: { volumen: 393 },
+                        mediano: { volumen: 1885 },
+                        familiar: { volumen: 2714 }
+                    }
+                };
+
+                volumen = moldes[postre][presentacion].volumen;
+                gramos = volumen * datosConfig.densidades[postre] * 1.05;
+
+            } else if (modo === 'molde-custom') {
+                const forma = document.getElementById('forma-molde').value;
+
+                if (forma === 'rectangular') {
+                    const largo = parseFloat(document.getElementById('largo').value);
+                    const ancho = parseFloat(document.getElementById('ancho').value);
+                    const alto = parseFloat(document.getElementById('alto').value);
+
+                    if (!largo || !ancho || !alto) {
+                        alert("⚠️ Completa todas las dimensiones");
+                        return;
+                    }
+
+                    volumen = largo * ancho * alto;
+
+                } else if (forma === 'redondo') {
+                    const diametro = parseFloat(document.getElementById('diametro').value);
+                    const alto = parseFloat(document.getElementById('alto-redondo').value);
+
+                    if (!diametro || !alto) {
+                        alert("⚠️ Completa diámetro y alto");
+                        return;
+                    }
+
+                    const radio = diametro / 2;
+                    volumen = Math.PI * radio * radio * alto;
+                }
+
+                gramos = volumen * datosConfig.densidades[postre] * 1.05;
+            }
+
+            const porciones = Math.round(gramos / 75);
+            const costo = calcularCostoProduccion(postre, gramos);
+            const precio = costo * 1.4; // Margen 40%
+
+            // Mostrar resultado
+            document.getElementById('res-volumen').textContent = volumen.toFixed(0) + " cm³";
+            document.getElementById('res-gramos').textContent = gramos.toFixed(0) + " g";
+            document.getElementById('res-porciones').textContent = porciones;
+            document.getElementById('res-costo').textContent = "$" + costo.toFixed(2);
+            document.getElementById('res-precio').textContent = "$" + precio.toFixed(2);
+
+            document.getElementById('resultado-produccion').classList.add('mostrar');
+            document.getElementById('btn-registrar').style.display = 'block';
+
+            // Mostrar ingredientes escalados
+            mostrarIngredientesEscalados(postre, gramos, costo);
+
+            // Guardar para registro
+            calculoActual = { postre, gramos, porciones, costo, precio };
+        }
+
+        function calcularCostoProduccion(postre, gramos) {
+            let costo = 0;
+
+            if (datosRecetas[postre]) {
+                const factor = gramos / 600; // 600g es la referencia
+
+                datosRecetas[postre].forEach(ing => {
+                    const cantidadEscalada = ing.cantidad * factor;
+                    costo += cantidadEscalada * ing.precioUnitario;
+                });
+            }
+
+            return costo;
+        }
+
+        function mostrarIngredientesEscalados(postre, gramos, costo) {
+            const factor = gramos / 600;
+            const tbody = document.getElementById('tbody-ingredientes');
+            tbody.innerHTML = '';
+
+            if (datosRecetas[postre]) {
+                datosRecetas[postre].forEach(ing => {
+                    const cantidadEscalada = ing.cantidad * factor;
+                    const subtotal = cantidadEscalada * ing.precioUnitario;
+
+                    const row = `
+                        <tr>
+                            <td>${ing.ingrediente}</td>
+                            <td>${cantidadEscalada.toFixed(2)} ${ing.unidad}</td>
+                            <td>$${ing.precioUnitario.toFixed(2)}</td>
+                            <td>$${subtotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                document.getElementById('card-ingredientes').style.display = 'block';
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // REGISTROS
+        // ═══════════════════════════════════════════════════════════
+
+        // registrarProduccion() → movida al bloque registrarVenta (arriba)
+
+        // URL del Apps Script desplegado — actualiza con tu URL real
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQUkDW7xvJDNYyGbwiXlP6WGgIVQF-_rUE5erhdGaOzVaW6JSDGF_g2UtyNj5z-CG3/exec';
+
+        async function registrarVenta() {
+            const postre       = document.getElementById('venta-postre').value;
+            const presentacion = document.getElementById('venta-presentacion').value;
+            const cantidad     = parseInt(document.getElementById('venta-cantidad').value) || 0;
+            const precio       = parseFloat(document.getElementById('venta-precio').value) || 0;
+            const cliente      = document.getElementById('venta-cliente').value || '';
+            const pagado       = document.getElementById('venta-pagado').value;
+            const notas        = document.getElementById('venta-notas').value || '';
+
+            if (!postre || !presentacion || !precio) {
+                mostrarAlerta('venta-alert', 'warning', '⚠️ Completa postre, presentación y precio.');
+                return;
+            }
+
+            const total = cantidad * precio;
+            const fecha = new Date().toLocaleDateString('es-MX', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+
+            const venta = { accion: 'registrarVenta', fecha, postre, presentacion, cantidad, precioUnitario: precio, total, cliente, pagado, notas };
+
+            // Actualizar UI local inmediatamente
+            datosVentas.unshift({ fecha, postre, presentacion, cantidad, total, cliente, pagado });
+            cargarVentas();
+            actualizarDashboard();
+
+            // Limpiar formulario
+            document.getElementById('venta-postre').value        = '';
+            document.getElementById('venta-presentacion').value  = '';
+            document.getElementById('venta-cantidad').value      = '1';
+            document.getElementById('venta-precio').value        = '';
+            document.getElementById('venta-cliente').value       = '';
+            document.getElementById('venta-pagado').value        = 'No';
+            document.getElementById('venta-notas').value         = '';
+
+            mostrarAlerta('venta-alert', 'success', '💾 Guardando en Sheets...');
+
+            // Enviar a Google Sheets via Apps Script
+            try {
+                const resp = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode:   'no-cors',           // Apps Script requiere no-cors
+                    headers: { 'Content-Type': 'application/json' },
+                    body:   JSON.stringify(venta)
+                });
+                mostrarAlerta('venta-alert', 'success', '✅ Venta registrada en Google Sheets');
+            } catch (err) {
+                console.error('Error al enviar a Sheets:', err);
+                mostrarAlerta('venta-alert', 'warning', '⚠️ Sin conexión — guardado solo local. Se enviará al reconectar.');
+            }
+        }
+
+        // ── FIX: registrarProduccion → también envía al Apps Script ──────────
+        async function registrarProduccion() {
+            if (!calculoActual) return;
+
+            const fecha  = new Date().toLocaleDateString('es-MX', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            });
+            const payload = {
+                accion:    'registrarProduccion',
+                fecha,
+                postre:    calculoActual.postre,
+                gramos:    calculoActual.gramos,
+                porciones: calculoActual.porciones,
+                costo:     calculoActual.costo
+            };
+
+            mostrarAlerta('prod-alert', 'success', '💾 Guardando producción...');
+
+            try {
+                await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode:   'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:   JSON.stringify(payload)
+                });
+                mostrarAlerta('prod-alert', 'success', '✅ Producción registrada en Google Sheets');
+            } catch (err) {
+                mostrarAlerta('prod-alert', 'warning', '⚠️ Sin conexión — solo local.');
+            }
+
+            document.getElementById('resultado-produccion').classList.remove('mostrar');
+            document.getElementById('btn-registrar').style.display = 'none';
+            document.getElementById('postre-select').value = '';
+            document.getElementById('modo-calculo').value = 'personas';
+            cambiarModoCalculo();
+            calculoActual = null;
+        }
+
+        // ── Helper: mostrar alerta contextual ────────────────────────────────
+        function mostrarAlerta(id, tipo, msg) {
+            let el = document.getElementById(id);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = id;
+                el.className = 'alert';
+                // Insertar después del botón submit más cercano — fallback: body
+                document.body.appendChild(el);
+            }
+            el.className = 'alert mostrar alert-' + (tipo === 'success' ? 'success' : 'warning');
+            el.textContent = msg;
+            if (tipo === 'success') {
+                setTimeout(() => el.classList.remove('mostrar'), 4000);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CARGA DE TABLAS
+        // ═══════════════════════════════════════════════════════════
+
+        function cargarInventario() {
+            const tbody = document.getElementById('tabla-inventario');
+            tbody.innerHTML = '';
+
+            datosInventario.forEach(ing => {
+                const row = `
+                    <tr>
+                        <td>${ing.ingrediente}</td>
+                        <td>${ing.stock}</td>
+                        <td>${ing.unidad}</td>
+                        <td>$${ing.precioUnitario.toFixed(2)}</td>
+                        <td>${ing.minimo}</td>
+                        <td>${ing.estado}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function cargarVentas() {
+            const tbody = document.getElementById('tabla-ventas');
+            tbody.innerHTML = '';
+
+            datosVentas.forEach(venta => {
+                const row = `
+                    <tr>
+                        <td>${venta.fecha}</td>
+                        <td>${venta.postre}</td>
+                        <td>${venta.cantidad}</td>
+                        <td>$${venta.total.toFixed(2)}</td>
+                        <td>${venta.cliente}</td>
+                        <td>${venta.pagado}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function actualizarDashboard() {
+            const totalVentas = datosVentas.reduce((sum, v) => sum + (v.total || 0), 0);
+            const ventasPendientes = datosVentas.filter(v => v.pagado !== 'Sí').reduce((sum, v) => sum + (v.total || 0), 0);
+
+            document.getElementById('ventas-mes').textContent = '$' + totalVentas.toFixed(2);
+            document.getElementById('por-cobrar').textContent = '$' + ventasPendientes.toFixed(2);
+            document.getElementById('margen-promedio').textContent = '40%';
+            document.getElementById('stock-critico').textContent = '0';
+        }
+
+        // Iniciar cambiarModoCalculo al cargar
+        cambiarModoCalculo();
+
+        // ═══════════════════════════════════════════════════════════════════
+        // CHATBOT DUNA — Gemini 2.0 Flash
+        // ═══════════════════════════════════════════════════════════════════
+
+        const GEMINI_MODEL = 'gemini-1.5-flash';
+        const GEMINI_API   = 'https://generativelanguage.googleapis.com/v1/models/'
+                           + GEMINI_MODEL + ':generateContent?key=';
+
+        let chatHistory = [];   // [{role:'user'|'model', parts:[{text}]}]
+
+        // ── API Key ─────────────────────────────────────────────────────────
+        function getApiKey() {
+            return localStorage.getItem('duna_gemini_key') || '';
+        }
+
+        function guardarApiKey() {
+            const key = document.getElementById('gemini-api-key').value.trim();
+            if (!key) { alert('Pega una API Key válida'); return; }
+            localStorage.setItem('duna_gemini_key', key);
+            mostrarKeyGuardada();
+        }
+
+        function mostrarKeyGuardada() {
+            document.getElementById('api-key-bar').style.display       = 'none';
+            document.getElementById('api-key-saved-bar').style.display = 'flex';
+        }
+
+        function cambiarApiKey() {
+            localStorage.removeItem('duna_gemini_key');
+            document.getElementById('gemini-api-key').value            = '';
+            document.getElementById('api-key-bar').style.display       = 'flex';
+            document.getElementById('api-key-saved-bar').style.display = 'none';
+        }
+
+        // Mostrar estado de key al cargar tab chat
+        function initChat() {
+            if (getApiKey()) mostrarKeyGuardada();
+        }
+
+        // ── System prompt con contexto de DUNA ─────────────────────────────
+        function buildSystemPrompt() {
+            var invResumen = '';
+            if (typeof datosInventario !== 'undefined' && datosInventario && datosInventario.length) {
+                var criticos = datosInventario.filter(function(i){ return String(i.estado).includes('CRITICO') || String(i.estado).includes('CRÍTICO'); });
+                if (criticos.length) {
+                    invResumen = '\nINVENTARIO CRITICO (stock bajo):\n' +
+                        criticos.map(function(i){ return '- ' + i.ingrediente + ': ' + i.stock + ' ' + i.unidad; }).join('\n');
+                }
+            }
+            return 'Eres el asistente de reposteria de DUNA Reposteria, negocio de postres artesanales en Torreon, Mexico. ' +
+                'Hablas en espanol mexicano, tono amable y directo.\n\n' +
+                'POSTRES DEL PORTAFOLIO:\n' +
+                '1. Tiramisu - molde rectangular 40x10x6 cm, 8 porciones, densidad 0.25 g/cm3\n' +
+                '   Ingredientes base: Soletas 200g, Mascarpone 260g, Crema Lyncott 385g, Azucar 62g, Vainilla 2.5 tapitas, Cafe Jacobs 2.5 cdas, Cocoa 2 cdas\n' +
+                '   Precios: Soletas $0.20/g, Mascarpone $1.00/g, Lyncott $2.00/g, Azucar $0.50/g\n\n' +
+                '2. Pay Oreo - molde redondo 24cm diam x 6cm alto, 8 porciones, densidad 0.35 g/cm3\n' +
+                '   Ingredientes: G.Maria 130g, G.Oreo 18u, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azucar 150g, Sal 0.25cda, Fecula 22g, Crema acida 88g, Limon 0.5u, Huevos 5u, Oreo troceada 12u, Chispas choco blanco 300g, Lyncott 100g\n\n' +
+                '3. Pay Lotus - molde redondo 24cm diam x 6cm alto, 8 porciones, densidad 0.32 g/cm3\n' +
+                '   Ingredientes: G.Maria 220g, Mantequilla 73g, Harina 22g, Philadelphia 660g, Azucar 175g, Sal 0.25cda, Fecula 22g, Crema acida 88g, Limon 0.5u, Huevos 5u, Crema Lotus 240ml, Aceite coco 15ml, Galletas Lotus 4u\n\n' +
+                'PRECIOS PUBLICOS: Individual $50-60 | Mediano $135-160 | Familiar $250-300\n\n' +
+                'CONSIGNACION BIELA CAFE:\n' +
+                '- Precio negociado: $70 MXN por porcion de CUALQUIER postre (Tiramisu, Pay Oreo, Pay Lotus)\n' +
+                '- Biela vende al publico a su precio; DUNA cobra $70 fijos por porcion vendida\n' +
+                '- Margen real por porcion: Tiramisu ~$37 (costo $33), Pay Oreo ~$19 (costo $51), Pay Lotus ~$21 (costo $49)\n\n' +
+                'FORMULAS DE ESCALA:\n' +
+                '- Volumen rectangular = largo x ancho x alto (cm3)\n' +
+                '- Volumen cilindrico = PI x radio^2 x alto (cm3)\n' +
+                '- Gramos = volumen x densidad | Factor = gramos_nuevo / 600\n' +
+                '- Multiplica todos los ingredientes por el factor, redondea a 2 decimales\n\n' +
+                'SUSTITUCIONES:\n' +
+                '- Mascarpone => 3:1 Philadelphia + crema acida\n' +
+                '- Lyncott => crema para batir generica 35%+ grasa\n' +
+                '- Crema Lotus => Nutella (margen mejor, sabor diferente)\n' +
+                '- Huevos => 3 cdas aquafaba por huevo (vegano)\n\n' +
+                'MARGENES FAMILIAR: Tiramisu $265 costo/42% margen | Pay Oreo $410/40% | Pay Lotus $389/38%\n\n' +
+                'REGLAS: Si piden escalar, SIEMPRE muestra tabla Ingrediente|Original|Nuevo|Unidad. ' +
+                'Calcula costo estimado. Maximo 4 parrafos o 1 tabla. ' +
+                'Si el ingrediente esta en inventario critico, sugiere sustitucion economica.\n' +
+                invResumen;
+        }
+
+        // ── Enviar mensaje ──────────────────────────────────────────────────
+        async function enviarMensaje() {
+            const input   = document.getElementById('chat-input');
+            const texto   = input.value.trim();
+            if (!texto) return;
+
+            const apiKey  = getApiKey();
+            if (!apiKey) {
+                agregarMensaje('error', '🔑 Primero guarda tu API Key de Google AI Studio arriba.');
+                return;
+            }
+
+            // Mostrar mensaje del usuario
+            agregarMensaje('user', texto);
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('btn-send').disabled = true;
+
+            // Ocultar sugerencias después del primer mensaje
+            document.getElementById('chat-suggestions').style.display = 'none';
+
+            // Agregar a historial
+            chatHistory.push({ role: 'user', parts: [{ text: texto }] });
+
+            // Typing indicator
+            const typingId = agregarTyping();
+
+            try {
+                // Usar v1beta que SÍ soporta systemInstruction
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                
+                const body = {
+                    systemInstruction: {
+                        parts: [
+                            { text: buildSystemPrompt() }
+                        ]
+                    },
+                    contents: chatHistory,
+                    generationConfig: {
+                        temperature: 0.4,
+                        maxOutputTokens: 800,
+                        topP: 0.85
+                    }
+                };
+
+                const resp = await fetch(url, {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify(body)
+                });
+
+                const data = await resp.json();
+
+                eliminarTyping(typingId);
+
+                if (!resp.ok) {
+                    const errMsg = data?.error?.message || 'Error de API';
+                    agregarMensaje('error', '⚠️ ' + errMsg);
+                    chatHistory.pop();
+                    document.getElementById('btn-send').disabled = false;
+                    return;
+                }
+
+                const respText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta';
+
+                // Agregar al historial
+                chatHistory.push({ role: 'model', parts: [{ text: respText }] });
+
+                // Limitar historial a 20 turnos (memoria)
+                if (chatHistory.length > 40) chatHistory = chatHistory.slice(-30);
+
+                agregarMensaje('bot', respText);
+
+            } catch (err) {
+                eliminarTyping(typingId);
+                console.error('Error:', err);
+                agregarMensaje('error', '⚠️ Sin conexión. Revisa tu internet e intenta de nuevo.');
+                chatHistory.pop();
+            }
+
+            document.getElementById('btn-send').disabled = false;
+        }
+
+        // ── Helpers de UI ───────────────────────────────────────────────────
+        function agregarMensaje(tipo, texto) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+
+            if (tipo === 'user') {
+                div.className = 'msg msg-user';
+                div.textContent = texto;
+            } else if (tipo === 'bot') {
+                div.className = 'msg msg-bot';
+                div.innerHTML  = markdownLite(texto);
+            } else {
+                div.className = 'msg msg-error';
+                div.textContent = texto;
+            }
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return div;
+        }
+
+        function agregarTyping() {
+            const container = document.getElementById('chat-messages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id        = id;
+            div.className = 'msg-typing';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function eliminarTyping(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function usarSugerencia(btn) {
+            const texto = btn.textContent.replace(/^[^\s]+\s/, ''); // quitar emoji
+            document.getElementById('chat-input').value = texto;
+            document.getElementById('chat-input').focus();
+        }
+
+        function chatKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                enviarMensaje();
+            }
+        }
+
+        function autoResizeTextarea(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+        }
+
+        // ── Markdown lite (bold, italic, tables, listas) ────────────────────
+        function markdownLite(text) {
+            // Tablas markdown simples
+            const lines = text.split('\n');
+            let html = '';
+            let inTable = false;
+            let tableRows = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.match(/^\|.+\|$/)) {
+                    if (!inTable) { inTable = true; tableRows = []; }
+                    if (!line.match(/^\|[-| :]+\|$/)) {  // skip separator
+                        tableRows.push(line);
+                    }
+                } else {
+                    if (inTable) {
+                        html += renderTable(tableRows);
+                        inTable = false; tableRows = [];
+                    }
+                    html += renderLine(line) + '\n';
+                }
+            }
+            if (inTable) html += renderTable(tableRows);
+
+            return html;
+        }
+
+        function renderTable(rows) {
+            if (!rows.length) return '';
+            let t = '<table>';
+            rows.forEach((row, idx) => {
+                const cells = row.split('|').filter(c => c.trim() !== '');
+                const tag   = idx === 0 ? 'th' : 'td';
+                t += '<tr>' + cells.map(c => `<${tag}>${escHtml(c.trim())}</${tag}>`).join('') + '</tr>';
+            });
+            return t + '</table>';
+        }
+
+        function renderLine(line) {
+            // Listas
+            line = line.replace(/^[*-] (.+)/, '• $1');
+            // Bold
+            line = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // Italic
+            line = line.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            // Inline code
+            line = line.replace(/`(.+?)`/g, '<code style="background:var(--arena);padding:1px 4px;border-radius:3px;font-size:11px;">$1</code>');
+            // Headings
+            line = line.replace(/^### (.+)/, '<strong style="color:var(--terracota)">$1</strong>');
+            line = line.replace(/^## (.+)/,  '<strong style="color:var(--terracota);font-size:14px">$1</strong>');
+            return line;
+        }
+
+        function escHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        // ── Init al cargar ──────────────────────────────────────────────────
+        window.addEventListener('load', () => {
+            initChat();
+        });
+
+
+        // ═══════════════════════════════════════
+        // BIELA CONSIGNACIÓN — $70 por porción
+        // ═══════════════════════════════════════
+        var PRECIO_BIELA = 70;
+
+        function calcularBiela() {
+            var t = parseInt(document.getElementById('biela-tiramisu').value) || 0;
+            var o = parseInt(document.getElementById('biela-oreo').value)     || 0;
+            var l = parseInt(document.getElementById('biela-lotus').value)    || 0;
+            if (t === 0 && o === 0 && l === 0) {
+                document.getElementById('biela-resumen').style.display = 'none';
+                return;
+            }
+            var lineas = '';
+            var total  = 0;
+            if (t > 0) { var s=t*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Tiramisú &times; '+t+' porciones</span><span>$'+s+'</span></div>'; }
+            if (o > 0) { var s=o*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Pay Oreo &times; '+o+' porciones</span><span>$'+s+'</span></div>'; }
+            if (l > 0) { var s=l*PRECIO_BIELA; total+=s; lineas+='<div class="consig-linea"><span>Pay Lotus &times; '+l+' porciones</span><span>$'+s+'</span></div>'; }
+            document.getElementById('biela-lineas').innerHTML        = lineas;
+            document.getElementById('biela-total-label').textContent = '$' + total + ' MXN';
+            document.getElementById('biela-resumen').style.display   = 'block';
+        }
+
+        function limpiarBiela() {
+            ['biela-tiramisu','biela-oreo','biela-lotus'].forEach(function(id){ document.getElementById(id).value='0'; });
+            document.getElementById('biela-periodo').value          = '';
+            document.getElementById('biela-resumen').style.display  = 'none';
+        }
+
+        async function registrarCobroBiela() {
+            var t      = parseInt(document.getElementById('biela-tiramisu').value) || 0;
+            var o      = parseInt(document.getElementById('biela-oreo').value)     || 0;
+            var l      = parseInt(document.getElementById('biela-lotus').value)    || 0;
+            var periodo = document.getElementById('biela-periodo').value.trim()   || 'Sin especificar';
+            var total   = (t + o + l) * PRECIO_BIELA;
+
+            if (t === 0 && o === 0 && l === 0) {
+                mostrarAlerta('biela-alert', 'warning', 'Ingresa al menos una porcion vendida.');
+                return;
+            }
+
+            var fecha = new Date().toLocaleDateString('es-MX', {year:'numeric',month:'2-digit',day:'2-digit'});
+            var payload = {
+                accion: 'registrarVenta', fecha: fecha,
+                postre: 'Consignacion Biela', presentacion: 'Multiple',
+                cantidad: t+o+l,
+                precioUnitario: PRECIO_BIELA,
+                total: total,
+                cliente: 'Biela Cafe', pagado: 'No',
+                notas: 'Periodo: '+periodo+' | Tiramisu:'+t+' PayOreo:'+o+' PayLotus:'+l
+            };
+
+            datosVentas.unshift({fecha:fecha, postre:'Consignacion Biela', presentacion:'Multiple', cantidad:t+o+l, total:total, cliente:'Biela Cafe', pagado:'No'});
+            cargarVentas();
+            actualizarDashboard();
+            mostrarAlerta('biela-alert', 'success', 'Guardando...');
+
+            try {
+                await fetch(APPS_SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+                mostrarAlerta('biela-alert', 'success', 'Cobro registrado — Total: $' + total + ' MXN');
+                limpiarBiela();
+            } catch(err) {
+                mostrarAlerta('biela-alert', 'warning', 'Sin conexion — guardado local.');
+            }
+        }
+
+    </script>
+</body>
+</html>
