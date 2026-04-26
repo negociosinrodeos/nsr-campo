@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="DUNA Postrería - Sistema de Gestión de Producción">
     <title>DUNA Postrería</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
@@ -43,7 +43,7 @@
 
         .header {
             background: linear-gradient(135deg, var(--durazno) 0%, var(--terracota) 100%);
-            padding: 20px;
+            padding: 14px 20px;
             text-align: center;
             border-bottom: 3px solid var(--terracota);
             box-shadow: 0 4px 20px rgba(217, 139, 107, 0.25);
@@ -51,17 +51,17 @@
 
         .logo-header {
             font-family: 'Playfair Display', serif;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--hueso);
             text-shadow: 1px 1px 3px rgba(61, 46, 34, 0.25);
         }
 
         .subtitulo {
-            font-size: 12px;
+            font-size: 10px;
             color: rgba(250,246,238,0.85);
-            letter-spacing: 3px;
-            margin-top: 4px;
+            letter-spacing: 2px;
+            margin-top: 2px;
             text-transform: uppercase;
         }
 
@@ -70,9 +70,21 @@
         /* ═══════════════════════════════════════════════════════════ */
 
         .container {
-            max-width: 1200px;
+            max-width: 480px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px 14px 0;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        body {
+            padding-bottom: 70px;
         }
 
         .tab-content {
@@ -82,6 +94,8 @@
 
         .tab-content.activo {
             display: block !important;
+            margin-top: 0;
+            padding-top: 0;
         }
 
         #tab-chat.activo {
@@ -101,8 +115,8 @@
             background: var(--card-bg);
             border: 1px solid var(--borde);
             border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 18px;
+            padding: 16px;
+            margin-bottom: 10px;
             box-shadow: 0 2px 12px rgba(61, 46, 34, 0.08);
             transition: all 0.3s ease;
         }
@@ -319,26 +333,35 @@
             bottom: 0;
             left: 0;
             right: 0;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            display: flex;
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
             background: var(--hueso);
             border-top: 2px solid var(--borde);
             box-shadow: 0 -4px 20px rgba(61,46,34,0.1);
             z-index: 100;
         }
 
+        .nav-tabs::-webkit-scrollbar { display: none; }
+
         .nav-tab {
-            padding: 12px 8px;
+            flex: 0 0 auto;
+            min-width: 72px;
+            padding: 10px 10px;
             text-align: center;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--texto-suave);
             border: none;
             background: none;
             transition: all 0.25s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .nav-tab:hover {
@@ -353,8 +376,8 @@
 
         .nav-emoji {
             display: block;
-            font-size: 20px;
-            margin-bottom: 3px;
+            font-size: 18px;
+            margin-bottom: 2px;
         }
 
         .container {
@@ -484,7 +507,7 @@
             top: 0;
             left: 0;
             right: 0;
-            bottom: 60px; /* altura del nav */
+            bottom: 62px;
             padding: 0;
             overflow: hidden;
             z-index: 10;
@@ -751,6 +774,156 @@
         .consig-linea:last-child { border-bottom:none; }
         .consig-total { display:flex; justify-content:space-between; font-size:17px; font-weight:700; padding:10px 0 4px; color:var(--terracota); }
         .periodo-label { font-size:12px; color:var(--texto-suave); margin-bottom:12px; }
+
+
+        /* ═══════════════════════════════════════════════════
+           TAB COSTOS
+        ═══════════════════════════════════════════════════ */
+        .costos-seccion-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            color: var(--terracota);
+            font-weight: 700;
+            margin: 18px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--arena);
+        }
+
+        .costo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--arena);
+        }
+
+        .costo-item:last-child { border-bottom: none; }
+
+        .costo-item-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            width: 32px;
+            text-align: center;
+        }
+
+        .costo-item-info {
+            flex: 1;
+        }
+
+        .costo-item-nombre {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--texto);
+        }
+
+        .costo-item-desc {
+            font-size: 11px;
+            color: var(--texto-suave);
+            margin-top: 2px;
+        }
+
+        .costo-item-valor {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--terracota);
+            flex-shrink: 0;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .costos-resultado {
+            background: linear-gradient(135deg, var(--durazno) 0%, var(--arena) 100%);
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid var(--borde);
+        }
+
+        .costos-resultado-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            color: var(--terracota);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .resultado-fila {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 5px 0;
+            color: var(--texto);
+            border-bottom: 1px solid rgba(61,46,34,0.08);
+        }
+
+        .resultado-fila:last-child { border-bottom: none; }
+
+        .resultado-fila.total {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--terracota);
+            padding-top: 10px;
+            margin-top: 4px;
+            border-top: 2px solid var(--terracota);
+            border-bottom: none;
+        }
+
+        .resultado-fila.ganancia-real {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--verde);
+        }
+
+        .resultado-fila.perdida {
+            color: var(--rojo);
+        }
+
+        .costo-postre-select {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .postre-chip {
+            flex: 1;
+            padding: 8px 4px;
+            border: 2px solid var(--borde);
+            border-radius: 10px;
+            background: white;
+            color: var(--texto-suave);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .postre-chip.activo {
+            border-color: var(--terracota);
+            background: var(--terracota);
+            color: white;
+        }
+
+        .hora-slider-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .hora-slider-wrap input[type=range] {
+            flex: 1;
+            accent-color: var(--terracota);
+            height: 4px;
+        }
+
+        .hora-slider-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--terracota);
+            min-width: 45px;
+            text-align: right;
+        }
 
     </style>
 </head>
@@ -1134,6 +1307,157 @@
 
     </div>
 
+
+        <!-- ═══════════════ TAB COSTOS ═══════════════ -->
+        <div id="tab-costos" class="tab-content">
+
+            <!-- Selector de postre -->
+            <div class="card">
+                <div class="card-title">💰 Análisis de Costos Real</div>
+                <p style="font-size:12px;color:var(--texto-suave);margin-bottom:12px;">
+                    Selecciona el postre para ver su desglose completo incluyendo mano de obra, empaque y más.
+                </p>
+                <div class="costo-postre-select">
+                    <button class="postre-chip activo" onclick="seleccionarPostreCosto('tiramisu', this)">🍰 Tiramisú</button>
+                    <button class="postre-chip" onclick="seleccionarPostreCosto('oreo', this)">🍪 Pay Oreo</button>
+                    <button class="postre-chip" onclick="seleccionarPostreCosto('lotus', this)">🥮 Pay Lotus</button>
+                </div>
+            </div>
+
+            <!-- Costos Indirectos (desde Sheets) -->
+            <div class="card">
+                <div class="card-title">⚙️ Costos Indirectos por Porción</div>
+                <p style="font-size:11px;color:var(--texto-suave);margin-bottom:4px;">
+                    Editables desde Google Sheets → hoja CONFIG → sección COSTOS_INDIRECTOS
+                </p>
+
+                <div id="lista-costos-indirectos">
+                    <!-- Se carga desde Sheets o usa defaults -->
+                    <div class="costo-item">
+                        <span class="costo-item-icon">📦</span>
+                        <div class="costo-item-info">
+                            <div class="costo-item-nombre">Empaque</div>
+                            <div class="costo-item-desc">Caja, papel, cinta</div>
+                        </div>
+                        <div class="costo-item-valor" id="costo-empaque">$8.00</div>
+                    </div>
+                    <div class="costo-item">
+                        <span class="costo-item-icon">🏷️</span>
+                        <div class="costo-item-info">
+                            <div class="costo-item-nombre">Etiqueta</div>
+                            <div class="costo-item-desc">Sticker personalizado DUNA</div>
+                        </div>
+                        <div class="costo-item-valor" id="costo-etiqueta">$3.00</div>
+                    </div>
+                    <div class="costo-item">
+                        <span class="costo-item-icon">🔥</span>
+                        <div class="costo-item-info">
+                            <div class="costo-item-nombre">Gas (estufa)</div>
+                            <div class="costo-item-desc">Estimado por porción</div>
+                        </div>
+                        <div class="costo-item-valor" id="costo-gas">$4.00</div>
+                    </div>
+                    <div class="costo-item">
+                        <span class="costo-item-icon">🚗</span>
+                        <div class="costo-item-info">
+                            <div class="costo-item-nombre">Envío / Entrega</div>
+                            <div class="costo-item-desc">Gasolina o Uber estimado</div>
+                        </div>
+                        <div class="costo-item-valor" id="costo-envio">$10.00</div>
+                    </div>
+                    <div class="costo-item">
+                        <span class="costo-item-icon">💧</span>
+                        <div class="costo-item-info">
+                            <div class="costo-item-nombre">Agua + luz</div>
+                            <div class="costo-item-desc">Servicios estimados por porción</div>
+                        </div>
+                        <div class="costo-item-valor" id="costo-servicios">$3.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mano de obra -->
+            <div class="card">
+                <div class="card-title">👐 Mano de Obra</div>
+
+                <label>Tiempo total para hacer 8 porciones</label>
+                <div class="hora-slider-wrap">
+                    <input type="range" id="slider-horas" min="0.5" max="8" step="0.5" value="2"
+                           oninput="actualizarHoras(this.value)">
+                    <span class="hora-slider-val" id="label-horas">2 hrs</span>
+                </div>
+
+                <div style="margin-top:14px;">
+                    <label>Valor hora de trabajo (MXN)</label>
+                    <input type="number" id="valor-hora" value="80" min="0" step="5"
+                           oninput="calcularCostosCompleto()"
+                           placeholder="Ej: 80">
+                    <p style="font-size:11px;color:var(--texto-suave);margin-top:4px;">
+                        Referencia: salario mínimo Coahuila 2026 ≈ $26/hr · trabajo especializado $80-150/hr
+                    </p>
+                </div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="costos-resultado" id="costos-resultado">
+                <div class="costos-resultado-title" id="costos-resultado-titulo">📊 Tiramisú — Costo Real por Porción</div>
+
+                <div class="resultado-fila">
+                    <span>🧪 Ingredientes</span>
+                    <span id="res-ingredientes">$33.19</span>
+                </div>
+                <div class="resultado-fila">
+                    <span>📦 Empaque + etiqueta</span>
+                    <span id="res-empaque-etiqueta">$11.00</span>
+                </div>
+                <div class="resultado-fila">
+                    <span>🔥 Gas + servicios</span>
+                    <span id="res-gas-servicios">$7.00</span>
+                </div>
+                <div class="resultado-fila">
+                    <span>🚗 Envío</span>
+                    <span id="res-envio">$10.00</span>
+                </div>
+                <div class="resultado-fila">
+                    <span>👐 Mano de obra</span>
+                    <span id="res-mano-obra">$20.00</span>
+                </div>
+                <div class="resultado-fila total">
+                    <span>Costo total real</span>
+                    <span id="res-costo-total">$81.19</span>
+                </div>
+
+                <div style="height:1px;background:var(--borde);margin:12px 0;"></div>
+
+                <div class="resultado-fila" style="font-weight:600;">
+                    <span>💵 Precio venta público</span>
+                    <span id="res-precio-publico">$250 (familiar)</span>
+                </div>
+                <div class="resultado-fila" style="font-weight:600;">
+                    <span>🏪 Precio consignación Biela</span>
+                    <span>$70</span>
+                </div>
+
+                <div style="height:1px;background:var(--borde);margin:12px 0;"></div>
+
+                <div class="resultado-fila ganancia-real" id="res-fila-publico">
+                    <span>✅ Ganancia real (público)</span>
+                    <span id="res-ganancia-publico">+$168.81</span>
+                </div>
+                <div class="resultado-fila" id="res-fila-biela">
+                    <span id="res-label-biela">⚠️ Ganancia real (Biela)</span>
+                    <span id="res-ganancia-biela">-$11.19</span>
+                </div>
+                <div class="resultado-fila" style="font-size:12px;color:var(--texto-suave);">
+                    <span>⏱️ Ganancia/hora (Biela)</span>
+                    <span id="res-por-hora">—</span>
+                </div>
+            </div>
+
+            <div style="height:20px;"></div>
+
+        </div>
+
     <div class="nav-tabs">
         <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
             <span class="nav-emoji">📊</span>
@@ -1154,6 +1478,10 @@
         <button class="nav-tab" onclick="cambiarTab('chat')">
             <span class="nav-emoji">🤖</span>
             Asistente
+        </button>
+        <button class="nav-tab" onclick="cambiarTab('costos')">
+            <span class="nav-emoji">💰</span>
+            Costos
         </button>
     </div>
 
@@ -1987,6 +2315,132 @@
                 mostrarAlerta('biela-alert', 'warning', 'Sin conexion — guardado local.');
             }
         }
+
+
+        // ═══════════════════════════════════════════════════════════
+        // TAB COSTOS — Análisis de rentabilidad real
+        // ═══════════════════════════════════════════════════════════
+
+        // Costos de ingredientes por porción (base 8 porciones)
+        var COSTO_INGREDIENTES = {
+            tiramisu: 33.19,   // $265.49 / 8
+            oreo:     51.17,   // $409.38 / 8
+            lotus:    48.65    // $389.20 / 8
+        };
+
+        // Precio público familiar (8 porciones) / 8
+        var PRECIO_PUBLICO_PORCION = {
+            tiramisu: 31.25,   // $250 / 8
+            oreo:     35.00,   // $280 / 8
+            lotus:    37.50    // $300 / 8
+        };
+
+        // Precios completos para mostrar
+        var PRECIO_FAMILIAR = {
+            tiramisu: '$250 (familiar)',
+            oreo:     '$280 (familiar)',
+            lotus:    '$300 (familiar)'
+        };
+
+        var NOMBRES_POSTRE = {
+            tiramisu: '🍰 Tiramisú',
+            oreo:     '🍪 Pay Oreo',
+            lotus:    '🥮 Pay Lotus'
+        };
+
+        var posteCostoActual = 'tiramisu';
+
+        // Costos indirectos default (se sobreescriben si Sheets los tiene)
+        var costosIndirectos = {
+            empaque:   8.00,
+            etiqueta:  3.00,
+            gas:       4.00,
+            envio:     10.00,
+            servicios: 3.00
+        };
+
+        function seleccionarPostreCosto(postre, btn) {
+            posteCostoActual = postre;
+            document.querySelectorAll('.postre-chip').forEach(function(b){ b.classList.remove('activo'); });
+            btn.classList.add('activo');
+            calcularCostosCompleto();
+        }
+
+        function actualizarHoras(val) {
+            document.getElementById('label-horas').textContent = val + ' hrs';
+            calcularCostosCompleto();
+        }
+
+        function calcularCostosCompleto() {
+            var postre    = posteCostoActual;
+            var horas     = parseFloat(document.getElementById('slider-horas').value) || 2;
+            var valorHora = parseFloat(document.getElementById('valor-hora').value)   || 80;
+
+            // Costos indirectos (desde variables, actualizables desde Sheets)
+            var ci = costosIndirectos;
+
+            // Mano de obra por porción (horas totales para 8 porciones / 8 * valor hora)
+            var mobraTotal = (horas * valorHora);
+            var mobraPorcion = mobraTotal / 8;
+
+            // Totales por porción
+            var ingPorcion      = COSTO_INGREDIENTES[postre];
+            var empaqueEtiqueta = ci.empaque + ci.etiqueta;
+            var gasServicios    = ci.gas + ci.servicios;
+            var envio           = ci.envio;
+            var costoTotal      = ingPorcion + empaqueEtiqueta + gasServicios + envio + mobraPorcion;
+
+            var precioPublico   = PRECIO_PUBLICO_PORCION[postre];
+            var gananciaPub     = precioPublico - costoTotal;
+            var gananciaBiela   = 70 - costoTotal;
+            var gananciaHora    = (gananciaBiela * 8) / horas;
+
+            // Actualizar UI
+            document.getElementById('costos-resultado-titulo').textContent =
+                '📊 ' + NOMBRES_POSTRE[postre] + ' — Costo Real por Porción';
+            document.getElementById('res-ingredientes').textContent  = '$' + ingPorcion.toFixed(2);
+            document.getElementById('res-empaque-etiqueta').textContent = '$' + empaqueEtiqueta.toFixed(2);
+            document.getElementById('res-gas-servicios').textContent = '$' + gasServicios.toFixed(2);
+            document.getElementById('res-envio').textContent         = '$' + envio.toFixed(2);
+            document.getElementById('res-mano-obra').textContent     = '$' + mobraPorcion.toFixed(2);
+            document.getElementById('res-costo-total').textContent   = '$' + costoTotal.toFixed(2);
+            document.getElementById('res-precio-publico').textContent = PRECIO_FAMILIAR[postre];
+
+            // Ganancia pública
+            var elPub = document.getElementById('res-fila-publico');
+            document.getElementById('res-ganancia-publico').textContent =
+                (gananciaPub >= 0 ? '+' : '') + '$' + gananciaPub.toFixed(2);
+            elPub.className = 'resultado-fila ' + (gananciaPub >= 0 ? 'ganancia-real' : 'perdida');
+
+            // Ganancia Biela
+            var elBiela = document.getElementById('res-fila-biela');
+            document.getElementById('res-label-biela').textContent =
+                (gananciaBiela >= 0 ? '✅' : '⚠️') + ' Ganancia real (Biela)';
+            document.getElementById('res-ganancia-biela').textContent =
+                (gananciaBiela >= 0 ? '+' : '') + '$' + gananciaBiela.toFixed(2);
+            elBiela.className = 'resultado-fila ' + (gananciaBiela >= 0 ? 'ganancia-real' : 'perdida');
+
+            // Ganancia por hora
+            document.getElementById('res-por-hora').textContent =
+                (gananciaHora >= 0 ? '+' : '') + '$' + gananciaHora.toFixed(2) + '/hr';
+        }
+
+        // Cargar costos indirectos desde Sheets si existen
+        function cargarCostosIndirectos(configData) {
+            if (!configData || !configData.costosIndirectos) return;
+            var ci = configData.costosIndirectos;
+            if (ci.empaque   !== undefined) { costosIndirectos.empaque   = ci.empaque;   document.getElementById('costo-empaque').textContent   = '$' + parseFloat(ci.empaque).toFixed(2); }
+            if (ci.etiqueta  !== undefined) { costosIndirectos.etiqueta  = ci.etiqueta;  document.getElementById('costo-etiqueta').textContent  = '$' + parseFloat(ci.etiqueta).toFixed(2); }
+            if (ci.gas       !== undefined) { costosIndirectos.gas       = ci.gas;       document.getElementById('costo-gas').textContent       = '$' + parseFloat(ci.gas).toFixed(2); }
+            if (ci.envio     !== undefined) { costosIndirectos.envio     = ci.envio;     document.getElementById('costo-envio').textContent     = '$' + parseFloat(ci.envio).toFixed(2); }
+            if (ci.servicios !== undefined) { costosIndirectos.servicios = ci.servicios; document.getElementById('costo-servicios').textContent = '$' + parseFloat(ci.servicios).toFixed(2); }
+            calcularCostosCompleto();
+        }
+
+        // Inicializar al cargar
+        window.addEventListener('load', function() {
+            calcularCostosCompleto();
+        });
 
     </script>
 </body>
