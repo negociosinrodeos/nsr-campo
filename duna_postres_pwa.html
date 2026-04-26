@@ -76,12 +76,16 @@
         }
 
         .tab-content {
-            display: none;
+            display: none !important;
             animation: fadeIn 0.4s ease;
         }
 
         .tab-content.activo {
-            display: block;
+            display: block !important;
+        }
+
+        #tab-chat.activo {
+            display: flex !important;
         }
 
         @keyframes fadeIn {
@@ -476,8 +480,15 @@
         #tab-chat {
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 130px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 60px; /* altura del nav */
             padding: 0;
+            overflow: hidden;
+            z-index: 10;
+            background: var(--fondo);
         }
 
         .chat-header {
@@ -554,18 +565,25 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            overflow-x: hidden;
+            padding: 16px 16px 8px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             background: var(--fondo);
+            min-height: 0;  /* clave para que flex child haga scroll */
+            -webkit-overflow-scrolling: touch;
         }
 
         .msg {
             max-width: 88%;
+            width: fit-content;
             padding: 10px 14px;
             border-radius: 16px;
             font-size: 13px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
             line-height: 1.55;
             word-break: break-word;
         }
@@ -1725,7 +1743,7 @@
                     contents: chatHistory,
                     generationConfig: {
                         temperature: 0.4,
-                        maxOutputTokens: 800,
+                        maxOutputTokens: 2048,
                         topP: 0.85
                     }
                 };
