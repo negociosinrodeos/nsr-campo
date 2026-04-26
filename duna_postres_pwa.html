@@ -1743,7 +1743,7 @@
                     contents: chatHistory,
                     generationConfig: {
                         temperature: 0.4,
-                        maxOutputTokens: 2048,
+                        maxOutputTokens: 4096,
                         topP: 0.85
                     }
                 };
@@ -1765,7 +1765,9 @@
                     return;
                 }
 
-                const respText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta';
+                const candidate   = data.candidates?.[0];
+                const respText    = candidate?.content?.parts?.[0]?.text || 'Sin respuesta';
+                const finishReason = candidate?.finishReason || '';
 
                 // Agregar al historial
                 chatHistory.push({ role: 'model', parts: [{ text: respText }] });
@@ -1774,6 +1776,22 @@
                 if (chatHistory.length > 40) chatHistory = chatHistory.slice(-30);
 
                 agregarMensaje('bot', respText);
+
+                // Si se cortó por límite de tokens, mostrar botón para continuar
+                if (finishReason === 'MAX_TOKENS') {
+                    const container = document.getElementById('chat-messages');
+                    const btn = document.createElement('button');
+                    btn.className   = 'sugg-chip';
+                    btn.textContent = '▶ Continúa la respuesta';
+                    btn.style.cssText = 'align-self:flex-start;margin-top:-4px;';
+                    btn.onclick = function() {
+                        btn.remove();
+                        document.getElementById('chat-input').value = 'Continúa';
+                        enviarMensaje();
+                    };
+                    container.appendChild(btn);
+                    container.scrollTop = container.scrollHeight;
+                }
 
             } catch (err) {
                 eliminarTyping(typingId);
