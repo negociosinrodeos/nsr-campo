@@ -84,6 +84,10 @@
             display: block;
         }
 
+        #tab-chat.activo {
+            display: flex;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -474,15 +478,13 @@
            CHATBOT DUNA
         ═══════════════════════════════════════════════════ */
         #tab-chat {
-            display: none;
+            display: flex;
             flex-direction: column;
-            height: calc(100vh - 130px);
+            height: calc(100vh - 80px);  /* 80px = nav tabs */
+            max-height: calc(100vh - 80px);
             padding: 0;
-            margin: -20px;
-        }
-
-        #tab-chat.activo {
-            display: flex !important;
+            margin: -20px;              /* cancelar padding del container */
+            overflow: hidden;
         }
 
         .chat-header {
@@ -559,18 +561,25 @@
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            overflow-x: hidden;
+            padding: 16px 16px 8px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             background: var(--fondo);
+            min-height: 0;  /* clave para que flex child haga scroll */
+            -webkit-overflow-scrolling: touch;
         }
 
         .msg {
             max-width: 88%;
+            width: fit-content;
             padding: 10px 14px;
             border-radius: 16px;
             font-size: 13px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
             line-height: 1.55;
             word-break: break-word;
         }
@@ -1064,6 +1073,8 @@
             </div>
         </div>
 
+    <!-- NAVEGACIÓN TABS (ABAJO) -->
+
         <!-- ═══════════════ TAB CHATBOT ═══════════════ -->
         <div id="tab-chat" class="tab-content">
 
@@ -1117,7 +1128,7 @@
 
         </div>
 
-    </div><!-- /container -->
+    </div>
 
     <div class="nav-tabs">
         <button class="nav-tab activo" onclick="cambiarTab('dashboard')">
@@ -1619,9 +1630,8 @@
         // CHATBOT DUNA — Gemini 2.0 Flash
         // ═══════════════════════════════════════════════════════════════════
 
-        const GEMINI_MODEL = 'gemini-1.5-flash';
-        const GEMINI_API   = 'https://generativelanguage.googleapis.com/v1/models/'
-                           + GEMINI_MODEL + ':generateContent?key=';
+        const GEMINI_MODEL = 'gemini-2.5-flash';
+        const GEMINI_API   = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=';
 
         let chatHistory = [];   // [{role:'user'|'model', parts:[{text}]}]
 
@@ -1724,15 +1734,8 @@
             const typingId = agregarTyping();
 
             try {
-                // Usar v1beta que SÍ soporta systemInstruction
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                
                 const body = {
-                    systemInstruction: {
-                        parts: [
-                            { text: buildSystemPrompt() }
-                        ]
-                    },
+                    systemInstruction: { parts: [{ text: buildSystemPrompt() }] },
                     contents: chatHistory,
                     generationConfig: {
                         temperature: 0.4,
@@ -1741,7 +1744,7 @@
                     }
                 };
 
-                const resp = await fetch(url, {
+                const resp = await fetch(GEMINI_API + apiKey, {
                     method:  'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body:    JSON.stringify(body)
@@ -1754,8 +1757,7 @@
                 if (!resp.ok) {
                     const errMsg = data?.error?.message || 'Error de API';
                     agregarMensaje('error', '⚠️ ' + errMsg);
-                    chatHistory.pop();
-                    document.getElementById('btn-send').disabled = false;
+                    chatHistory.pop(); // quitar mensaje fallido del historial
                     return;
                 }
 
@@ -1771,7 +1773,6 @@
 
             } catch (err) {
                 eliminarTyping(typingId);
-                console.error('Error:', err);
                 agregarMensaje('error', '⚠️ Sin conexión. Revisa tu internet e intenta de nuevo.');
                 chatHistory.pop();
             }
